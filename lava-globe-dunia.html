@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lava Globe — Jelajah Dunia · by Laura Vanessa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070B18; --glass:rgba(13,20,40,.62); --glass2:rgba(18,28,54,.78);
+  --line:rgba(140,180,255,.22); --line2:rgba(140,180,255,.38);
+  --ink:#EAF2FF; --dim:rgba(234,242,255,.62); --faint:rgba(234,242,255,.38);
+  --aur1:#5FD4FF; --aur2:#8CF5C0; --gold:#FFC155; --rose:#FF7EA0;
+  --ok:#3ED598; --bad:#FF6B6B;
+  --asia:#FF8A66; --eropa:#64A9FF; --afrika:#FFC155; --amutara:#52E0A8; --amselatan:#43D6D0; --oseania:#B892FF;
+  --r:18px; --shadow:0 18px 50px rgba(0,0,0,.55);
+  --spring:cubic-bezier(.34,1.45,.5,1); --ease:cubic-bezier(.25,.8,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;user-select:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit}
+
+/* ---------- latar angkasa + aurora ---------- */
+#app{position:fixed;inset:0;overflow:hidden}
+#globeViz{position:absolute;inset:0}
+.aurora{position:absolute;inset:-20%;pointer-events:none;z-index:1;opacity:.55;
+  background:
+    radial-gradient(42% 34% at 18% 14%, rgba(95,212,255,.14), transparent 70%),
+    radial-gradient(36% 30% at 84% 78%, rgba(140,245,192,.10), transparent 70%),
+    radial-gradient(30% 26% at 78% 12%, rgba(184,146,255,.10), transparent 70%);
+  animation:aur 26s ease-in-out infinite alternate}
+@keyframes aur{from{transform:translate3d(-1.5%,-1%,0) scale(1)}to{transform:translate3d(1.5%,1.5%,0) scale(1.05)}}
+.vignette{position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(115% 90% at 50% 42%, transparent 55%, rgba(2,4,10,.55) 100%)}
+
+/* ---------- loading ---------- */
+#loader{position:fixed;inset:0;z-index:100;display:grid;place-items:center;
+  background:radial-gradient(70% 55% at 50% 40%, #101A38 0%, #070B18 70%);transition:opacity .7s,visibility .7s}
+#loader.done{opacity:0;visibility:hidden}
+.orbit{position:relative;width:120px;height:120px;margin:0 auto 22px}
+.orbit i{position:absolute;inset:0;border-radius:50%;border:2px solid transparent}
+.orbit i:nth-child(1){border-top-color:var(--aur1);animation:spin 1.3s linear infinite}
+.orbit i:nth-child(2){inset:12px;border-top-color:var(--aur2);animation:spin 1.9s linear infinite reverse}
+.orbit i:nth-child(3){inset:24px;border-top-color:var(--gold);animation:spin 2.6s linear infinite}
+.orbit .core{position:absolute;inset:38px;border-radius:50%;
+  background:radial-gradient(circle at 32% 30%, #6fd2ff, #1656b8 60%, #0a2a66);
+  box-shadow:0 0 34px rgba(95,212,255,.5);animation:breathe 2.4s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+#loader .t{font-family:'Baloo 2';font-weight:800;font-size:34px;text-align:center;
+  background:linear-gradient(90deg,var(--aur1),var(--aur2));-webkit-background-clip:text;background-clip:text;color:transparent}
+#loader .s{text-align:center;color:var(--dim);font-size:12.5px;letter-spacing:.24em;text-transform:uppercase;margin-top:6px}
+#loader .tip{text-align:center;color:var(--faint);font-size:12.5px;margin-top:26px;min-height:18px}
+
+/* ---------- header ---------- */
+.glass{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+#topbar{position:absolute;top:14px;left:14px;right:14px;z-index:20;display:flex;align-items:center;gap:10px;pointer-events:none}
+#topbar>*{pointer-events:auto}
+.brand{display:flex;align-items:center;gap:10px;padding:9px 16px 9px 11px}
+.brand .globe-ic{width:34px;height:34px;border-radius:50%;
+  background:radial-gradient(circle at 32% 30%, #6fd2ff, #1656b8 62%, #0a2a66);
+  box-shadow:0 0 16px rgba(95,212,255,.55), inset -4px -5px 10px rgba(0,0,20,.5);position:relative;overflow:hidden}
+.brand .globe-ic::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(20% 26% at 62% 40%, rgba(140,245,192,.9), transparent 70%),
+             radial-gradient(16% 20% at 34% 62%, rgba(140,245,192,.75), transparent 70%)}
+.brand .tt{line-height:1.02}
+.brand .tt b{font-family:'Baloo 2';font-weight:800;font-size:17px;display:block;
+  background:linear-gradient(90deg,var(--aur1),var(--aur2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand .tt span{font-size:9px;letter-spacing:.22em;color:var(--dim);text-transform:uppercase}
+#tabs{margin-left:auto;display:flex;padding:5px;gap:4px}
+.tab{display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:13px;font-weight:700;font-size:13.5px;
+  color:var(--dim);transition:all .25s var(--ease);position:relative}
+.tab .em{font-size:16px}
+.tab:hover{color:var(--ink);background:rgba(140,180,255,.09)}
+.tab.on{color:#06121f;background:linear-gradient(120deg,var(--aur1),var(--aur2));box-shadow:0 4px 18px rgba(95,212,255,.35)}
+.iconb{width:42px;height:42px;display:grid;place-items:center;font-size:17px;border-radius:14px;transition:all .2s var(--ease)}
+.iconb:hover{background:rgba(140,180,255,.12);transform:translateY(-1px)}
+.iconb:active{transform:translateY(1px)}
+
+/* ---------- search ---------- */
+#searchWrap{position:absolute;top:76px;left:50%;transform:translateX(-50%);z-index:19;width:min(420px,86vw);transition:opacity .3s,transform .3s}
+#searchWrap.hide{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(-8px)}
+#searchBox{display:flex;align-items:center;gap:10px;padding:4px 6px 4px 16px}
+#searchBox .mag{font-size:15px;opacity:.6}
+#searchIn{flex:1;background:none;border:none;outline:none;color:var(--ink);font-size:14.5px;padding:11px 0;font-weight:600}
+#searchIn::placeholder{color:var(--faint);font-weight:500}
+#searchGo{padding:9px 15px;border-radius:12px;font-weight:800;font-size:12.5px;color:#06121f;
+  background:linear-gradient(120deg,var(--aur1),var(--aur2));transition:transform .15s var(--spring)}
+#searchGo:hover{transform:scale(1.05)}
+#searchList{list-style:none;margin-top:8px;overflow:hidden;display:none;max-height:280px;overflow-y:auto}
+#searchList.open{display:block}
+#searchList li{display:flex;align-items:center;gap:11px;padding:10px 14px;cursor:pointer;transition:background .15s;font-weight:600;font-size:14px}
+#searchList li img{width:26px;height:19px;border-radius:4px;object-fit:cover;box-shadow:0 1px 4px rgba(0,0,0,.5)}
+#searchList li .cap{margin-left:auto;font-size:11.5px;color:var(--faint);font-weight:500}
+#searchList li:hover,#searchList li.sel{background:rgba(95,212,255,.14)}
+#searchList li.none{color:var(--faint);cursor:default;justify-content:center}
+#searchList::-webkit-scrollbar{width:6px}#searchList::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px}
+
+/* ---------- panel info negara ---------- */
+#panel{position:absolute;top:76px;right:14px;bottom:14px;z-index:18;width:min(360px,92vw);
+  display:flex;flex-direction:column;
+  transform:translateX(calc(100% + 30px));transition:transform .55s var(--spring)}
+#panel.open{transform:translateX(0)}
+#panelIn{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.p-head{position:relative;padding:18px 18px 14px;display:flex;gap:14px;align-items:center;overflow:hidden}
+.p-head .bgband{position:absolute;inset:0;opacity:.16;pointer-events:none}
+.p-flag{width:74px;height:52px;border-radius:10px;object-fit:cover;box-shadow:0 6px 18px rgba(0,0,0,.5);border:1.5px solid rgba(255,255,255,.25);flex-shrink:0}
+.p-flag-emoji{font-size:44px;line-height:52px}
+.p-title{min-width:0}
+.p-title h2{font-family:'Baloo 2';font-weight:800;font-size:25px;line-height:1.02;letter-spacing:.01em}
+.p-chip{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:4px 11px;border-radius:99px;
+  font-size:11.5px;font-weight:800;color:#06121f}
+#pClose{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;
+  font-size:14px;color:var(--dim);background:rgba(0,0,0,.25);transition:all .2s}
+#pClose:hover{color:#fff;background:rgba(255,110,110,.4);transform:rotate(90deg)}
+.p-body{flex:1;overflow-y:auto;padding:6px 16px 18px;display:flex;flex-direction:column;gap:9px}
+.p-body::-webkit-scrollbar{width:6px}.p-body::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px}
+.row{display:flex;gap:12px;padding:11px 13px;border-radius:14px;background:rgba(140,180,255,.07);
+  border:1px solid rgba(140,180,255,.1);opacity:0;transform:translateX(26px);animation:rowIn .5s var(--spring) forwards;
+  animation-delay:calc(var(--i)*70ms);transition:background .2s,border-color .2s}
+.row:hover{background:rgba(140,180,255,.13);border-color:var(--line2)}
+@keyframes rowIn{to{opacity:1;transform:translateX(0)}}
+.row .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:19px;flex-shrink:0;
+  background:linear-gradient(150deg,rgba(95,212,255,.2),rgba(140,245,192,.12));border:1px solid rgba(140,220,255,.22)}
+.row .bd{min-width:0;flex:1}
+.row .lb{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);font-weight:700}
+.row .vl{font-size:15px;font-weight:700;margin-top:2px;line-height:1.3}
+.row .sub{font-size:11.5px;color:var(--dim);margin-top:1px}
+.pict{display:flex;flex-wrap:wrap;gap:2px;margin-top:5px;font-size:17px;letter-spacing:1px}
+.pict span{animation:pop .4s var(--spring) both;animation-delay:calc(var(--k)*45ms + var(--i)*70ms)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.legend{font-size:10.5px;color:var(--faint);margin-top:4px}
+.fchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fchip{padding:5px 11px;border-radius:99px;font-size:12px;font-weight:700;background:rgba(255,193,85,.14);
+  border:1px solid rgba(255,193,85,.3);color:#FFD9A0}
+
+/* ---------- hint onboarding ---------- */
+#hint{position:absolute;left:14px;bottom:14px;z-index:15;max-width:270px;padding:15px 16px;
+  transform:translateY(0);transition:all .5s var(--spring)}
+#hint.hide{transform:translateY(140%);opacity:0;pointer-events:none}
+#hint .hh{display:flex;gap:10px;align-items:center;font-family:'Baloo 2';font-weight:700;font-size:15.5px}
+#hint p{font-size:12.5px;color:var(--dim);line-height:1.55;margin-top:7px}
+#hint b{color:var(--aur2)}
+#hintOk{margin-top:11px;padding:8px 18px;border-radius:11px;font-weight:800;font-size:12.5px;color:#06121f;
+  background:linear-gradient(120deg,var(--aur1),var(--aur2))}
+
+/* ---------- toast ---------- */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(10px);z-index:90;
+  padding:11px 20px;border-radius:13px;font-size:13.5px;font-weight:600;opacity:0;transition:all .25s var(--ease)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- trivia ---------- */
+#trivia{position:absolute;inset:0;z-index:40;display:grid;place-items:center;padding:18px;
+  background:rgba(4,7,16,.55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+  opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+#trivia.open{opacity:1;visibility:visible}
+#tCard{width:min(520px,94vw);max-height:92vh;overflow-y:auto;padding:24px;
+  transform:scale(.92) translateY(14px);transition:transform .45s var(--spring)}
+#trivia.open #tCard{transform:scale(1) translateY(0)}
+#tCard::-webkit-scrollbar{width:6px}#tCard::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px}
+.t-eyebrow{font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--aur2);font-weight:800;text-align:center}
+.t-title{font-family:'Baloo 2';font-weight:800;font-size:27px;text-align:center;margin-top:4px}
+.t-sub{text-align:center;color:var(--dim);font-size:13px;margin-top:8px;line-height:1.55}
+.diffRow{display:flex;gap:9px;margin:18px 0 6px;justify-content:center}
+.diff{padding:11px 20px;border-radius:14px;font-weight:800;font-size:13.5px;border:1.5px solid var(--line);
+  color:var(--dim);transition:all .2s var(--ease)}
+.diff:hover{border-color:var(--line2);color:var(--ink)}
+.diff.on{color:#06121f;background:linear-gradient(120deg,var(--gold),#FFE0A8);border-color:transparent;box-shadow:0 4px 16px rgba(255,193,85,.3)}
+.bigbtn{display:block;margin:16px auto 0;padding:14px 44px;border-radius:16px;font-family:'Baloo 2';font-weight:800;font-size:19px;
+  color:#06121f;background:linear-gradient(120deg,var(--aur1),var(--aur2));
+  box-shadow:0 8px 26px rgba(95,212,255,.35);transition:transform .18s var(--spring)}
+.bigbtn:hover{transform:scale(1.05)}
+.bigbtn:active{transform:scale(.97)}
+.t-top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.t-score{display:flex;align-items:center;gap:6px;font-family:'Baloo 2';font-weight:800;font-size:17px;color:var(--gold)}
+.t-progress{flex:1;display:flex;gap:5px}
+.t-progress i{flex:1;height:7px;border-radius:4px;background:rgba(140,180,255,.15);transition:background .3s}
+.t-progress i.done{background:linear-gradient(90deg,var(--aur1),var(--aur2))}
+.t-progress i.bad{background:var(--bad)}
+#tQuit{font-size:12px;color:var(--faint);padding:7px 11px;border-radius:9px}
+#tQuit:hover{color:var(--bad);background:rgba(255,107,107,.12)}
+.t-q{font-family:'Baloo 2';font-weight:700;font-size:20px;text-align:center;line-height:1.3;margin:8px 0 4px}
+.t-flag{display:block;width:150px;height:100px;object-fit:cover;border-radius:12px;margin:12px auto 4px;
+  box-shadow:0 10px 28px rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.22)}
+.t-hintline{text-align:center;font-size:12px;color:var(--faint);margin-bottom:8px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.opt{padding:15px 12px;border-radius:15px;border:1.5px solid var(--line);background:rgba(140,180,255,.06);
+  font-weight:700;font-size:14.5px;text-align:center;transition:all .22s var(--ease);position:relative;line-height:1.3}
+.opt:hover:not(:disabled){border-color:var(--aur1);background:rgba(95,212,255,.13);transform:translateY(-2px)}
+.opt:disabled{cursor:default}
+.opt.correct{background:rgba(62,213,152,.2);border-color:var(--ok);color:#B8FFDC;animation:okPulse .55s var(--spring)}
+.opt.wrong{background:rgba(255,107,107,.16);border-color:var(--bad);color:#FFC4C4;animation:shk .4s}
+.opt.dimmed{opacity:.4}
+@keyframes okPulse{0%{transform:scale(1)}40%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}50%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+.t-feed{text-align:center;font-family:'Baloo 2';font-weight:800;font-size:18px;margin-top:14px;min-height:26px}
+.t-feed.ok{color:var(--ok)}.t-feed.bad{color:var(--bad)}
+.t-actions{display:flex;gap:10px;justify-content:center;margin-top:12px}
+.t-actions .ghostb{padding:11px 20px;border-radius:13px;font-weight:700;font-size:13px;border:1.5px solid var(--line);color:var(--dim);transition:all .2s}
+.t-actions .ghostb:hover{color:var(--ink);border-color:var(--line2)}
+.starRow{display:flex;justify-content:center;gap:10px;font-size:44px;margin:14px 0 4px}
+.starRow span{animation:starIn .6s var(--spring) both}
+.starRow span:nth-child(2){animation-delay:.15s}.starRow span:nth-child(3){animation-delay:.3s}
+@keyframes starIn{from{transform:scale(0) rotate(-40deg)}to{transform:scale(1) rotate(0)}}
+
+/* ---------- belajar cepat ---------- */
+#learn{position:absolute;left:0;right:0;bottom:0;z-index:16;padding:12px 14px 14px;
+  transform:translateY(115%);transition:transform .55s var(--spring)}
+#learn.open{transform:translateY(0)}
+#learnChips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+#learnChips::-webkit-scrollbar{display:none}
+.lchip{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:99px;font-weight:800;font-size:13px;
+  background:var(--glass);border:1.5px solid var(--line);color:var(--dim);transition:all .22s var(--ease);backdrop-filter:blur(10px)}
+.lchip:hover{color:var(--ink);border-color:var(--line2);transform:translateY(-2px)}
+.lchip.on{color:#06121f;background:linear-gradient(120deg,var(--aur1),var(--aur2));border-color:transparent}
+#learnCards{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none}
+#learnCards::-webkit-scrollbar{display:none}
+.lcard{flex-shrink:0;width:168px;padding:13px;border-radius:16px;background:var(--glass2);border:1px solid var(--line);
+  cursor:pointer;transition:all .25s var(--spring);backdrop-filter:blur(12px);
+  opacity:0;transform:translateY(18px);animation:cardIn .45s var(--spring) forwards;animation-delay:calc(var(--i)*55ms)}
+@keyframes cardIn{to{opacity:1;transform:translateY(0)}}
+.lcard:hover{transform:translateY(-5px) scale(1.03);border-color:var(--line2);box-shadow:0 14px 34px rgba(0,0,0,.5)}
+.lcard:active{transform:translateY(-1px) scale(.99)}
+.lcard img{width:44px;height:31px;border-radius:6px;object-fit:cover;box-shadow:0 3px 10px rgba(0,0,0,.5)}
+.lcard .fe{font-size:30px;line-height:31px}
+.lcard b{display:block;font-family:'Baloo 2';font-weight:700;font-size:15.5px;margin-top:8px}
+.lcard span{display:block;font-size:11px;color:var(--dim);margin-top:3px;line-height:1.4}
+
+/* ---------- confetti & fx ---------- */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:95;overflow:hidden}
+.conf{position:absolute;width:9px;height:13px;border-radius:2px;animation:confFall 1.15s ease-in forwards}
+@keyframes confFall{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+
+/* ---------- tooltip globe ---------- */
+.scene-tooltip{font-family:'Plus Jakarta Sans',sans-serif!important;background:var(--glass2)!important;
+  border:1px solid var(--line2);border-radius:11px;padding:7px 13px!important;color:var(--ink)!important;
+  font-size:13px;font-weight:700;backdrop-filter:blur(10px);box-shadow:0 8px 22px rgba(0,0,0,.5)}
+
+/* ---------- responsif ---------- */
+@media(max-width:860px){
+  .tab .tx{display:none}
+  .tab{padding:9px 13px}
+  .brand .tt span{display:none}
+  #panel{top:auto;right:0;left:0;bottom:0;width:100%;max-height:62vh;
+    transform:translateY(calc(100% + 30px))}
+  #panel.open{transform:translateY(0)}
+  #panelIn{border-radius:22px 22px 0 0}
+  #searchWrap{top:70px}
+  .opts{grid-template-columns:1fr}
+  #hint{max-width:230px;bottom:78px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="globeViz"></div>
+  <div class="aurora"></div>
+  <div class="vignette"></div>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <div>
+      <div class="orbit"><i></i><i></i><i></i><div class="core"></div></div>
+      <div class="t">Lava Globe</div>
+      <div class="s">Jelajah Dunia · by Laura Vanessa</div>
+      <div class="tip" id="loadTip">menyiapkan planet bumi…</div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <div id="topbar">
+    <div class="brand glass">
+      <div class="globe-ic"></div>
+      <div class="tt"><b>Lava Globe</b><span>Jelajah Dunia</span></div>
+    </div>
+    <div id="tabs" class="glass">
+      <button class="tab on" data-mode="explore"><span class="em">🌍</span><span class="tx">Jelajah</span></button>
+      <button class="tab" data-mode="trivia"><span class="em">🎯</span><span class="tx">Trivia</span></button>
+      <button class="tab" data-mode="learn"><span class="em">⚡</span><span class="tx">Belajar Cepat</span></button>
+    </div>
+    <button class="iconb glass" id="muteBtn" title="Suara">🔊</button>
+  </div>
+
+  <!-- SEARCH -->
+  <div id="searchWrap">
+    <div id="searchBox" class="glass">
+      <span class="mag">🔍</span>
+      <input id="searchIn" type="text" placeholder="Cari negara… (misal: Jepang)" autocomplete="off">
+      <button id="searchGo">Cari</button>
+    </div>
+    <ul id="searchList" class="glass"></ul>
+  </div>
+
+  <!-- PANEL INFO -->
+  <div id="panel"><div id="panelIn" class="glass"></div></div>
+
+  <!-- HINT -->
+  <div id="hint" class="glass">
+    <div class="hh">👋 Halo, Penjelajah!</div>
+    <p><b>Putar</b> bumi dengan jari atau mouse, <b>cubit/scroll</b> untuk zoom, lalu <b>ketuk sebuah negara</b> untuk berkenalan dengannya! 🌏✨</p>
+    <button id="hintOk">Siap! 🚀</button>
+  </div>
+
+  <!-- BELAJAR CEPAT -->
+  <div id="learn">
+    <div id="learnChips"></div>
+    <div id="learnCards"></div>
+  </div>
+
+  <!-- TRIVIA -->
+  <div id="trivia"><div id="tCard" class="glass"></div></div>
+
+  <div id="toast" class="glass"></div>
+  <div id="fx"></div>
+</div>
+
+<script type="module">
+"use strict";
+import Globe from 'https://cdn.jsdelivr.net/npm/globe.gl@2.46.1/+esm';
+import * as topojson from 'https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm';
+
+/*==PURE==*/
+/* ============================================================
+   DATA NEGARA — kurasi ramah anak SD. Struktur scalable:
+   tambah entri baru = otomatis masuk globe, search, trivia,
+   dan belajar cepat. n = kode ISO numerik (cocok world-atlas),
+   pop = juta jiwa, gdp = miliar US$ (perkiraan, dibulatkan).
+   ============================================================ */
+const CONT = {
+  "Asia":            { col:"#FF8A66", em:"🌏" },
+  "Eropa":           { col:"#64A9FF", em:"🏰" },
+  "Afrika":          { col:"#FFC155", em:"🦁" },
+  "Amerika Utara":   { col:"#52E0A8", em:"🗽" },
+  "Amerika Selatan": { col:"#43D6D0", em:"🦜" },
+  "Oseania":         { col:"#B892FF", em:"🏝️" },
+};
+const COUNTRIES = [
+  {n:360, iso:"id", name:"Indonesia", cap:"Jakarta", cont:"Asia", reg:"Asia Tenggara", curr:"Rupiah (Rp)", gov:"Republik", pop:278, gdp:1400, lang:"Bahasa Indonesia", famous:["Pulau Bali 🏝️","Komodo 🦎","Batik & Rendang 🍛"], mark:"Candi Borobudur", lat:-2.5, lng:118, zoom:1.7},
+  {n:458, iso:"my", name:"Malaysia", cap:"Kuala Lumpur", cont:"Asia", reg:"Asia Tenggara", curr:"Ringgit (RM)", gov:"Kerajaan (Monarki Konstitusional)", pop:34, gdp:430, lang:"Bahasa Melayu", famous:["Menara Kembar Petronas 🏙️","Nasi Lemak 🍚"], mark:"Menara Petronas", lat:4, lng:102},
+  {n:702, iso:"sg", name:"Singapura", cap:"Singapura", cont:"Asia", reg:"Asia Tenggara", curr:"Dolar Singapura (S$)", gov:"Republik", pop:6, gdp:500, lang:"Melayu, Inggris, Mandarin", famous:["Merlion 🦁","Bandara super keren ✈️"], mark:"Marina Bay Sands", lat:1.35, lng:103.8, zoom:0.5},
+  {n:764, iso:"th", name:"Thailand", cap:"Bangkok", cont:"Asia", reg:"Asia Tenggara", curr:"Baht (฿)", gov:"Kerajaan (Monarki Konstitusional)", pop:72, gdp:515, lang:"Thai", famous:["Kuil emas ✨","Tom Yum 🍜","Gajah 🐘"], mark:"Grand Palace Bangkok", lat:15.5, lng:101},
+  {n:704, iso:"vn", name:"Vietnam", cap:"Hanoi", cont:"Asia", reg:"Asia Tenggara", curr:"Dong (₫)", gov:"Republik Sosialis", pop:100, gdp:430, lang:"Vietnam", famous:["Teluk Ha Long ⛰️","Pho 🍜"], mark:"Teluk Ha Long", lat:16, lng:106.5},
+  {n:608, iso:"ph", name:"Filipina", cap:"Manila", cont:"Asia", reg:"Asia Tenggara", curr:"Peso Filipina (₱)", gov:"Republik", pop:117, gdp:440, lang:"Filipino & Inggris", famous:["Ribuan pulau indah 🏖️","Jeepney 🚌"], mark:"Sawah Terasering Banaue", lat:12.5, lng:122},
+  {n:392, iso:"jp", name:"Jepang", cap:"Tokyo", cont:"Asia", reg:"Asia Timur", curr:"Yen (¥)", gov:"Kekaisaran (Monarki Konstitusional)", pop:124, gdp:4200, lang:"Jepang", famous:["Gunung Fuji 🗻","Sushi 🍣","Anime & Robot 🤖"], mark:"Gunung Fuji", lat:36.5, lng:138},
+  {n:410, iso:"kr", name:"Korea Selatan", cap:"Seoul", cont:"Asia", reg:"Asia Timur", curr:"Won (₩)", gov:"Republik", pop:52, gdp:1700, lang:"Korea", famous:["K-Pop 🎤","Kimchi 🥬","Drama Korea 📺"], mark:"Istana Gyeongbokgung", lat:36.3, lng:127.8},
+  {n:156, iso:"cn", name:"Tiongkok", cap:"Beijing", cont:"Asia", reg:"Asia Timur", curr:"Yuan (¥)", gov:"Republik Rakyat", pop:1412, gdp:17800, lang:"Mandarin", famous:["Tembok Besar 🧱","Panda 🐼","Kung Fu 🥋"], mark:"Tembok Besar Tiongkok", lat:35, lng:104, zoom:1.9},
+  {n:356, iso:"in", name:"India", cap:"New Delhi", cont:"Asia", reg:"Asia Selatan", curr:"Rupee (₹)", gov:"Republik Federal", pop:1428, gdp:3600, lang:"Hindi & Inggris", famous:["Taj Mahal 🕌","Bollywood 🎬","Kari 🍛"], mark:"Taj Mahal", lat:22, lng:79, zoom:1.7},
+  {n:682, iso:"sa", name:"Arab Saudi", cap:"Riyadh", cont:"Asia", reg:"Timur Tengah", curr:"Riyal (SR)", gov:"Kerajaan (Monarki)", pop:36, gdp:1070, lang:"Arab", famous:["Ka'bah di Mekkah 🕋","Gurun pasir 🐪"], mark:"Masjidil Haram", lat:24, lng:45},
+  {n:784, iso:"ae", name:"Uni Emirat Arab", cap:"Abu Dhabi", cont:"Asia", reg:"Timur Tengah", curr:"Dirham (AED)", gov:"Federasi Emirat (Monarki)", pop:10, gdp:500, lang:"Arab", famous:["Burj Khalifa 🏙️","Kota super modern ✨"], mark:"Burj Khalifa", lat:24, lng:54, zoom:0.9},
+  {n:792, iso:"tr", name:"Turki", cap:"Ankara", cont:"Asia", reg:"Asia Barat / Eropa", curr:"Lira (₺)", gov:"Republik", pop:85, gdp:1100, lang:"Turki", famous:["Balon udara Cappadocia 🎈","Kebab 🥙"], mark:"Hagia Sophia", lat:39, lng:35},
+  {n:643, iso:"ru", name:"Rusia", cap:"Moskow", cont:"Eropa", reg:"Eropa Timur / Asia Utara", curr:"Rubel (₽)", gov:"Republik Federal", pop:144, gdp:2000, lang:"Rusia", famous:["Negara terluas di dunia 🗺️","Kremlin 🏰"], mark:"Katedral Santo Basil", lat:60, lng:90, zoom:2.2},
+  {n:36, iso:"au", name:"Australia", cap:"Canberra", cont:"Oseania", reg:"Australia", curr:"Dolar Australia (A$)", gov:"Monarki Konstitusional (Persemakmuran)", pop:26, gdp:1700, lang:"Inggris", famous:["Kanguru 🦘","Koala 🐨","Opera House 🎭"], mark:"Sydney Opera House", lat:-25, lng:134, zoom:1.8},
+  {n:554, iso:"nz", name:"Selandia Baru", cap:"Wellington", cont:"Oseania", reg:"Pasifik", curr:"Dolar NZ (NZ$)", gov:"Monarki Konstitusional (Persemakmuran)", pop:5, gdp:250, lang:"Inggris & Māori", famous:["Burung Kiwi 🥝","Alam syuting film 🎬"], mark:"Milford Sound", lat:-42, lng:172},
+  {n:818, iso:"eg", name:"Mesir", cap:"Kairo", cont:"Afrika", reg:"Afrika Utara", curr:"Pound Mesir (E£)", gov:"Republik", pop:112, gdp:400, lang:"Arab", famous:["Piramida & Sphinx 🐫","Sungai Nil 🌊","Firaun 👑"], mark:"Piramida Giza", lat:26.5, lng:30},
+  {n:566, iso:"ng", name:"Nigeria", cap:"Abuja", cont:"Afrika", reg:"Afrika Barat", curr:"Naira (₦)", gov:"Republik Federal", pop:223, gdp:375, lang:"Inggris", famous:["Penduduk terbanyak di Afrika 👥","Musik Afrobeats 🎶"], mark:"Zuma Rock", lat:9.5, lng:8},
+  {n:710, iso:"za", name:"Afrika Selatan", cap:"Pretoria", cont:"Afrika", reg:"Afrika Selatan", curr:"Rand (R)", gov:"Republik", pop:60, gdp:380, lang:"Zulu, Inggris, dll.", famous:["Safari singa & gajah 🦁","Nelson Mandela ✊"], mark:"Table Mountain", lat:-29, lng:25},
+  {n:404, iso:"ke", name:"Kenya", cap:"Nairobi", cont:"Afrika", reg:"Afrika Timur", curr:"Shilling Kenya (KSh)", gov:"Republik", pop:55, gdp:110, lang:"Swahili & Inggris", famous:["Safari Maasai Mara 🦓","Pelari maraton hebat 🏃"], mark:"Gunung Kilimanjaro (dekat)", lat:0.5, lng:38},
+  {n:504, iso:"ma", name:"Maroko", cap:"Rabat", cont:"Afrika", reg:"Afrika Utara", curr:"Dirham Maroko (MAD)", gov:"Kerajaan (Monarki Konstitusional)", pop:37, gdp:140, lang:"Arab & Berber", famous:["Kota biru Chefchaouen 💙","Pasar warna-warni 🧺"], mark:"Masjid Hassan II", lat:32, lng:-6},
+  {n:826, iso:"gb", name:"Inggris (Britania Raya)", cap:"London", cont:"Eropa", reg:"Eropa Barat", curr:"Pound Sterling (£)", gov:"Kerajaan (Monarki Konstitusional)", pop:68, gdp:3300, lang:"Inggris", famous:["Big Ben 🕰️","Sepak bola ⚽","Kerajaan 👑"], mark:"Big Ben & Istana Buckingham", lat:54, lng:-2.5},
+  {n:250, iso:"fr", name:"Prancis", cap:"Paris", cont:"Eropa", reg:"Eropa Barat", curr:"Euro (€)", gov:"Republik", pop:68, gdp:3000, lang:"Prancis", famous:["Menara Eiffel 🗼","Croissant 🥐","Museum Louvre 🖼️"], mark:"Menara Eiffel", lat:46.5, lng:2.5},
+  {n:276, iso:"de", name:"Jerman", cap:"Berlin", cont:"Eropa", reg:"Eropa Tengah", curr:"Euro (€)", gov:"Republik Federal", pop:84, gdp:4400, lang:"Jerman", famous:["Mobil canggih 🚗","Kastil dongeng 🏰"], mark:"Kastil Neuschwanstein", lat:51, lng:10},
+  {n:380, iso:"it", name:"Italia", cap:"Roma", cont:"Eropa", reg:"Eropa Selatan", curr:"Euro (€)", gov:"Republik", pop:59, gdp:2250, lang:"Italia", famous:["Pizza & Pasta 🍕","Colosseum 🏟️","Menara Pisa 🗼"], mark:"Colosseum", lat:42.5, lng:12.5},
+  {n:724, iso:"es", name:"Spanyol", cap:"Madrid", cont:"Eropa", reg:"Eropa Selatan", curr:"Euro (€)", gov:"Kerajaan (Monarki Konstitusional)", pop:48, gdp:1600, lang:"Spanyol", famous:["Flamenco 💃","Paella 🥘","Sepak bola ⚽"], mark:"Sagrada Família", lat:40, lng:-3.5},
+  {n:528, iso:"nl", name:"Belanda", cap:"Amsterdam", cont:"Eropa", reg:"Eropa Barat", curr:"Euro (€)", gov:"Kerajaan (Monarki Konstitusional)", pop:18, gdp:1100, lang:"Belanda", famous:["Kincir angin 🌬️","Bunga tulip 🌷","Sepeda 🚲"], mark:"Kincir Angin Kinderdijk", lat:52.2, lng:5.5, zoom:0.9},
+  {n:756, iso:"ch", name:"Swiss", cap:"Bern", cont:"Eropa", reg:"Eropa Tengah", curr:"Franc Swiss (CHF)", gov:"Republik Federal", pop:9, gdp:880, lang:"Jerman, Prancis, Italia", famous:["Pegunungan Alpen 🏔️","Cokelat 🍫","Jam tangan ⌚"], mark:"Matterhorn", lat:46.8, lng:8.2, zoom:0.9},
+  {n:300, iso:"gr", name:"Yunani", cap:"Athena", cont:"Eropa", reg:"Eropa Selatan", curr:"Euro (€)", gov:"Republik", pop:10, gdp:240, lang:"Yunani", famous:["Dewa-dewi mitologi ⚡","Parthenon 🏛️","Olimpiade kuno 🏅"], mark:"Parthenon", lat:39, lng:22},
+  {n:840, iso:"us", name:"Amerika Serikat", cap:"Washington, D.C.", cont:"Amerika Utara", reg:"Amerika Utara", curr:"Dolar AS ($)", gov:"Republik Federal", pop:335, gdp:27000, lang:"Inggris", famous:["Patung Liberty 🗽","Hollywood 🎬","NASA 🚀"], mark:"Patung Liberty", lat:39.5, lng:-98.5, zoom:1.9},
+  {n:124, iso:"ca", name:"Kanada", cap:"Ottawa", cont:"Amerika Utara", reg:"Amerika Utara", curr:"Dolar Kanada (C$)", gov:"Monarki Konstitusional (Persemakmuran)", pop:40, gdp:2100, lang:"Inggris & Prancis", famous:["Sirup maple 🍁","Air Terjun Niagara 💦","Beruang kutub 🐻‍❄️"], mark:"Air Terjun Niagara", lat:58, lng:-102, zoom:2.1},
+  {n:484, iso:"mx", name:"Meksiko", cap:"Mexico City", cont:"Amerika Utara", reg:"Amerika Tengah", curr:"Peso Meksiko ($)", gov:"Republik Federal", pop:128, gdp:1800, lang:"Spanyol", famous:["Taco 🌮","Piramida Maya 🛕","Sombrero 🎩"], mark:"Chichén Itzá", lat:23.5, lng:-102},
+  {n:76, iso:"br", name:"Brasil", cap:"Brasília", cont:"Amerika Selatan", reg:"Amerika Selatan", curr:"Real (R$)", gov:"Republik Federal", pop:216, gdp:2170, lang:"Portugis", famous:["Hutan Amazon 🌳","Sepak bola ⚽","Karnaval Rio 🎉"], mark:"Patung Kristus Penebus", lat:-10, lng:-53, zoom:1.9},
+  {n:32, iso:"ar", name:"Argentina", cap:"Buenos Aires", cont:"Amerika Selatan", reg:"Amerika Selatan", curr:"Peso Argentina ($)", gov:"Republik Federal", pop:46, gdp:640, lang:"Spanyol", famous:["Tango 💃","Messi & sepak bola ⚽"], mark:"Air Terjun Iguazú", lat:-35, lng:-65, zoom:1.7},
+  {n:604, iso:"pe", name:"Peru", cap:"Lima", cont:"Amerika Selatan", reg:"Amerika Selatan", curr:"Sol (S/)", gov:"Republik", pop:34, gdp:270, lang:"Spanyol & Quechua", famous:["Machu Picchu ⛰️","Llama 🦙"], mark:"Machu Picchu", lat:-9.5, lng:-75},
+  {n:152, iso:"cl", name:"Chili", cap:"Santiago", cont:"Amerika Selatan", reg:"Amerika Selatan", curr:"Peso Chili ($)", gov:"Republik", pop:20, gdp:335, lang:"Spanyol", famous:["Negara terpanjang di dunia 📏","Gurun Atacama 🌵"], mark:"Patung Moai (Pulau Paskah)", lat:-35, lng:-71, zoom:1.6},
+];
+const OCEANS = [
+  {t:"SAMUDRA PASIFIK", lat:6,  lng:-155, s:1.7},
+  {t:"SAMUDRA PASIFIK", lat:-10, lng:168, s:1.1},
+  {t:"SAMUDRA ATLANTIK", lat:2, lng:-28, s:1.4},
+  {t:"SAMUDRA HINDIA", lat:-24, lng:80, s:1.5},
+  {t:"SAMUDRA ARKTIK", lat:73, lng:-45, s:1.0},
+  {t:"SAMUDRA SELATAN", lat:-62, lng:100, s:1.1},
+];
+
+/* ---------- format & visual angka ---------- */
+const fmtPop = c => c.pop >= 1000
+  ? (c.pop/1000).toLocaleString("id-ID", {maximumFractionDigits:2}) + " miliar jiwa"
+  : c.pop.toLocaleString("id-ID") + " juta jiwa";
+const fmtGdp = c => c.gdp >= 1000
+  ? "US$ " + (c.gdp/1000).toLocaleString("id-ID", {maximumFractionDigits:1}) + " triliun"
+  : "US$ " + c.gdp.toLocaleString("id-ID") + " miliar";
+const popIcons  = c => Math.max(1, Math.min(10, Math.round(c.pop / 50)));
+const coinIcons = c => Math.max(1, Math.min(10, Math.round(c.gdp / 500)));
+const flagEmoji = iso => iso.toUpperCase().replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt(0)));
+
+/* ---------- kategori belajar cepat ---------- */
+const LEARN_CATS = [
+  {id:"asia",    em:"🌏", t:"Asia",               list:()=>COUNTRIES.filter(c=>c.cont==="Asia")},
+  {id:"eropa",   em:"🏰", t:"Eropa",              list:()=>COUNTRIES.filter(c=>c.cont==="Eropa")},
+  {id:"afrika",  em:"🦁", t:"Afrika",             list:()=>COUNTRIES.filter(c=>c.cont==="Afrika")},
+  {id:"amerika", em:"🗽", t:"Amerika",            list:()=>COUNTRIES.filter(c=>c.cont.startsWith("Amerika"))},
+  {id:"oseania", em:"🏝️", t:"Oseania",           list:()=>COUNTRIES.filter(c=>c.cont==="Oseania")},
+  {id:"pop",     em:"👥", t:"Penduduk Terbanyak", list:()=>[...COUNTRIES].sort((a,b)=>b.pop-a.pop).slice(0,6)},
+  {id:"gdp",     em:"🪙", t:"Ekonomi Raksasa",    list:()=>[...COUNTRIES].sort((a,b)=>b.gdp-a.gdp).slice(0,6)},
+  {id:"ikonik",  em:"⭐", t:"Super Ikonik",       list:()=>["us","fr","jp","eg","br","id","it","au"].map(i=>COUNTRIES.find(c=>c.iso===i))},
+];
+
+/* ============================================================
+   GENERATOR TRIVIA — prosedural dari dataset, replayable.
+   diff: "mudah" (pengecoh beda benua) | "menantang" (sebenua)
+   ============================================================ */
+const rnd = a => a[(Math.random() * a.length) | 0];
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[a[i],a[j]]=[a[j],a[i]];} return a; }
+function distractors(correct, diff, n = 3){
+  const same  = COUNTRIES.filter(c => c !== correct && c.cont === correct.cont);
+  const other = COUNTRIES.filter(c => c !== correct && c.cont !== correct.cont);
+  const pool  = diff === "menantang" ? [...shuffle(same), ...shuffle(other)] : [...shuffle(other), ...shuffle(same)];
+  return pool.slice(0, n);
+}
+const Q_TYPES = {
+  flag: c => ({ q:"Bendera ini milik negara mana?", flag:c.iso }),
+  capital: c => ({ q:`Ibu kota negara mana yang bernama ${c.cap}?`, hint:"🏛️ " + c.cap }),
+  currency: c => ({ q:`Negara mana yang memakai uang ${c.curr}?`, hint:"💰 " + c.curr }),
+  famous: c => ({ q:`Negara mana yang terkenal dengan ${rnd(c.famous)}?` }),
+  continent: c => ({ q:`Negara mana yang berada di benua ${c.cont.split(" ")[0] === "Amerika" ? c.cont : c.cont}?`, contQ:true }),
+  pop: () => ({ q:"Dari empat negara ini, mana yang penduduknya paling banyak?", popQ:true }),
+};
+function genQuestion(type, diff, usedSet){
+  if (type === "pop") {
+    // pilih 4 negara dgn populasi cukup berbeda; menantang = lebih dekat
+    const sorted = shuffle(COUNTRIES).slice(0, 12).sort((a,b)=>b.pop-a.pop);
+    let opts = [sorted[0]];
+    const gap = diff === "menantang" ? 1.4 : 2.4;
+    for (const c of sorted.slice(1)) {
+      if (opts.length >= 4) break;
+      if (opts[0].pop / c.pop >= gap || opts.length === 0) opts.push(c);
+    }
+    while (opts.length < 4) { const c = rnd(COUNTRIES); if (!opts.includes(c)) opts.push(c); }
+    const correct = opts.reduce((m,c)=>c.pop>m.pop?c:m, opts[0]);
+    const options = shuffle(opts);
+    return { ...Q_TYPES.pop(), options, correct, type };
+  }
+  let c; let guard = 0;
+  do { c = rnd(COUNTRIES); } while (usedSet.has(c.n) && ++guard < 60);
+  usedSet.add(c.n);
+  if (type === "continent") {
+    const others = shuffle(COUNTRIES.filter(x => x.cont !== c.cont)).slice(0, 3);
+    return { ...Q_TYPES.continent(c), options: shuffle([c, ...others]), correct: c, type };
+  }
+  const options = shuffle([c, ...distractors(c, diff)]);
+  return { ...Q_TYPES[type](c), options, correct: c, type };
+}
+function buildRound(diff, n = 10){
+  const bag = shuffle(["flag","flag","capital","capital","currency","currency","famous","famous","continent","pop","flag","famous"]).slice(0, n);
+  const used = new Set();
+  return bag.map(t => genQuestion(t, diff, used));
+}
+function starCount(score, total){ const r = score / (total * 10); return r >= 0.8 ? 3 : r >= 0.5 ? 2 : 1; }
+/*==ENDPURE==*/
+
+/* ============================================================
+   ASET CDN & UTIL
+   ============================================================ */
+const ASSET = {
+  world: "https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-50m.json",
+  earth: "https://cdn.jsdelivr.net/npm/three-globe@2.45.0/example/img/earth-blue-marble.jpg",
+  bump:  "https://cdn.jsdelivr.net/npm/three-globe@2.45.0/example/img/earth-topology.png",
+  sky:   "https://cdn.jsdelivr.net/npm/three-globe@2.45.0/example/img/night-sky.png",
+};
+const flagUrl = (iso, w = 160) => `https://flagcdn.com/w${w}/${iso}.png`;
+const $ = id => document.getElementById(id);
+const byN = new Map(COUNTRIES.map(c => [c.n, c]));
+const contColor = c => (CONT[c.cont] || {col:"#8CB4FF"}).col;
+window.__flagFb = (el, emo) => {  // fallback emoji bila gambar bendera gagal
+  const s = document.createElement("span");
+  s.className = el.className.includes("p-flag") ? "p-flag-emoji" : "fe";
+  s.textContent = emo; el.replaceWith(s);
+};
+const flagImg = (c, w, cls) =>
+  `<img class="${cls||""}" src="${flagUrl(c.iso, w)}" alt="" onerror="__flagFb(this,'${flagEmoji(c.iso)}')">`;
+
+/* ============================================================
+   AUDIO — lembut, opsional
+   ============================================================ */
+let AC = null, muted = false;
+const ac = () => { if (!AC) { try { AC = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){} } return AC; };
+function beep(f, d, type = "sine", v = 0.1, slide) {
+  if (muted) return; const a = ac(); if (!a) return;
+  if (a.state === "suspended") a.resume();
+  const o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.value = f;
+  if (slide) o.frequency.exponentialRampToValueAtTime(slide, a.currentTime + d);
+  g.gain.setValueAtTime(0.0001, a.currentTime);
+  g.gain.exponentialRampToValueAtTime(v, a.currentTime + 0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + d);
+  o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + d + 0.03);
+}
+const sfx = {
+  tick:  () => beep(920, .06, "triangle", .06),
+  whoosh:() => beep(240, .5, "sine", .05, 70),
+  chime: () => { beep(660, .12, "triangle", .09); setTimeout(()=>beep(990, .2, "triangle", .08), 100); },
+  ok:    () => [523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.14,"triangle",.09), i*80)),
+  bad:   () => beep(285, .3, "sawtooth", .06, 160),
+  fanfare:() => [523,659,784,1047,1319,1568].forEach((f,i)=>setTimeout(()=>beep(f,.18,"triangle",.09), i*95)),
+};
+$("muteBtn").onclick = () => { muted = !muted; $("muteBtn").textContent = muted ? "🔇" : "🔊"; sfx.tick(); };
+
+/* ============================================================
+   GLOBE — scene, picking, kamera sinematik
+   ============================================================ */
+let globe = null, featByN = new Map(), selC = null, hoverF = null;
+let idleTimer = null, mode = "explore";
+
+const capAlpha = f => {
+  const c = byN.get(+f.id);
+  if (!c) return "rgba(130,170,230,0.05)";
+  const col = contColor(c);
+  if (selC && c.n === selC.n) return hexA(col, .8);
+  if (hoverF === f) return hexA(col, .55);
+  return hexA(col, .3);
+};
+function hexA(hex, a){
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;
+}
+const strokeFor = f => (selC && +f.id === selC.n) ? "rgba(255,255,255,.95)" : "rgba(255,255,255,.32)";
+const altFor = f => (selC && +f.id === selC.n) ? 0.05 : (hoverF === f ? 0.022 : 0.007);
+function repaint(){
+  globe.polygonCapColor(capAlpha).polygonStrokeColor(strokeFor).polygonAltitude(altFor);
+}
+function tooltip(f){
+  const c = byN.get(+f.id);
+  if (c) return `<b>${flagEmoji(c.iso)} ${c.name}</b><br><span style="font-size:11px;opacity:.65">ketuk untuk berkenalan ✨</span>`;
+  return `<span style="opacity:.75">${f.properties.name}</span><br><span style="font-size:10.5px;opacity:.5">belum ada di kartu belajar</span>`;
+}
+
+function initGlobe(feats){
+  feats.forEach(f => { const c = byN.get(+f.id); if (c) featByN.set(c.n, f); });
+  globe = Globe({ rendererConfig: { antialias: true } })($("globeViz"))
+    .width(innerWidth).height(innerHeight)
+    .backgroundImageUrl(ASSET.sky)
+    .globeImageUrl(ASSET.earth)
+    .bumpImageUrl(ASSET.bump)
+    .showAtmosphere(true).atmosphereColor("#6fc8ff").atmosphereAltitude(0.16)
+    .showGraticules(true)
+    .polygonsData(feats)
+    .polygonCapColor(capAlpha)
+    .polygonSideColor(() => "rgba(20,45,90,0.35)")
+    .polygonStrokeColor(strokeFor)
+    .polygonAltitude(altFor)
+    .polygonsTransitionDuration(280)
+    .polygonLabel(tooltip)
+    .onPolygonHover(f => {
+      hoverF = f; repaint();
+      document.body.style.cursor = f && byN.get(+f.id) ? "pointer" : "grab";
+      if (f && byN.get(+f.id)) sfx.tick();
+    })
+    .onPolygonClick(f => {
+      const c = byN.get(+f.id);
+      if (c) selectCountry(c);
+      else toast(`${f.properties.name} — belum ada di kartu belajar. Ketuk negara yang berwarna! ✨`);
+    })
+    .labelsData(OCEANS)
+    .labelLat(d=>d.lat).labelLng(d=>d.lng).labelText(d=>d.t)
+    .labelSize(d=>d.s).labelDotRadius(0).labelAltitude(0.008)
+    .labelColor(() => "rgba(215,238,255,0.5)")
+    .labelResolution(2)
+    .ringsData([])
+    .ringColor(d => t => hexA(d.col, 1 - t))
+    .ringMaxRadius(5.5).ringPropagationSpeed(3).ringRepeatPeriod(800)
+    .onGlobeReady(() => introSequence());
+
+  const ctl = globe.controls();
+  ctl.autoRotate = true; ctl.autoRotateSpeed = 0.42;
+  ctl.enableDamping = true; ctl.dampingFactor = 0.085;
+  ctl.minDistance = 135; ctl.maxDistance = 460;
+  ctl.addEventListener("start", () => {
+    ctl.autoRotate = false;
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => { ctl.autoRotate = true; }, 12000);
+  });
+  addEventListener("resize", () => globe.width(innerWidth).height(innerHeight));
+}
+
+function introSequence(){
+  setTip("siap berangkat! 🚀");
+  setTimeout(() => {
+    $("loader").classList.add("done");
+    sfx.chime();
+    // terbang perlahan ke Indonesia — rumah kita
+    globe.pointOfView({ lat: -6, lng: 112, altitude: 4.2 }, 0);
+    setTimeout(() => globe.pointOfView({ lat: -2.5, lng: 118, altitude: 2.1 }, 2800), 350);
+  }, 500);
+}
+
+function flyTo(c, ms = 1500){
+  const ctl = globe.controls(); ctl.autoRotate = false;
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => { ctl.autoRotate = true; }, 14000);
+  globe.pointOfView({ lat: c.lat, lng: c.lng, altitude: c.zoom || 1.3 }, ms);
+}
+
+function selectCountry(c, opts = {}){
+  selC = c;
+  repaint();
+  globe.ringsData([{ lat: c.lat, lng: c.lng, col: contColor(c) }]);
+  sfx.whoosh();
+  if (opts.fly !== false) flyTo(c);
+  hideHint();
+  if (opts.panel !== false) setTimeout(() => { openPanel(c); sfx.chime(); }, 620);
+}
+
+/* ============================================================
+   PANEL INFO — premium learning card
+   ============================================================ */
+function openPanel(c){
+  const col = contColor(c), ce = CONT[c.cont] || {em:"🌍"};
+  const pe = [];
+  for (let k = 0; k < popIcons(c); k++) pe.push(`<span style="--k:${k}">🧍</span>`);
+  const co = [];
+  for (let k = 0; k < coinIcons(c); k++) co.push(`<span style="--k:${k}">🪙</span>`);
+  const rows = [
+    ["🏛️","Ibu Kota", `<div class="vl">${c.cap}</div>`],
+    [ce.em,"Benua & Kawasan", `<div class="vl">${c.cont}</div><div class="sub">${c.reg}</div>`],
+    ["💰","Mata Uang", `<div class="vl">${c.curr}</div>`],
+    ["⚖️","Sistem Pemerintahan", `<div class="vl">${c.gov}</div>`],
+    ["🗣️","Bahasa Utama", `<div class="vl">${c.lang}</div>`],
+    ["👥","Jumlah Penduduk", `<div class="vl">${fmtPop(c)}</div><div class="pict">${pe.join("")}</div><div class="legend">1 🧍 ≈ 50 juta orang</div>`],
+    ["🪙","Kekuatan Ekonomi (GDP)", `<div class="vl">${fmtGdp(c)}</div><div class="pict">${co.join("")}</div><div class="legend">1 🪙 ≈ US$500 miliar</div>`],
+    ["✨","Terkenal Dengan", `<div class="fchips">${c.famous.map(f=>`<span class="fchip">${f}</span>`).join("")}</div>`],
+    ["📸","Landmark Ikonik", `<div class="vl">${c.mark}</div>`],
+  ];
+  $("panelIn").innerHTML = `
+    <div class="p-head">
+      <div class="bgband" style="background:linear-gradient(120deg,${col},transparent 70%)"></div>
+      ${flagImg(c, 160, "p-flag")}
+      <div class="p-title">
+        <h2>${c.name}</h2>
+        <span class="p-chip" style="background:${col}">${ce.em} ${c.cont}</span>
+      </div>
+      <button id="pClose">✕</button>
+    </div>
+    <div class="p-body">
+      ${rows.map((r,i)=>`
+        <div class="row" style="--i:${i}">
+          <div class="ic">${r[0]}</div>
+          <div class="bd"><div class="lb">${r[1]}</div>${r[2]}</div>
+        </div>`).join("")}
+    </div>`;
+  $("panel").classList.add("open");
+  $("pClose").onclick = closePanel;
+}
+function closePanel(){
+  $("panel").classList.remove("open");
+  selC = null; if (globe) { repaint(); globe.ringsData([]); }
+}
+
+/* ============================================================
+   SEARCH — autocomplete
+   ============================================================ */
+const sIn = $("searchIn"), sList = $("searchList");
+let sIdx = -1, sMatches = [];
+function searchMatches(q){
+  q = q.trim().toLowerCase();
+  if (!q) return [];
+  const starts = COUNTRIES.filter(c => c.name.toLowerCase().startsWith(q));
+  const incl   = COUNTRIES.filter(c => !starts.includes(c) &&
+    (c.name.toLowerCase().includes(q) || c.cap.toLowerCase().includes(q)));
+  return [...starts, ...incl].slice(0, 7);
+}
+function renderSearch(){
+  sMatches = searchMatches(sIn.value);
+  if (!sIn.value.trim()) { sList.classList.remove("open"); return; }
+  sList.classList.add("open");
+  sList.innerHTML = sMatches.length
+    ? sMatches.map((c,i)=>`<li data-i="${i}" class="${i===sIdx?"sel":""}">${flagImg(c,40)}<span>${c.name}</span><span class="cap">${c.cap}</span></li>`).join("")
+    : `<li class="none">Hmm, belum ketemu 🤔 — coba nama lain</li>`;
+  sList.querySelectorAll("li[data-i]").forEach(li => li.onclick = () => pickSearch(+li.dataset.i));
+}
+function pickSearch(i){
+  const c = sMatches[i]; if (!c) return;
+  sIn.value = ""; sIdx = -1; sList.classList.remove("open"); sIn.blur();
+  selectCountry(c);
+}
+sIn.addEventListener("input", () => { sIdx = -1; renderSearch(); });
+sIn.addEventListener("keydown", e => {
+  if (e.key === "ArrowDown") { sIdx = Math.min(sIdx+1, sMatches.length-1); renderSearch(); e.preventDefault(); }
+  else if (e.key === "ArrowUp") { sIdx = Math.max(sIdx-1, 0); renderSearch(); e.preventDefault(); }
+  else if (e.key === "Enter") pickSearch(sIdx >= 0 ? sIdx : 0);
+  else if (e.key === "Escape") { sList.classList.remove("open"); sIn.blur(); }
+});
+$("searchGo").onclick = () => pickSearch(sIdx >= 0 ? sIdx : 0);
+document.addEventListener("click", e => {
+  if (!$("searchWrap").contains(e.target)) sList.classList.remove("open");
+});
+
+/* ============================================================
+   MODE — Jelajah / Trivia / Belajar Cepat
+   ============================================================ */
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => { sfx.tick(); setMode(t.dataset.mode); });
+function setMode(m){
+  mode = m;
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", t.dataset.mode === m));
+  $("searchWrap").classList.toggle("hide", m !== "explore");
+  $("learn").classList.toggle("open", m === "learn");
+  $("trivia").classList.toggle("open", m === "trivia");
+  if (m === "learn" && !$("learnChips").childElementCount) buildLearn("asia");
+  if (m === "trivia") triviaHome();
+  if (m !== "trivia") closeTriviaOnly();
+}
+function closeTriviaOnly(){ $("trivia").classList.remove("open"); }
+
+/* ============================================================
+   BELAJAR CEPAT — guided discovery
+   ============================================================ */
+function buildLearn(catId){
+  $("learnChips").innerHTML = LEARN_CATS.map(k =>
+    `<button class="lchip ${k.id===catId?"on":""}" data-id="${k.id}"><span>${k.em}</span>${k.t}</button>`).join("");
+  $("learnChips").querySelectorAll(".lchip").forEach(b => b.onclick = () => { sfx.tick(); buildLearn(b.dataset.id); });
+  const cat = LEARN_CATS.find(k => k.id === catId);
+  $("learnCards").innerHTML = cat.list().map((c,i)=>`
+    <div class="lcard" style="--i:${i}" data-n="${c.n}">
+      ${flagImg(c, 80)}
+      <b>${c.name}</b>
+      <span>${c.famous[0]}</span>
+    </div>`).join("");
+  $("learnCards").querySelectorAll(".lcard").forEach(el =>
+    el.onclick = () => selectCountry(byN.get(+el.dataset.n)));
+}
+
+/* ============================================================
+   TRIVIA — kuis premium
+   ============================================================ */
+const T = { diff:"mudah", qs:[], i:0, score:0, hist:[] };
+function triviaHome(){
+  $("tCard").innerHTML = `
+    <div class="t-eyebrow">✦ Mode Trivia ✦</div>
+    <div class="t-title">Tebak-Tebakan Dunia! 🎯</div>
+    <div class="t-sub">10 pertanyaan seru tentang bendera, ibu kota, uang,<br>dan hal keren dari negara-negara di dunia.</div>
+    <div class="diffRow">
+      <button class="diff ${T.diff==="mudah"?"on":""}" data-d="mudah">🌱 Mudah</button>
+      <button class="diff ${T.diff==="menantang"?"on":""}" data-d="menantang">🔥 Menantang</button>
+    </div>
+    <button class="bigbtn" id="tStart">Mulai! 🚀</button>
+    <div class="t-sub" style="margin-top:14px;font-size:11.5px;opacity:.7">Jawaban salah tidak apa-apa — kita terbang melihat negaranya! 🌍</div>`;
+  $("tCard").querySelectorAll(".diff").forEach(b => b.onclick = () => { T.diff = b.dataset.d; sfx.tick(); triviaHome(); });
+  $("tStart").onclick = () => { sfx.chime(); startTrivia(); };
+}
+function startTrivia(){
+  T.qs = buildRound(T.diff, 10); T.i = 0; T.score = 0; T.hist = [];
+  renderQ();
+}
+function progressHTML(){
+  return `<div class="t-progress">${T.qs.map((_,k)=>{
+    const h = T.hist[k];
+    return `<i class="${h==="ok"?"done":h==="bad"?"bad":""}"></i>`;
+  }).join("")}</div>`;
+}
+function renderQ(){
+  const q = T.qs[T.i];
+  $("tCard").innerHTML = `
+    <div class="t-top">
+      <div class="t-score">⭐ ${T.score}</div>
+      ${progressHTML()}
+      <button id="tQuit">keluar ✕</button>
+    </div>
+    <div class="t-eyebrow">Soal ${T.i+1} dari ${T.qs.length}</div>
+    <div class="t-q">${q.q}</div>
+    ${q.flag ? `<img class="t-flag" src="${flagUrl(q.correct.iso, 320)}" onerror="__flagFb(this,'${flagEmoji(q.correct.iso)}')">` : ""}
+    ${q.hint ? `<div class="t-hintline">${q.hint}</div>` : ""}
+    <div class="opts">
+      ${q.options.map((c,k)=>`<button class="opt" data-k="${k}">${flagEmoji(c.iso)} ${c.name}</button>`).join("")}
+    </div>
+    <div class="t-feed" id="tFeed"></div>
+    <div class="t-actions" id="tActs"></div>`;
+  $("tQuit").onclick = () => { sfx.tick(); setMode("explore"); };
+  $("tCard").querySelectorAll(".opt").forEach(b => b.onclick = () => answer(+b.dataset.k));
+}
+const PRAISE = ["Hebat! 🎉","Keren banget! 🌟","Pintar! 🧠✨","Tepat sekali! 🎯","Wah, jago! 🏆"];
+const OOPS   = ["Belum tepat 😅","Hampir! 💪","Tidak apa-apa! 🌈"];
+function answer(k){
+  const q = T.qs[T.i], right = q.options[k] === q.correct;
+  const btns = [...$("tCard").querySelectorAll(".opt")];
+  btns.forEach((b,i) => {
+    b.disabled = true;
+    if (q.options[i] === q.correct) b.classList.add("correct");
+    else if (i === k) b.classList.add(right ? "correct" : "wrong");
+    else b.classList.add("dimmed");
+  });
+  T.hist[T.i] = right ? "ok" : "bad";
+  const feed = $("tFeed");
+  if (right) {
+    T.score += 10; sfx.ok();
+    feed.textContent = rnd(PRAISE); feed.className = "t-feed ok";
+    confettiAt(btns[k]);
+  } else {
+    sfx.bad();
+    feed.textContent = `${rnd(OOPS)} Jawabannya: ${q.correct.name}`;
+    feed.className = "t-feed bad";
+  }
+  // momen belajar: globe terbang ke negara jawaban (terlihat di belakang kartu)
+  selectCountry(q.correct, { panel: false });
+  const last = T.i >= T.qs.length - 1;
+  $("tActs").innerHTML = `<button class="bigbtn" id="tNext" style="margin-top:6px;padding:12px 38px;font-size:16px">${last ? "Lihat Hasil 🏁" : "Lanjut ➜"}</button>`;
+  $("tNext").onclick = () => { sfx.tick(); last ? endTrivia() : (T.i++, renderQ()); };
+  // perbarui skor & progres di header kartu
+  $("tCard").querySelector(".t-score").textContent = `⭐ ${T.score}`;
+  $("tCard").querySelector(".t-progress").outerHTML = progressHTML();
+}
+function endTrivia(){
+  const stars = starCount(T.score, T.qs.length);
+  const msg = stars === 3 ? "Kamu Penjelajah Dunia sejati! 🌍👑" : stars === 2 ? "Keren! Sedikit lagi jadi juara dunia! 💪" : "Terus jelajahi dunia, kamu pasti bisa! 🌈";
+  sfx.fanfare();
+  $("tCard").innerHTML = `
+    <div class="t-eyebrow">✦ Selesai! ✦</div>
+    <div class="starRow">${"⭐".repeat(stars).split("").map(s=>`<span>${s}</span>`).join("")}</div>
+    <div class="t-title">Skor: ${T.score} / ${T.qs.length * 10}</div>
+    <div class="t-sub">${msg}</div>
+    <button class="bigbtn" id="tAgain">Main Lagi 🔄</button>
+    <div class="t-actions"><button class="ghostb" id="tExplore">Kembali Menjelajah 🌍</button></div>`;
+  $("tAgain").onclick = () => { sfx.chime(); startTrivia(); };
+  $("tExplore").onclick = () => { sfx.tick(); setMode("explore"); };
+  for (let i = 0; i < 34; i++) setTimeout(() => confettiAt($("tCard"), true), i * 30);
+}
+
+/* ============================================================
+   FX — confetti & toast & hint
+   ============================================================ */
+const CONF_COLS = ["#5FD4FF","#8CF5C0","#FFC155","#FF7EA0","#B892FF","#FFFFFF"];
+function confettiAt(el, wide){
+  const r = el.getBoundingClientRect();
+  const cx = r.left + r.width/2, cy = r.top + (wide ? 0 : r.height/2);
+  for (let i = 0; i < (wide ? 3 : 16); i++) {
+    const d = document.createElement("div");
+    d.className = "conf";
+    d.style.left = (cx + (Math.random()-.5) * (wide ? r.width : 30)) + "px";
+    d.style.top = cy + "px";
+    d.style.background = rnd(CONF_COLS);
+    d.style.setProperty("--dx", (Math.random()-.5)*180 + "px");
+    d.style.setProperty("--dy", (60 + Math.random()*160) + "px");
+    d.style.setProperty("--rot", (Math.random()*720-360) + "deg");
+    $("fx").appendChild(d);
+    setTimeout(() => d.remove(), 1200);
+  }
+}
+let toastT = null;
+function toast(msg){
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2600);
+}
+function hideHint(){ $("hint").classList.add("hide"); }
+$("hintOk").onclick = () => { sfx.chime(); hideHint(); };
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (mode === "trivia") setMode("explore");
+    else if ($("panel").classList.contains("open")) closePanel();
+  }
+});
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+const TIPS = ["menyiapkan planet bumi…","memetakan 241 negara…","menyalakan bintang-bintang…","menyeduh rasa ingin tahu… ✨"];
+let tipI = 0;
+const setTip = t => { $("loadTip").textContent = t; };
+const tipTimer = setInterval(() => { tipI = (tipI+1) % TIPS.length; setTip(TIPS[tipI]); }, 1600);
+
+(async function boot(){
+  try {
+    const topo = await fetch(ASSET.world).then(r => { if (!r.ok) throw new Error("gagal unduh peta"); return r.json(); });
+    const feats = topojson.feature(topo, topo.objects.countries).features;
+    clearInterval(tipTimer);
+    initGlobe(feats);
+  } catch (err) {
+    console.error(err);
+    clearInterval(tipTimer);
+    $("loader").querySelector(".tip").innerHTML =
+      `Yah, koneksi internetnya bermasalah 😢<br><br><button class="bigbtn" style="font-size:15px;padding:11px 30px" onclick="location.reload()">Coba Lagi 🔄</button>`;
+  }
+})();
+</script>
+</body>
+</html>

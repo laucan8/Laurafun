@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lava Monopoli 3D — by Laura Vanessa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --board:#0F5E54; --board2:#0B463E;
+  --lava1:#FF6A2C; --lava2:#FFB23E;
+  --gold:#F4C430; --cream:#F7F1E3; --ink:#161310;
+  --paper:#FBF6EA; --line:rgba(0,0,0,.18);
+  --good:#1F9E5A; --bad:#E0271C;
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --c-coklat:#8B5A2B; --c-birumuda:#7FC8EC; --c-pink:#D4368B; --c-oranye:#F08A1D;
+  --c-merah:#E0271C; --c-kuning:#F4D000; --c-hijau:#1F9E5A; --c-birutua:#1664C0;
+  --glassbg:rgba(12,15,20,.6); --glassline:rgba(255,255,255,.14);
+}
+[data-theme="senja"]{ --board:#173A5E; --board2:#102A45; --lava1:#FF7A59; --lava2:#FFC15E; --gold:#FFD27D; --cream:#FDEEDD; --paper:#FFF6EC; }
+[data-theme="malam"]{ --board:#10131B; --board2:#0A0C12; --lava1:#FF5277; --lava2:#7B5CFF; --gold:#8AF0E0; --cream:#E7ECF5; --paper:#161A26; --ink:#EAF0FA; --line:rgba(255,255,255,.16); }
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+  background:
+    radial-gradient(1200px 700px at 15% -10%, rgba(255,138,29,.18), transparent 60%),
+    radial-gradient(1000px 800px at 110% 120%, rgba(244,196,48,.12), transparent 60%),
+    linear-gradient(160deg, var(--board), var(--board2));
+  color:var(--ink); min-height:100vh; overflow-x:hidden;
+}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:12px;font-weight:700;transition:transform .08s ease, filter .15s ease, background .15s}
+button:active{transform:translateY(1px) scale(.99)}
+button:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.3)}
+.btn{padding:11px 16px;font-size:14px;background:#fff;color:#161310;box-shadow:0 2px 0 rgba(0,0,0,.15)}
+.btn.primary{background:linear-gradient(135deg,var(--lava1),var(--lava2));color:#231200}
+.btn.ghost{background:rgba(255,255,255,.12);color:var(--cream);box-shadow:none;border:1.5px solid rgba(255,255,255,.25)}
+.btn.gold{background:linear-gradient(135deg,var(--gold),#fff0bf);color:#3a2a00}
+.btn.danger{background:linear-gradient(135deg,#ff5b5b,#c41616);color:#fff}
+.btn.sm{padding:7px 11px;font-size:12.5px;border-radius:10px}
+.hide{display:none!important}
+
+/* ---------- WORDMARK ---------- */
+.wordmark{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.02em;line-height:.92}
+.lava-text{
+  background:linear-gradient(180deg,#FFE08A 0%,var(--lava2) 38%,var(--lava1) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 0 rgba(120,30,0,.35));
+}
+
+/* ---------- WELCOME ---------- */
+#welcome{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:24px;overflow:auto;
+  background:radial-gradient(900px 600px at 50% 28%, rgba(255,138,29,.22), transparent 60%), linear-gradient(160deg,var(--board),var(--board2))}
+.welcome-inner{position:relative;text-align:center;max-width:540px;animation:welcRise .6s cubic-bezier(.2,1,.4,1)}
+@keyframes welcRise{from{opacity:0;transform:translateY(18px)}}
+.welc-glow{position:absolute;top:-26px;left:50%;transform:translateX(-50%);width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,106,44,.55),transparent 70%);filter:blur(22px);animation:welcGlow 3.6s ease-in-out infinite;z-index:0;pointer-events:none}
+@keyframes welcGlow{0%,100%{opacity:.5;transform:translateX(-50%) scale(1)}50%{opacity:.9;transform:translateX(-50%) scale(1.12)}}
+.welc-volc{width:98px;height:98px;position:relative;z-index:1;animation:welcFloat 4s ease-in-out infinite;filter:drop-shadow(0 8px 18px rgba(0,0,0,.4))}
+@keyframes welcFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.welc-title{font-size:clamp(46px,12vw,82px);line-height:.88;margin:8px 0 0;position:relative;z-index:1}
+.welc-by{font-family:'Space Mono',monospace;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;font-size:13px;margin-top:14px}
+.welc-tag{color:var(--cream);opacity:.82;font-size:15px;line-height:1.55;margin:16px auto 0;max-width:400px}
+.welc-strip{display:flex;justify-content:center;gap:14px;margin:24px 0 28px;flex-wrap:wrap}
+.welc-strip svg{width:40px;height:40px;opacity:.92;animation:welcFloat 4s ease-in-out infinite}
+.welc-strip svg:nth-child(2){animation-delay:.3s}.welc-strip svg:nth-child(3){animation-delay:.6s}.welc-strip svg:nth-child(4){animation-delay:.9s}.welc-strip svg:nth-child(5){animation-delay:1.2s}
+.welc-cta{font-size:20px;padding:17px 56px;border-radius:16px;box-shadow:0 10px 26px rgba(255,106,44,.42)}
+.welc-foot{margin-top:18px;color:var(--cream);opacity:.5;font-size:12px;font-family:'Space Mono',monospace}
+.badge3d{display:inline-block;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.14em;background:linear-gradient(135deg,var(--gold),#fff0bf);color:#3a2a00;padding:4px 12px;border-radius:99px;margin-top:12px;font-weight:700}
+
+/* ---------- SETUP ---------- */
+#setup{max-width:760px;margin:0 auto;padding:30px 18px 80px;display:none}
+.brandhead{text-align:center;margin:14px 0 26px}
+.brandhead .lm-volc{width:74px;height:74px;margin-bottom:6px}
+.brandhead h1{font-size:clamp(40px,9vw,72px);margin:0}
+.brandhead .by{font-family:'Space Mono',monospace;color:var(--gold);letter-spacing:.18em;text-transform:uppercase;font-size:12px;margin-top:8px}
+.brandhead .tag{color:var(--cream);opacity:.85;margin-top:10px;font-size:14.5px}
+.panel{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.14);border-radius:20px;padding:20px;margin-bottom:18px;backdrop-filter:blur(6px)}
+.panel h2{font-family:'Bricolage Grotesque';font-size:18px;margin:0 0 4px;color:var(--cream);display:flex;align-items:center;gap:9px}
+.panel .hint{color:var(--cream);opacity:.7;font-size:12.5px;margin:0 0 14px}
+.eyebrow{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1;min-width:60px;padding:14px 8px;background:rgba(255,255,255,.08);color:var(--cream);border:1.5px solid transparent;font-size:15px;transition:all .18s ease}
+.seg button.on{background:linear-gradient(135deg,var(--lava1),var(--lava2));color:#231200;border-color:#fff3;transform:translateY(-2px);box-shadow:0 6px 16px rgba(255,106,44,.35)}
+.players-grid{display:grid;gap:12px}
+.pcard{background:rgba(0,0,0,.18);border:1.5px solid rgba(255,255,255,.12);border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pcard .tokbig{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:24px;flex-shrink:0;box-shadow:inset 0 0 0 2px rgba(255,255,255,.5)}
+.pcard input[type=text]{flex:1;min-width:120px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.18);color:var(--cream);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit}
+.pcard input::placeholder{color:rgba(255,255,255,.45)}
+.toktoggle{display:flex;gap:6px}
+.toktoggle button{padding:8px 12px;font-size:12.5px;background:rgba(255,255,255,.1);color:var(--cream)}
+.toktoggle button.on{background:var(--gold);color:#3a2a00}
+.tokpick{display:flex;gap:6px;flex-wrap:wrap}
+.tokpick button{width:38px;height:38px;font-size:20px;background:rgba(255,255,255,.08);border-radius:10px;display:grid;place-items:center}
+.tokpick button.on{outline:2px solid var(--gold);background:rgba(244,196,48,.18)}
+.themepick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.themecard{border-radius:14px;padding:14px 10px;text-align:center;color:#fff;border:2px solid transparent;font-weight:700;font-size:13px;cursor:pointer}
+.themecard small{display:block;font-weight:500;opacity:.8;font-size:11px;margin-top:3px}
+.themecard.on{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+.th-nusantara{background:linear-gradient(135deg,#0F5E54,#0B463E)}
+.th-senja{background:linear-gradient(135deg,#173A5E,#FF7A59)}
+.th-malam{background:linear-gradient(135deg,#10131B,#7B5CFF)}
+.startbar{position:sticky;bottom:0;padding:14px 0;display:flex;justify-content:center}
+.startbar .btn{font-size:18px;padding:16px 50px;border-radius:16px}
+
+/* ---------- GAME (3D STAGE + GLASS HUD) ---------- */
+#game{display:none;position:fixed;inset:0;overflow:hidden;background:#0a0b0e}
+#gl{position:absolute;inset:0;display:block;touch-action:none;outline:none}
+#loading3d{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(160deg,#12141a,#0a0b0e);z-index:30;transition:opacity .5s}
+#loading3d.done{opacity:0;pointer-events:none}
+#loading3d .inner{text-align:center;color:var(--cream)}
+#loading3d .spin{width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.15);border-top-color:var(--lava1);margin:0 auto 14px;animation:spin3d 1s linear infinite}
+@keyframes spin3d{to{transform:rotate(360deg)}}
+.glass{background:var(--glassbg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--glassline);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.turncard{position:absolute;top:12px;left:12px;padding:10px 14px;display:flex;gap:11px;align-items:center;z-index:10;min-width:190px}
+.turncard .tk{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:23px;box-shadow:inset 0 0 0 2px #fff6;flex-shrink:0}
+.turncard .who .lbl{font-family:'Space Mono';font-size:9.5px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+.turncard .who .nm{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;color:var(--cream);line-height:1.05}
+.turncard .who .cash{font-family:'Space Mono';color:var(--cream);font-size:12.5px;margin-top:1px}
+.msgbar{position:absolute;top:12px;left:50%;transform:translateX(-50%);max-width:min(52vw,500px);padding:9px 18px;color:var(--cream);font-size:13.5px;text-align:center;z-index:9;line-height:1.35}
+.msgbar b{color:var(--gold)}
+#actionBar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:96vw;z-index:10;padding:10px}
+.rightpanel{position:absolute;top:12px;right:12px;width:268px;display:flex;flex-direction:column;gap:10px;z-index:10;max-height:calc(100% - 90px);transition:transform .3s ease}
+.sb-card{padding:12px}
+.sb-card .eyebrow{margin-bottom:8px;display:block}
+.players-list{display:flex;flex-direction:column;gap:7px}
+.pl{display:flex;align-items:center;gap:9px;padding:8px;border-radius:12px;background:rgba(255,255,255,.05);border:1.5px solid transparent;cursor:pointer}
+.pl.cur{border-color:var(--gold);background:rgba(244,196,48,.13)}
+.pl.bankrupt{opacity:.4}
+.pl .tk{width:29px;height:29px;border-radius:9px;display:grid;place-items:center;font-size:16px;box-shadow:inset 0 0 0 2px #fff7;flex-shrink:0}
+.pl .info{flex:1;min-width:0}
+.pl .info .n{font-weight:700;font-size:13px;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl .info .m{font-family:'Space Mono';font-size:11.5px;color:var(--gold)}
+.pl .dots{display:flex;gap:2px;flex-wrap:wrap;max-width:64px;justify-content:flex-end}
+.pl .dots i{width:7px;height:7px;border-radius:2px;display:block}
+.log{height:150px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;font-size:12px;padding-right:4px}
+.log .ln{color:var(--cream);opacity:.9;line-height:1.3;padding:4px 8px;border-radius:8px;background:rgba(255,255,255,.05)}
+.log .ln b{color:var(--gold)}
+.log .ln.hl{background:rgba(244,196,48,.14)}
+.log .ln.bad{background:rgba(224,39,28,.2)}
+.log::-webkit-scrollbar{width:6px}.log::-webkit-scrollbar-thumb{background:#fff3;border-radius:3px}
+.cornerbtns{position:absolute;bottom:14px;right:12px;z-index:11;display:flex;gap:8px}
+.iconbtn{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:18px;color:var(--cream);background:var(--glassbg);backdrop-filter:blur(14px);border:1px solid var(--glassline)}
+#panelToggle{display:none}
+@media(max-width:860px){
+  .turncard{min-width:0;padding:8px 11px}
+  .turncard .tk{width:36px;height:36px;font-size:19px}
+  .turncard .who .nm{font-size:14.5px}
+  .msgbar{top:auto;bottom:78px;max-width:92vw;font-size:12.5px;padding:7px 13px}
+  #actionBar{bottom:10px;gap:6px;padding:6px}
+  #actionBar .btn{padding:9px 12px;font-size:12.5px}
+  #panelToggle{display:grid;position:absolute;top:12px;right:12px;z-index:12}
+  .rightpanel{top:62px;right:8px;width:min(78vw,268px);transform:translateX(calc(100% + 20px));max-height:calc(100% - 210px)}
+  .rightpanel.open{transform:translateX(0)}
+  .cornerbtns{bottom:auto;top:12px;right:62px}
+}
+
+/* ---------- MODAL ---------- */
+.scrim{position:fixed;inset:0;background:rgba(8,10,14,.72);backdrop-filter:blur(4px);z-index:50;display:grid;place-items:center;padding:18px;animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.modal{background:#FBF6EA;color:#161310;border-radius:20px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow);animation:pop .25s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.9) translateY(10px);opacity:0}}
+.modal .top{padding:18px 20px 0}
+.modal .top .eb{font-family:'Space Mono';font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--lava1)}
+.modal .top h3{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;margin:4px 0 0}
+.modal .bd{padding:14px 20px 20px}
+.modal .ft{padding:0 20px 20px;display:flex;gap:10px;flex-wrap:wrap}
+.modal .ft .btn{flex:1;min-width:110px}
+.modal .btn.ghost{background:transparent;color:#161310;border:1.5px solid #161310;box-shadow:none;opacity:.8}
+.deedcard{border-radius:14px;overflow:hidden;border:2px solid #161310;margin:6px 0 14px}
+.deedcard .head{padding:10px;text-align:center;color:#fff;font-family:'Bricolage Grotesque';font-weight:800;font-size:16px}
+.deedcard .deedart{height:84px;display:grid;place-items:center;background:#fff}
+.deedcard .deedart svg{width:64px;height:64px}
+.deedbody{padding:10px 14px;font-size:13px;background:#fff}
+.deedbody table{width:100%;border-collapse:collapse;font-size:12.5px}
+.deedbody td{padding:2px 0}.deedbody td:last-child{text-align:right;font-family:'Space Mono';font-weight:700}
+.deedbody hr{border:none;border-top:1px solid #0002;margin:7px 0}
+.money{font-family:'Space Mono';font-weight:700}
+.cardface{border-radius:16px;padding:22px 18px;text-align:center;min-height:150px;display:flex;flex-direction:column;justify-content:center;gap:10px;color:#231200;font-weight:600;font-size:15.5px;line-height:1.35}
+.cardface.chance{background:linear-gradient(135deg,#FFE08A,#FFB23E)}
+.cardface.chest{background:linear-gradient(135deg,#aed7ff,#6fb0ff);color:#06223f}
+.cardface .ct{font-family:'Bricolage Grotesque';font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+.cardface .ic{font-size:34px}
+.mlist{display:flex;flex-direction:column;gap:8px;margin:4px 0}
+.mrow{display:flex;align-items:center;gap:9px;padding:9px;border-radius:12px;background:#fff;border:1.5px solid #0001}
+.mrow .cb{width:18px;height:18px;border-radius:5px}
+.mrow .swatch{width:6px;align-self:stretch;border-radius:3px}
+.mrow .mi{flex:1;min-width:0}
+.mrow .mi .mn{font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow .mi .ms{font-size:11.5px;color:#0008;font-family:'Space Mono'}
+.mrow .houses{display:flex;gap:2px}
+.mrow .houses i{width:9px;height:11px;background:var(--good);border-radius:2px;display:block}
+.mrow .houses i.hotel{background:var(--bad);width:13px}
+.stepbtns{display:flex;gap:5px;align-items:center}
+.stepbtns button{width:30px;height:30px;border-radius:8px;font-size:18px;background:#eee;display:grid;place-items:center;padding:0}
+.tradecols{display:flex;gap:10px}
+.tradecol{flex:1;min-width:0}
+.tradecol h4{font-size:12.5px;margin:0 0 6px;font-family:'Space Mono';letter-spacing:.06em}
+.tradecol .cashin{width:100%;padding:8px;border:1.5px solid #0002;border-radius:9px;font-family:'Space Mono';font-size:13px;margin-top:6px}
+.partnersel{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.partnersel button{padding:7px 11px;font-size:12.5px;background:#eee}
+.partnersel button.on{background:#161310;color:#fff}
+.note{font-size:12px;color:#0009;background:#0000000d;padding:9px 11px;border-radius:10px;margin:8px 0}
+.winwrap{text-align:center;padding:10px}
+.winwrap .crown{font-size:54px}
+.winwrap h3{font-size:30px;margin:6px 0}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#161310;color:#fff;padding:11px 18px;border-radius:12px;font-size:13.5px;z-index:80;box-shadow:var(--shadow);opacity:0;transition:opacity .2s, transform .2s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+.auctionbid{font-family:'Space Mono';font-weight:700;font-size:30px;text-align:center;margin:6px 0}
+.bidder{text-align:center;font-size:13px;color:#0009;margin-bottom:10px}
+.footnote{text-align:center;color:var(--cream);opacity:.55;font-size:11px;padding:10px 0 26px;font-family:'Space Mono'}
+</style>
+</head>
+<body data-theme="nusantara">
+
+<!-- ===================== WELCOME ===================== -->
+<div id="welcome">
+  <div class="welcome-inner">
+    <div class="welc-glow"></div>
+    <svg class="welc-volc"><use href="#lm-volc"/></svg>
+    <h1 class="wordmark welc-title"><span class="lava-text">LAVA</span><br><span style="color:var(--cream)">MONOPOLI</span></h1>
+    <div class="welc-by">by Laura Vanessa</div>
+    <div class="badge3d">✦ EDISI 3D PREMIUM ✦</div>
+    <p class="welc-tag">Beli kota, bangun rumah & hotel, kuasai Nusantara — kini di atas papan 3D kayu walnut dengan dadu & token miniatur koleksi.</p>
+    <div class="welc-strip">
+      <svg style="color:var(--c-birutua)"><use href="#lm-monas"/></svg>
+      <svg style="color:var(--c-oranye)"><use href="#lm-ampera"/></svg>
+      <svg style="color:var(--c-merah)"><use href="#lm-pura"/></svg>
+      <svg style="color:var(--c-hijau)"><use href="#lm-gedungsate"/></svg>
+      <svg style="color:var(--c-pink)"><use href="#lm-tongkonan"/></svg>
+    </div>
+    <button class="btn primary welc-cta" onclick="document.getElementById('welcome').style.display='none';document.getElementById('setup').style.display='block';window.scrollTo(0,0);">Mulai ▶</button>
+    <div class="welc-foot">papan 3D · dadu fisik · 2–4 pemain · AI</div>
+  </div>
+</div>
+
+<!-- ===================== SVG SYMBOL LIBRARY ===================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="lm-monas" viewBox="0 0 64 64">
+    <rect x="26" y="22" width="12" height="34" fill="currentColor"/>
+    <rect x="20" y="52" width="24" height="6" rx="1" fill="rgba(0,0,0,.25)"/>
+    <polygon points="32,4 28,20 36,20" fill="#FFC93C"/>
+    <polygon points="32,4 32,20 36,20" fill="#E8A100"/>
+    <rect x="24" y="20" width="16" height="4" fill="rgba(0,0,0,.18)"/>
+  </symbol>
+  <symbol id="lm-tugu" viewBox="0 0 64 64">
+    <rect x="28" y="14" width="8" height="40" fill="currentColor"/>
+    <circle cx="32" cy="11" r="6" fill="#FFC93C"/>
+    <rect x="22" y="50" width="20" height="6" rx="1" fill="rgba(0,0,0,.25)"/>
+    <rect x="25" y="30" width="14" height="4" fill="rgba(0,0,0,.18)"/>
+  </symbol>
+  <symbol id="lm-tugujogja" viewBox="0 0 64 64">
+    <rect x="27" y="18" width="10" height="36" fill="currentColor"/>
+    <rect x="24" y="14" width="16" height="6" rx="1" fill="currentColor"/>
+    <circle cx="32" cy="9" r="5" fill="#FFC93C"/>
+    <rect x="20" y="50" width="24" height="6" rx="1" fill="rgba(0,0,0,.25)"/>
+  </symbol>
+  <symbol id="lm-masjid" viewBox="0 0 64 64">
+    <rect x="14" y="34" width="36" height="22" fill="currentColor"/>
+    <path d="M32 12c8 0 13 8 13 14H19c0-6 5-14 13-14z" fill="currentColor"/>
+    <circle cx="32" cy="9" r="3" fill="#FFC93C"/>
+    <rect x="48" y="20" width="6" height="36" fill="rgba(0,0,0,.25)"/>
+    <circle cx="51" cy="18" r="3" fill="#FFC93C"/>
+    <rect x="28" y="44" width="8" height="12" rx="4" fill="rgba(0,0,0,.28)"/>
+  </symbol>
+  <symbol id="lm-pura" viewBox="0 0 64 64">
+    <polygon points="16,56 24,18 32,56" fill="currentColor"/>
+    <polygon points="32,56 40,18 48,56" fill="currentColor"/>
+    <rect x="22" y="40" width="20" height="16" fill="rgba(0,0,0,.22)"/>
+    <polygon points="24,18 28,10 32,18" fill="#FFC93C"/>
+    <polygon points="40,18 44,10 48,18" fill="#FFC93C"/>
+  </symbol>
+  <symbol id="lm-tongkonan" viewBox="0 0 64 64">
+    <rect x="20" y="34" width="24" height="20" fill="currentColor"/>
+    <path d="M8 34C20 34 28 16 32 8 36 16 44 34 56 34c-6 2-12 3-24 3S14 36 8 34z" fill="#7a3b1a"/>
+    <rect x="28" y="40" width="8" height="14" fill="rgba(0,0,0,.28)"/>
+  </symbol>
+  <symbol id="lm-rumahgadang" viewBox="0 0 64 64">
+    <rect x="18" y="36" width="28" height="18" fill="currentColor"/>
+    <path d="M10 36c8-2 14-12 14-12s-4 6 8 6 8-6 8-6 6 10 14 12c-8 2-14-4-22-4S18 38 10 36z" fill="#9a3018"/>
+    <path d="M22 24l-4-10 6 6zM42 24l4-10-6 6z" fill="#9a3018"/>
+    <rect x="28" y="42" width="8" height="12" fill="rgba(0,0,0,.28)"/>
+  </symbol>
+  <symbol id="lm-joglo" viewBox="0 0 64 64">
+    <rect x="18" y="38" width="28" height="16" fill="currentColor"/>
+    <polygon points="12,38 32,16 52,38" fill="#6b4423"/>
+    <polygon points="20,30 32,20 44,30" fill="rgba(0,0,0,.2)"/>
+    <rect x="28" y="44" width="8" height="10" fill="rgba(0,0,0,.28)"/>
+  </symbol>
+  <symbol id="lm-ampera" viewBox="0 0 64 64">
+    <rect x="6" y="40" width="52" height="6" fill="currentColor"/>
+    <rect x="16" y="20" width="6" height="26" fill="currentColor"/>
+    <rect x="42" y="20" width="6" height="26" fill="currentColor"/>
+    <rect x="14" y="16" width="10" height="6" fill="#E8A100"/>
+    <rect x="40" y="16" width="10" height="6" fill="#E8A100"/>
+    <path d="M19 22 L32 34 L45 22" stroke="rgba(0,0,0,.3)" stroke-width="3" fill="none"/>
+    <rect x="4" y="46" width="56" height="8" fill="rgba(0,0,0,.18)"/>
+  </symbol>
+  <symbol id="lm-gedungsate" viewBox="0 0 64 64">
+    <rect x="16" y="30" width="32" height="24" fill="currentColor"/>
+    <rect x="28" y="22" width="8" height="10" fill="currentColor"/>
+    <circle cx="32" cy="14" r="3" fill="#E8A100"/><circle cx="32" cy="20" r="2.4" fill="#E8A100"/>
+    <rect x="31" y="6" width="2" height="6" fill="#E8A100"/>
+    <rect x="20" y="38" width="6" height="16" fill="rgba(0,0,0,.22)"/>
+    <rect x="38" y="38" width="6" height="16" fill="rgba(0,0,0,.22)"/>
+  </symbol>
+  <symbol id="lm-tower" viewBox="0 0 64 64">
+    <rect x="14" y="20" width="16" height="36" fill="currentColor"/>
+    <rect x="32" y="10" width="18" height="46" fill="currentColor"/>
+    <g fill="rgba(255,255,255,.45)"><rect x="17" y="24" width="4" height="4"/><rect x="23" y="24" width="4" height="4"/><rect x="17" y="32" width="4" height="4"/><rect x="23" y="32" width="4" height="4"/><rect x="36" y="16" width="4" height="4"/><rect x="42" y="16" width="4" height="4"/><rect x="36" y="24" width="4" height="4"/><rect x="42" y="24" width="4" height="4"/><rect x="36" y="32" width="4" height="4"/><rect x="42" y="32" width="4" height="4"/></g>
+  </symbol>
+  <symbol id="lm-volc" viewBox="0 0 64 64">
+    <polygon points="8,56 24,20 40,56" fill="#5b4636"/>
+    <polygon points="20,28 24,20 28,28 32,24 40,56 14,56" fill="#7a5a44"/>
+    <path d="M20 22c0-4 8-4 8 0 2-2 6 0 4 4-1 2-3 2-3 2H19s-2-4 1-6z" fill="#FF6A2C"/>
+    <circle cx="24" cy="22" r="3" fill="#FFC93C"/>
+    <path d="M22 20l1-6 1 6zM26 20l1-5 1 5z" stroke="#FF6A2C" stroke-width="2"/>
+  </symbol>
+  <symbol id="lm-plane" viewBox="0 0 64 64">
+    <path d="M32 6c3 0 5 6 5 14l16 11v5L37 36v9l6 5v4l-11-3-11 3v-4l6-5v-9L11 36v-5l16-11c0-8 2-14 5-14z" fill="currentColor"/>
+  </symbol>
+  <symbol id="lm-bolt" viewBox="0 0 64 64">
+    <polygon points="36,4 16,36 30,36 26,60 48,26 34,26" fill="#FFC93C" stroke="#E8A100" stroke-width="2" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="lm-drop" viewBox="0 0 64 64">
+    <path d="M32 6c10 16 16 22 16 32a16 16 0 1 1-32 0c0-10 6-16 16-32z" fill="#39A7E0"/>
+    <path d="M24 38a8 10 0 0 0 6 14" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/>
+  </symbol>
+  <symbol id="lm-go" viewBox="0 0 64 64">
+    <path d="M10 32h36" stroke="#C8141F" stroke-width="7" stroke-linecap="round"/>
+    <polygon points="42,18 58,32 42,46" fill="#C8141F"/>
+  </symbol>
+  <symbol id="lm-jail" viewBox="0 0 64 64">
+    <rect x="12" y="12" width="40" height="40" rx="3" fill="none" stroke="#7a3b1a" stroke-width="4"/>
+    <g stroke="#7a3b1a" stroke-width="4"><line x1="24" y1="14" x2="24" y2="50"/><line x1="32" y1="14" x2="32" y2="50"/><line x1="40" y1="14" x2="40" y2="50"/></g>
+  </symbol>
+  <symbol id="lm-park" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="22" fill="none" stroke="#1F7a45" stroke-width="4"/>
+    <path d="M26 44V20h10a8 8 0 0 1 0 16h-10" fill="none" stroke="#1F7a45" stroke-width="5"/>
+  </symbol>
+  <symbol id="lm-g2j" viewBox="0 0 64 64">
+    <circle cx="22" cy="22" r="8" fill="none" stroke="#C8141F" stroke-width="4"/>
+    <circle cx="42" cy="22" r="8" fill="none" stroke="#C8141F" stroke-width="4"/>
+    <path d="M22 30v8a10 10 0 0 0 20 0v-8" fill="none" stroke="#C8141F" stroke-width="4"/>
+  </symbol>
+  <symbol id="lm-chance" viewBox="0 0 64 64">
+    <path d="M24 24a8 8 0 1 1 12 7c-3 2-4 4-4 7" fill="none" stroke="#B8860B" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="32" cy="48" r="4" fill="#B8860B"/>
+  </symbol>
+  <symbol id="lm-chest" viewBox="0 0 64 64">
+    <rect x="12" y="26" width="40" height="24" rx="3" fill="#2C6FB0"/>
+    <path d="M12 30c0-8 6-12 20-12s20 4 20 12" fill="none" stroke="#2C6FB0" stroke-width="5"/>
+    <rect x="28" y="32" width="8" height="10" rx="2" fill="#FFD27D"/>
+  </symbol>
+  <symbol id="lm-tax" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="18" fill="#E8A100" stroke="#9a6b00" stroke-width="3"/>
+    <text x="32" y="42" font-size="24" font-family="Space Mono,monospace" font-weight="700" text-anchor="middle" fill="#6b4a00">Rp</text>
+  </symbol>
+</defs></svg>
+
+<!-- ===================== SETUP SCREEN ===================== -->
+<div id="setup">
+  <div class="brandhead">
+    <svg class="lm-volc"><use href="#lm-volc"/></svg>
+    <h1 class="wordmark"><span class="lava-text">LAVA</span> <span style="color:var(--cream)">MONOPOLI</span></h1>
+    <div class="by">by Laura Vanessa · edisi 3D</div>
+    <div class="tag">Monopoli tema kota-kota Indonesia · aturan standar penuh · papan 3D premium</div>
+  </div>
+
+  <div class="panel">
+    <h2>① Jumlah Pemain</h2>
+    <p class="hint">Pilih 2–4 pemain (manusia + AI digabung).</p>
+    <div class="seg" id="seg-count">
+      <button data-n="2">2</button>
+      <button data-n="3">3</button>
+      <button data-n="4" class="on">4</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>② Atur Pemain</h2>
+    <p class="hint">Tentukan nama, manusia / AI, dan token tiap pemain.</p>
+    <div class="players-grid" id="players-grid"></div>
+  </div>
+
+  <div class="panel">
+    <h2>③ Tema Papan</h2>
+    <p class="hint">Palet visual meja & aksen UI.</p>
+    <div class="themepick" id="themepick">
+      <div class="themecard th-nusantara on" data-theme="nusantara">Nusantara Hijau<small>klasik tropis</small></div>
+      <div class="themecard th-senja" data-theme="senja">Senja Tropis<small>oranye hangat</small></div>
+      <div class="themecard th-malam" data-theme="malam">Malam Kota<small>neon gelap</small></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>④ Aturan</h2>
+    <p class="hint" style="margin-bottom:0">Modal awal <b style="color:var(--gold)">Rp1.500</b> · lewat MULAI dapat <b style="color:var(--gold)">Rp200</b> · keluar penjara <b style="color:var(--gold)">Rp50</b> · 32 rumah & 12 hotel · gadai, lelang, kartu Kesempatan & Dana Umum aktif. (Satuan Rp dalam skala permainan.)</p>
+  </div>
+
+  <div class="startbar">
+    <button class="btn primary" id="startBtn">MULAI BERMAIN →</button>
+  </div>
+  <div class="footnote">v2 · edisi 3D · dibuat untuk Laura Vanessa</div>
+</div>
+
+<!-- ===================== GAME SCREEN (3D) ===================== -->
+<div id="game">
+  <canvas id="gl"></canvas>
+  <div id="loading3d"><div class="inner"><div class="spin"></div><div class="wordmark" style="font-size:22px"><span class="lava-text">LAVA</span> <span style="color:var(--cream)">MONOPOLI</span></div><div style="opacity:.6;font-size:12px;font-family:'Space Mono';margin-top:8px">menyiapkan papan 3D…</div></div></div>
+
+  <div class="turncard glass">
+    <div class="tk" id="turnTk">🚗</div>
+    <div class="who"><div class="lbl">Giliran</div><div class="nm" id="turnName">—</div><div class="cash" id="turnCash">Rp0</div></div>
+  </div>
+
+  <div class="msgbar glass" id="centerMsg">Tekan “Lempar Dadu”.</div>
+
+  <button class="iconbtn" id="panelToggle" title="Pemain & catatan">☰</button>
+
+  <div class="rightpanel" id="rightpanel">
+    <div class="sb-card glass">
+      <span class="eyebrow">Pemain</span>
+      <div class="players-list" id="playersList"></div>
+    </div>
+    <div class="sb-card glass">
+      <span class="eyebrow">Catatan Permainan</span>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+
+  <div id="actionBar" class="glass"></div>
+
+  <div class="cornerbtns">
+    <button class="iconbtn" id="qualityBtn" title="Kualitas grafis">✦</button>
+    <button class="iconbtn" id="camBtn" title="Reset kamera">🎥</button>
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+<div class="toast" id="toast"></div>
+
+<!-- ===================== THREE.JS (CDN) ===================== -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+"use strict";
+import * as THREE from 'three';
+import { OrbitControls }       from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment }     from 'three/addons/environments/RoomEnvironment.js';
+import { RoundedBoxGeometry }  from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { EffectComposer }      from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass }          from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass }     from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass }          from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass }          from 'three/addons/postprocessing/OutputPass.js';
+
+/* ============================================================
+   RENDERER 3D (R3D)
+   Membaca state engine (G, BOARD_DEF) dan memvisualisasikannya.
+   Engine TIDAK tahu apa-apa soal Three.js — hanya memanggil
+   API bridge: start, sync, placeTokens, stepToken, rollDice,
+   buyFx, buildFx, jailFx, winFx, focusPlayer, resetCam.
+   ============================================================ */
+const R3D = (() => {
+
+  /* ---- ukuran papan ---- */
+  const EDGE = 1.0, RING = 1.62;          // lebar tile sisi & kedalaman ring/corner
+  const S = 9 * EDGE + 2 * RING;          // sisi papan
+  const HALF = S / 2;
+  const TILE_H = 0.12;                    // tebal tile
+  const BASE_H = 0.24;                    // tebal alas lacquer
+
+  let renderer, scene, camera, controls, composer, bloomPass;
+  let ready = false, lowQ = false, keyLight;
+  let tokens = [], dice = [], diceFaceQ = {};
+  let hlMesh = null, feltY = 0.006;
+  const ownPegs = new Map(), mortPlanes = new Map();
+  let hIM = { body:null, roof:null, hBody:null, hRoof:null };
+  const clock = new THREE.Clock();
+  const DICE_REST = [new THREE.Vector3(-0.62, 0.27, 1.15), new THREE.Vector3(0.62, 0.27, 1.35)];
+  const DEF_POS = new THREE.Vector3(0, 12.6, 11.2), DEF_TGT = new THREE.Vector3(0, 0, 0);
+
+  const MOTIF_EMOJI = {
+    "lm-masjid":"🕌","lm-volc":"🌋","lm-tower":"🏙️","lm-tugu":"🗼","lm-tugujogja":"🗼",
+    "lm-pura":"🛕","lm-tongkonan":"⛩️","lm-rumahgadang":"🏯","lm-joglo":"🏛️",
+    "lm-ampera":"🌉","lm-gedungsate":"🏛️","lm-plane":"✈️","lm-bolt":"⚡","lm-drop":"💧"
+  };
+
+  /* ---- tween engine ringan ---- */
+  const tweens = new Set();
+  const easeIO  = k => k < .5 ? 4*k*k*k : 1 - Math.pow(-2*k + 2, 3) / 2;
+  const easeOut = k => 1 - Math.pow(1 - k, 3);
+  function tween(o) { // {dur, ease, update(k), done()}
+    const tw = { t: 0, dur: o.dur || 300, ease: o.ease || easeIO, update: o.update, done: o.done };
+    tweens.add(tw);
+    return new Promise(res => { tw._res = res; });
+  }
+  function stepTweens(dtMs) {
+    for (const tw of [...tweens]) {
+      tw.t += dtMs;
+      const k = Math.min(1, tw.t / tw.dur);
+      try { tw.update(tw.ease(k), k); } catch (e) { console.warn(e); }
+      if (k >= 1) { tweens.delete(tw); tw.done && tw.done(); tw._res(); }
+    }
+  }
+  let camTweens = [];
+  function cancelCamTweens() { camTweens.forEach(t => tweens.delete(t)); camTweens = []; }
+  function flyTo(pos, tgt, dur = 750) {
+    cancelCamTweens();
+    const p0 = camera.position.clone(), t0 = controls.target.clone();
+    const tw = { t:0, dur, ease: easeIO, update: k => {
+      camera.position.lerpVectors(p0, pos, k);
+      controls.target.lerpVectors(t0, tgt, k);
+    }, _res: () => {} };
+    tweens.add(tw); camTweens.push(tw);
+  }
+
+  /* ---- posisi tile ---- */
+  function tileTransform(i) {
+    const inCoord = k => HALF - RING - (k - 0.5) * EDGE;
+    let x, z, rot, w = EDGE, d = RING;
+    if (i === 0)       { x =  HALF - RING/2; z =  HALF - RING/2; rot = 0;          w = d = RING; }
+    else if (i < 10)   { x =  inCoord(i);    z =  HALF - RING/2; rot = 0; }
+    else if (i === 10) { x = -(HALF-RING/2); z =  HALF - RING/2; rot = 0;          w = d = RING; }
+    else if (i < 20)   { x = -(HALF-RING/2); z =  inCoord(i-10); rot = -Math.PI/2; }
+    else if (i === 20) { x = -(HALF-RING/2); z = -(HALF-RING/2); rot = Math.PI;    w = d = RING; }
+    else if (i < 30)   { x = -inCoord(i-20); z = -(HALF-RING/2); rot = Math.PI; }
+    else if (i === 30) { x =  HALF - RING/2; z = -(HALF-RING/2); rot = Math.PI;    w = d = RING; }
+    else               { x =  HALF - RING/2; z = -inCoord(i-30); rot = Math.PI/2; }
+    return { x, z, rot, w, d };
+  }
+  // normal keluar papan per tile (untuk peg kepemilikan / posisi rumah)
+  function outwardNormal(i) {
+    if (i <= 10)  return new THREE.Vector3(0, 0, 1);
+    if (i <= 20)  return new THREE.Vector3(-1, 0, 0);
+    if (i <= 30)  return new THREE.Vector3(0, 0, -1);
+    return new THREE.Vector3(1, 0, 0);
+  }
+  function tileCenter(i) { const t = tileTransform(i); return new THREE.Vector3(t.x, TILE_H, t.z); }
+
+  /* ---- canvas texture helpers ---- */
+  function cnv(w, h, draw) {
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    draw(c.getContext("2d"), w, h);
+    const tx = new THREE.CanvasTexture(c);
+    tx.colorSpace = THREE.SRGBColorSpace; tx.anisotropy = 4;
+    return tx;
+  }
+  function wrapText(ctx, text, maxW) {
+    const words = text.split(" "), lines = []; let cur = "";
+    words.forEach(wd => {
+      const t = cur ? cur + " " + wd : wd;
+      if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = wd; } else cur = t;
+    });
+    if (cur) lines.push(cur);
+    return lines.slice(0, 3);
+  }
+  const CSSC = v => getComputedStyle(document.body).getPropertyValue(v).trim();
+
+  function tileTexture(i) {
+    const d = BOARD_DEF[i];
+    const corner = (i % 10 === 0);
+    const W = corner ? 320 : 256, H = corner ? 320 : 414;
+    return cnv(W, H, (ctx, w, h) => {
+      // dasar krem kertas
+      const bgMap = { chance:"#FFF0C8", chest:"#D8ECFF", tax:"#ECECEC", go:"#FFE7B0", jail:"#FFD9D0", park:"#D6F3E0", g2j:"#FFD0D8" };
+      ctx.fillStyle = bgMap[d.t] || "#F7F1E3";
+      ctx.fillRect(0, 0, w, h);
+      const g = ctx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, "rgba(255,255,255,.25)"); g.addColorStop(1, "rgba(0,0,0,.06)");
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = "rgba(0,0,0,.28)"; ctx.lineWidth = 5; ctx.strokeRect(2, 2, w-4, h-4);
+      ctx.textAlign = "center"; ctx.fillStyle = "#161310";
+
+      if (corner) {
+        const info = { go:["🏁","MULAI","ambil Rp200"], jail:["🔒","PENJARA","numpang lewat"], park:["🌴","PARKIR","bebas"], g2j:["🚨","MASUK","PENJARA"] }[d.t];
+        ctx.font = "92px serif"; ctx.fillText(info[0], w/2, h*0.42);
+        ctx.font = "800 44px 'Bricolage Grotesque', sans-serif"; ctx.fillText(info[1], w/2, h*0.63);
+        ctx.font = "600 26px 'Plus Jakarta Sans', sans-serif"; ctx.globalAlpha = .7;
+        ctx.fillText(info[2], w/2, h*0.75); ctx.globalAlpha = 1;
+        return;
+      }
+      let top = 0;
+      if (d.t === "prop") {  // pita warna grup di sisi dalam
+        ctx.fillStyle = GROUPC[d.group]; ctx.fillRect(0, 0, w, h*0.185);
+        ctx.fillStyle = "rgba(255,255,255,.28)"; ctx.fillRect(0, 0, w, h*0.03);
+        ctx.fillStyle = "#B08D3E"; ctx.fillRect(0, h*0.185, w, 4);
+        top = h * 0.185;
+      }
+      const name = d.name || ({chance:"Kesempatan", chest:"Dana Umum"})[d.t] || "";
+      ctx.fillStyle = "#161310";
+      ctx.font = "800 33px 'Plus Jakarta Sans', sans-serif";
+      const lines = wrapText(ctx, name, w - 26);
+      lines.forEach((ln, k) => ctx.fillText(ln, w/2, top + 44 + k*36));
+      const emoji = d.t === "chance" ? "❓" : d.t === "chest" ? "🎁" : d.t === "tax" ? "💰" : (MOTIF_EMOJI[d.motif] || "🏠");
+      ctx.font = "86px serif";
+      ctx.fillText(emoji, w/2, h*0.62);
+      const price = d.price ? "Rp" + d.price : (d.amount ? "Rp" + d.amount : "");
+      if (price) { ctx.font = "700 30px 'Space Mono', monospace"; ctx.globalAlpha = .75; ctx.fillText(price, w/2, h - 26); ctx.globalAlpha = 1; }
+    });
+  }
+
+  function feltTexture() {
+    const c1 = CSSC("--board") || "#0F5E54", c2 = CSSC("--board2") || "#0B463E";
+    return cnv(1024, 1024, (ctx, w, h) => {
+      const g = ctx.createRadialGradient(w/2, h/2, 80, w/2, h/2, w*0.72);
+      g.addColorStop(0, c1); g.addColorStop(1, c2);
+      ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+      // tekstur felt halus
+      for (let k = 0; k < 2600; k++) {
+        ctx.fillStyle = `rgba(${Math.random()>.5?255:0},${Math.random()>.5?255:0},0,.012)`;
+        ctx.fillRect(Math.random()*w, Math.random()*h, 2, 2);
+      }
+      ctx.save(); ctx.translate(w/2, h/2); ctx.rotate(-0.12);
+      ctx.textAlign = "center";
+      const lg = ctx.createLinearGradient(0, -90, 0, 20);
+      lg.addColorStop(0, "#FFE08A"); lg.addColorStop(.45, "#FFB23E"); lg.addColorStop(1, "#FF6A2C");
+      ctx.font = "800 150px 'Bricolage Grotesque', sans-serif";
+      ctx.fillStyle = lg; ctx.fillText("LAVA", 0, -20);
+      ctx.fillStyle = "rgba(247,241,227,.92)"; ctx.fillText("MONOPOLI", 0, 118);
+      ctx.font = "700 34px 'Space Mono', monospace";
+      ctx.fillStyle = "#F4C430"; ctx.globalAlpha = .8;
+      ctx.fillText("B Y   L A U R A   V A N E S S A", 0, 205);
+      ctx.restore();
+    });
+  }
+
+  function walnutTexture() {
+    return cnv(512, 512, (ctx, w, h) => {
+      ctx.fillStyle = "#3d2817"; ctx.fillRect(0, 0, w, h);
+      for (let k = 0; k < 160; k++) {
+        const y = Math.random()*h, alpha = 0.05 + Math.random()*0.12;
+        ctx.strokeStyle = Math.random() > .5 ? `rgba(90,58,32,${alpha})` : `rgba(20,10,4,${alpha})`;
+        ctx.lineWidth = 1 + Math.random()*4;
+        ctx.beginPath(); ctx.moveTo(0, y);
+        for (let x = 0; x <= w; x += 32) ctx.lineTo(x, y + Math.sin(x*0.02 + k)*6 + (Math.random()-.5)*3);
+        ctx.stroke();
+      }
+    });
+  }
+
+  function pipTexture(v) {
+    return cnv(128, 128, (ctx, w, h) => {
+      ctx.fillStyle = "#F5EFDF"; ctx.fillRect(0, 0, w, h);
+      const g = ctx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0,"rgba(255,255,255,.4)"); g.addColorStop(1,"rgba(0,0,0,.08)");
+      ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+      const P = { 1:[[64,64]], 2:[[38,38],[90,90]], 3:[[34,34],[64,64],[94,94]],
+        4:[[38,38],[90,38],[38,90],[90,90]], 5:[[36,36],[92,36],[64,64],[36,92],[92,92]],
+        6:[[38,32],[90,32],[38,64],[90,64],[38,96],[90,96]] }[v];
+      ctx.fillStyle = v === 1 ? "#C8141F" : "#1c1814";
+      P.forEach(([x,y]) => { ctx.beginPath(); ctx.arc(x, y, v===1?15:11, 0, 7); ctx.fill(); });
+    });
+  }
+
+  /* ---- init ---- */
+  function initRenderer() {
+    const canvas = document.getElementById("gl");
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.06;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0b0e);
+    scene.fog = new THREE.Fog(0x0a0b0e, 24, 46);
+
+    camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 120);
+    camera.position.copy(DEF_POS);
+
+    controls = new OrbitControls(camera, canvas);
+    controls.target.copy(DEF_TGT);
+    controls.enableDamping = true; controls.dampingFactor = 0.08;
+    controls.minDistance = 5; controls.maxDistance = 27;
+    controls.maxPolarAngle = 1.32; controls.minPolarAngle = 0.12;
+    controls.enablePan = false;
+    controls.addEventListener("start", cancelCamTweens);
+
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+
+    keyLight = new THREE.DirectionalLight(0xfff2dd, 1.5);
+    keyLight.position.set(6.5, 11, 4.5);
+    keyLight.castShadow = true;
+    keyLight.shadow.camera.left = -9; keyLight.shadow.camera.right = 9;
+    keyLight.shadow.camera.top = 9;   keyLight.shadow.camera.bottom = -9;
+    keyLight.shadow.camera.far = 30;  keyLight.shadow.bias = -0.0006;
+    scene.add(keyLight);
+    const warm = new THREE.PointLight(0xff9a4d, 22, 30, 2);
+    warm.position.set(-8, 5.5, -7); scene.add(warm);
+    scene.add(new THREE.AmbientLight(0x30363f, 0.7));
+
+    window.addEventListener("resize", onResize);
+    fitCameraToAspect();
+  }
+  function onResize() {
+    camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+    composer && composer.setSize(innerWidth, innerHeight);
+    fitCameraToAspect();
+  }
+  function fitCameraToAspect() {
+    const a = camera.aspect;
+    if (a < 1) { const f = Math.min(1.85, 1/a); DEF_POS.set(0, 12.6*f, 11.2*f); }
+    else DEF_POS.set(0, 12.6, 11.2);
+  }
+
+  /* ---- environment & papan ---- */
+  function buildEnvironment() {
+    const wal = walnutTexture();
+    wal.wrapS = wal.wrapT = THREE.RepeatWrapping; wal.repeat.set(4, 4);
+    const table = new THREE.Mesh(
+      new THREE.CylinderGeometry(26, 26, 0.5, 48),
+      new THREE.MeshStandardMaterial({ map: wal, roughness: 0.62, metalness: 0.05 })
+    );
+    table.position.y = -BASE_H - 0.25; table.receiveShadow = true;
+    scene.add(table);
+  }
+
+  function buildBoard() {
+    const board = new THREE.Group();
+    // alas lacquer hitam
+    const base = new THREE.Mesh(
+      new THREE.BoxGeometry(S + 0.55, BASE_H, S + 0.55),
+      new THREE.MeshPhysicalMaterial({ color: 0x0e0d10, roughness: 0.22, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.12 })
+    );
+    base.position.y = -BASE_H/2; base.receiveShadow = true; base.castShadow = true;
+    board.add(base);
+    // trim kuningan
+    const brass = new THREE.MeshStandardMaterial({ color: 0xB08D3E, metalness: 1, roughness: 0.32 });
+    const L = S + 0.55;
+    [[0, -L/2+0.05], [0, L/2-0.05]].forEach(([x, z]) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(L, 0.045, 0.1), brass);
+      m.position.set(x, 0.012, z); board.add(m);
+    });
+    [[-L/2+0.05, 0], [L/2-0.05, 0]].forEach(([x, z]) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.045, L), brass);
+      m.position.set(x, 0.012, z); board.add(m);
+    });
+    // felt tengah + logo
+    const inner = S - 2*RING;
+    const felt = new THREE.Mesh(
+      new THREE.PlaneGeometry(inner - 0.05, inner - 0.05),
+      new THREE.MeshStandardMaterial({ map: feltTexture(), roughness: 0.9 })
+    );
+    felt.rotation.x = -Math.PI/2; felt.position.y = feltY; felt.receiveShadow = true;
+    board.add(felt);
+    // 40 tile
+    const sideMat = new THREE.MeshStandardMaterial({ color: 0x241b12, roughness: 0.5 });
+    const geoE = new THREE.BoxGeometry(EDGE - 0.02, TILE_H, RING - 0.02);
+    const geoC = new THREE.BoxGeometry(RING - 0.02, TILE_H, RING - 0.02);
+    for (let i = 0; i < 40; i++) {
+      const t = tileTransform(i);
+      const box = new THREE.Mesh(i % 10 === 0 ? geoC : geoE, sideMat);
+      box.position.set(t.x, TILE_H/2, t.z);
+      box.castShadow = true; box.receiveShadow = true;
+      board.add(box);
+      const lbl = new THREE.Mesh(
+        new THREE.PlaneGeometry(t.w - 0.06, t.d - 0.06),
+        new THREE.MeshStandardMaterial({ map: tileTexture(i), roughness: 0.82 })
+      );
+      lbl.rotation.x = -Math.PI/2; lbl.rotation.z = t.rot;
+      lbl.position.set(t.x, TILE_H + 0.003, t.z);
+      lbl.receiveShadow = true;
+      board.add(lbl);
+    }
+    // highlight tile aktif
+    hlMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({ color: 0xF4C430, transparent: true, opacity: 0.22, depthWrite: false })
+    );
+    hlMesh.rotation.x = -Math.PI/2; hlMesh.visible = false;
+    board.add(hlMesh);
+    scene.add(board);
+    buildHouseInstances(board);
+  }
+
+  function buildHouseInstances(parent) {
+    const bodyG = new THREE.BoxGeometry(0.13, 0.1, 0.13);
+    const roofG = new THREE.ConeGeometry(0.105, 0.085, 4);
+    const hBodyG = new THREE.BoxGeometry(0.2, 0.14, 0.16);
+    const hRoofG = new THREE.ConeGeometry(0.15, 0.1, 4);
+    const green  = new THREE.MeshStandardMaterial({ color: 0x1F9E5A, roughness: 0.35, metalness: 0.15 });
+    const green2 = new THREE.MeshStandardMaterial({ color: 0x14713f, roughness: 0.4 });
+    const red    = new THREE.MeshStandardMaterial({ color: 0xC8141F, roughness: 0.32, metalness: 0.15 });
+    const red2   = new THREE.MeshStandardMaterial({ color: 0x8e0e16, roughness: 0.4 });
+    hIM.body  = new THREE.InstancedMesh(bodyG, green, 48);
+    hIM.roof  = new THREE.InstancedMesh(roofG, green2, 48);
+    hIM.hBody = new THREE.InstancedMesh(hBodyG, red, 14);
+    hIM.hRoof = new THREE.InstancedMesh(hRoofG, red2, 14);
+    Object.values(hIM).forEach(m => { m.castShadow = true; m.count = 0; parent.add(m); });
+  }
+
+  function syncHouses() {
+    const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), V = new THREE.Vector3(), ONE = new THREE.Vector3(1,1,1);
+    const Qroof = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.PI/4, 0));
+    let nh = 0, nH = 0;
+    for (let i = 0; i < 40; i++) {
+      if (BOARD_DEF[i].t !== "prop") continue;
+      const ss = G.board[i]; if (!ss.houses) continue;
+      const t = tileTransform(i), n = outwardNormal(i);
+      const edge = new THREE.Vector3(n.z, 0, -n.x); // arah sepanjang sisi
+      const basePos = new THREE.Vector3(t.x, 0, t.z).addScaledVector(n, -(t.d/2 - 0.15));
+      if (ss.houses === 5) {
+        V.copy(basePos); V.y = TILE_H + 0.07;
+        M.compose(V, Q.identity(), ONE); hIM.hBody.setMatrixAt(nH, M);
+        V.y = TILE_H + 0.19; M.compose(V, Qroof, ONE); hIM.hRoof.setMatrixAt(nH, M);
+        nH++;
+      } else {
+        for (let k = 0; k < ss.houses; k++) {
+          const off = (k - (ss.houses - 1)/2) * 0.18;
+          V.copy(basePos).addScaledVector(edge, off); V.y = TILE_H + 0.05;
+          M.compose(V, Q.identity(), ONE); hIM.body.setMatrixAt(nh, M);
+          V.y = TILE_H + 0.14; M.compose(V, Qroof, ONE); hIM.roof.setMatrixAt(nh, M);
+          nh++;
+        }
+      }
+    }
+    hIM.body.count = nh; hIM.roof.count = nh; hIM.hBody.count = nH; hIM.hRoof.count = nH;
+    Object.values(hIM).forEach(m => { m.instanceMatrix.needsUpdate = true; });
+  }
+
+  /* ---- kepemilikan & gadai ---- */
+  let gadaiTex = null;
+  function syncOwnership() {
+    for (let i = 0; i < 40; i++) {
+      const d = BOARD_DEF[i];
+      if (!(d.t === "prop" || d.t === "rail" || d.t === "util")) continue;
+      const ss = G.board[i];
+      let peg = ownPegs.get(i);
+      if (ss.owner !== null) {
+        if (!peg) {
+          const t = tileTransform(i), n = outwardNormal(i);
+          peg = new THREE.Mesh(
+            new THREE.BoxGeometry(t.w * 0.8, 0.055, 0.1),
+            new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.35, roughness: 0.3 })
+          );
+          if (Math.abs(n.x) > 0.5) peg.rotation.y = Math.PI/2;
+          peg.position.set(t.x, TILE_H + 0.028, t.z);
+          peg.position.addScaledVector(n, t.d/2 - 0.08);
+          scene.add(peg); ownPegs.set(i, peg);
+        }
+        const col = new THREE.Color(G.players[ss.owner].color);
+        peg.material.color.copy(col); peg.material.emissive.copy(col);
+        peg.visible = true;
+      } else if (peg) peg.visible = false;
+      // gadai
+      let mp = mortPlanes.get(i);
+      if (ss.mortgaged) {
+        if (!mp) {
+          if (!gadaiTex) gadaiTex = cnv(256, 256, (ctx, w, h) => {
+            ctx.fillStyle = "rgba(40,40,40,.55)"; ctx.fillRect(0, 0, w, h);
+            ctx.translate(w/2, h/2); ctx.rotate(-0.35);
+            ctx.font = "800 52px 'Space Mono', monospace"; ctx.textAlign = "center";
+            ctx.fillStyle = "#ffdddd"; ctx.strokeStyle = "#b00020"; ctx.lineWidth = 8;
+            ctx.strokeText("GADAI", 0, 16); ctx.fillText("GADAI", 0, 16);
+          });
+          const t = tileTransform(i);
+          mp = new THREE.Mesh(
+            new THREE.PlaneGeometry(t.w - 0.1, t.d - 0.1),
+            new THREE.MeshBasicMaterial({ map: gadaiTex, transparent: true, depthWrite: false })
+          );
+          mp.rotation.x = -Math.PI/2; mp.rotation.z = t.rot;
+          mp.position.set(t.x, TILE_H + 0.006, t.z);
+          scene.add(mp); mortPlanes.set(i, mp);
+        }
+        mp.visible = true;
+      } else if (mp) mp.visible = false;
+    }
+  }
+
+  /* ---- token pemain ---- */
+  function makeTokenMesh(p) {
+    const g = new THREE.Group();
+    const col = new THREE.Color(p.color);
+    const mat = new THREE.MeshPhysicalMaterial({ color: col, metalness: 0.85, roughness: 0.28, clearcoat: 0.6, emissive: col, emissiveIntensity: 0 });
+    const pts = [
+      new THREE.Vector2(0, 0), new THREE.Vector2(0.155, 0), new THREE.Vector2(0.16, 0.05),
+      new THREE.Vector2(0.07, 0.1), new THREE.Vector2(0.055, 0.24), new THREE.Vector2(0.1, 0.3),
+      new THREE.Vector2(0.115, 0.34), new THREE.Vector2(0.05, 0.4), new THREE.Vector2(0.085, 0.47),
+      new THREE.Vector2(0.05, 0.53), new THREE.Vector2(0, 0.56)
+    ];
+    const pawn = new THREE.Mesh(new THREE.LatheGeometry(pts, 28), mat);
+    pawn.castShadow = true;
+    g.add(pawn);
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(0.155, 0.018, 10, 28),
+      new THREE.MeshStandardMaterial({ color: 0xB08D3E, metalness: 1, roughness: 0.3 })
+    );
+    ring.rotation.x = Math.PI/2; ring.position.y = 0.03;
+    g.add(ring);
+    const spr = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: cnv(128, 128, (ctx, w, h) => { ctx.font = "96px serif"; ctx.textAlign = "center"; ctx.fillText(TOKENS[p.token], w/2, h*0.78); }),
+      transparent: true, depthWrite: false
+    }));
+    spr.position.y = 0.78; spr.scale.set(0.42, 0.42, 1);
+    g.add(spr);
+    g.userData = { pawnMat: mat, anim: false };
+    return g;
+  }
+  function buildTokens() {
+    tokens.forEach(t => scene.remove(t));
+    tokens = G.players.map(p => { const m = makeTokenMesh(p); scene.add(m); return m; });
+  }
+  function restPos(p) {
+    const here = G.players.filter(o => !o.bankrupt && o.pos === p.pos);
+    const k = here.findIndex(o => o.id === p.id), n = here.length;
+    const OFF = n === 1 ? [[0,0]] : n === 2 ? [[-0.17,0],[0.17,0]] : n === 3 ? [[-0.18,-0.12],[0.18,-0.12],[0,0.15]] : [[-0.18,-0.15],[0.18,-0.15],[-0.18,0.15],[0.18,0.15]];
+    const c = tileCenter(p.pos), o = OFF[Math.max(0, k)] || [0, 0];
+    return new THREE.Vector3(c.x + o[0], TILE_H + 0.002, c.z + o[1]);
+  }
+  function placeTokensNow() {
+    G.players.forEach(p => {
+      const tok = tokens[p.id]; if (!tok) return;
+      tok.visible = !p.bankrupt;
+      if (!p.bankrupt && !tok.userData.anim) tok.position.copy(restPos(p));
+    });
+  }
+
+  async function stepToken(p) {
+    if (!ready) return;
+    const tok = tokens[p.id]; if (!tok) return;
+    tok.userData.anim = true;
+    const from = tok.position.clone(), to = restPos(p);
+    await tween({ dur: 235, ease: easeIO, update: k => {
+      tok.position.lerpVectors(from, to, k);
+      tok.position.y = THREE.MathUtils.lerp(from.y, to.y, k) + Math.sin(k * Math.PI) * 0.36;
+    }});
+    tok.userData.anim = false;
+    // pan kamera lembut mengikuti token
+    const tgt = new THREE.Vector3(to.x * 0.5, 0, to.z * 0.5);
+    const t0 = controls.target.clone();
+    const tw = { t: 0, dur: 220, ease: easeIO, update: k => controls.target.lerpVectors(t0, tgt, k), _res: () => {} };
+    tweens.add(tw); camTweens.push(tw);
+  }
+
+  async function jailFx(p) {
+    if (!ready) return;
+    const tok = tokens[p.id]; if (!tok) return;
+    tok.userData.anim = true;
+    const from = tok.position.clone(), to = restPos(p);
+    await tween({ dur: 800, ease: easeIO, update: k => {
+      tok.position.lerpVectors(from, to, k);
+      tok.position.y = THREE.MathUtils.lerp(from.y, to.y, k) + Math.sin(k * Math.PI) * 1.5;
+      tok.rotation.y = k * Math.PI * 3;
+    }});
+    tok.rotation.y = 0; tok.userData.anim = false;
+    placeTokensNow();
+  }
+
+  /* ---- dadu ---- */
+  function buildDice() {
+    const geo = new RoundedBoxGeometry(0.5, 0.5, 0.5, 4, 0.085);
+    const faceVals = [3, 4, 1, 6, 2, 5]; // urutan material box: +x,-x,+y,-y,+z,-z
+    const mats = faceVals.map(v => new THREE.MeshStandardMaterial({ map: pipTexture(v), roughness: 0.28, metalness: 0.05 }));
+    dice = [0, 1].map(k => {
+      const m = new THREE.Mesh(geo, mats);
+      m.castShadow = true; m.visible = false;
+      scene.add(m); return m;
+    });
+    const E = THREE.Euler, Q = q => new THREE.Quaternion().setFromEuler(q);
+    diceFaceQ = {
+      1: Q(new E(0, 0, 0)),           6: Q(new E(Math.PI, 0, 0)),
+      3: Q(new E(0, 0, Math.PI/2)),   4: Q(new E(0, 0, -Math.PI/2)),
+      2: Q(new E(-Math.PI/2, 0, 0)),  5: Q(new E(Math.PI/2, 0, 0))
+    };
+  }
+  function rollDiceAnim(a, b) {
+    if (!ready) return Promise.resolve();
+    const vals = [a, b];
+    const proms = dice.map((die, k) => {
+      die.visible = true;
+      const start = new THREE.Vector3((k ? 0.9 : -0.9) + (Math.random()-.5)*0.4, 3.4, 0.4 + (Math.random()-.5)*0.6);
+      const rest = DICE_REST[k].clone(); rest.x += (Math.random()-.5)*0.3; rest.z += (Math.random()-.5)*0.3;
+      die.position.copy(start);
+      die.quaternion.random();
+      const spin = new THREE.Vector3(4+Math.random()*6, 4+Math.random()*6, 4+Math.random()*6);
+      const yaw = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.random()*Math.PI*2, 0));
+      const targetQ = yaw.multiply(diceFaceQ[vals[k]]);
+      let capturedQ = null, lastK = 0;
+      return tween({ dur: 1000, ease: x => x, update: (kk) => {
+        const dt = kk - lastK; lastK = kk;
+        if (kk < 0.62) { // jatuh + tumbling
+          const f = easeIO(kk / 0.62);
+          die.position.lerpVectors(start, rest, f);
+          die.position.y = THREE.MathUtils.lerp(start.y, rest.y, f) + Math.sin(f * Math.PI) * 0.15;
+          const dq = new THREE.Quaternion().setFromEuler(new THREE.Euler(spin.x*dt, spin.y*dt, spin.z*dt));
+          die.quaternion.premultiply(dq);
+        } else if (kk < 0.78) { // pantulan kecil
+          if (!capturedQ) capturedQ = die.quaternion.clone();
+          const f = (kk - 0.62) / 0.16;
+          die.position.y = rest.y + Math.sin(f * Math.PI) * 0.28;
+          die.quaternion.slerpQuaternions(capturedQ, targetQ, f * 0.5);
+        } else { // settle ke muka hasil
+          if (!capturedQ) capturedQ = die.quaternion.clone();
+          const f = easeOut((kk - 0.78) / 0.22);
+          die.position.y = rest.y;
+          die.quaternion.slerpQuaternions(capturedQ, targetQ, 0.5 + f * 0.5);
+        }
+      }});
+    });
+    return Promise.all(proms);
+  }
+
+  /* ---- efek ---- */
+  function ringFx(i, colorHex) {
+    if (!ready) return;
+    const t = tileTransform(i);
+    const m = new THREE.Mesh(
+      new THREE.RingGeometry(0.32, 0.44, 40),
+      new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0.9, side: THREE.DoubleSide, depthWrite: false })
+    );
+    m.rotation.x = -Math.PI/2; m.position.set(t.x, TILE_H + 0.02, t.z);
+    scene.add(m);
+    tween({ dur: 680, ease: easeOut, update: k => {
+      m.scale.setScalar(1 + k * 2.1);
+      m.material.opacity = 0.9 * (1 - k);
+      m.position.y = TILE_H + 0.02 + k * 0.25;
+    }, done: () => { scene.remove(m); m.geometry.dispose(); m.material.dispose(); }});
+  }
+
+  function focusPlayer(p) {
+    if (!ready || G.over) return;
+    const tok = tokens[p.id]; if (!tok || p.bankrupt) return;
+    const tp = tok.position.clone();
+    const dir = camera.position.clone().sub(controls.target).normalize();
+    const dist = Math.min(9.5, Math.max(7, camera.position.distanceTo(controls.target) * 0.8));
+    const pos = tp.clone().addScaledVector(dir, dist);
+    pos.y = Math.max(pos.y, 5.4);
+    flyTo(pos, tp.clone().multiplyScalar(0.72), 850);
+  }
+
+  /* ---- highlight & loop ---- */
+  function syncHighlight() {
+    if (!G || G.over) { hlMesh.visible = false; return; }
+    const p = G.players[G.current];
+    if (p.bankrupt) { hlMesh.visible = false; return; }
+    const t = tileTransform(p.pos);
+    hlMesh.visible = true;
+    hlMesh.scale.set(t.w + 0.1, t.d + 0.1, 1);
+    hlMesh.position.set(t.x, TILE_H + 0.011, t.z);
+  }
+
+  let elapsed = 0;
+  function loop() {
+    requestAnimationFrame(loop);
+    const dt = Math.min(0.05, clock.getDelta());
+    elapsed += dt;
+    stepTweens(dt * 1000);
+    controls.update();
+    if (hlMesh && hlMesh.visible) hlMesh.material.opacity = 0.16 + 0.1 * (0.5 + 0.5*Math.sin(elapsed * 3.2));
+    if (G && !G.over) tokens.forEach((tok, k) => {
+      const active = k === G.current && !G.players[k].bankrupt;
+      tok.userData.pawnMat.emissiveIntensity = active ? 0.16 + 0.13 * (0.5 + 0.5*Math.sin(elapsed * 3.2)) : 0;
+    });
+    if (composer && !lowQ) composer.render(); else renderer.render(scene, camera);
+  }
+
+  /* ---- kualitas & post-processing ---- */
+  const VignettePass = () => new ShaderPass({
+    uniforms: { tDiffuse: { value: null } },
+    vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+    fragmentShader: `uniform sampler2D tDiffuse; varying vec2 vUv;
+      void main(){
+        vec4 c = texture2D(tDiffuse, vUv);
+        float len = length((vUv - .5) * 2.);
+        float v = 1. - smoothstep(0.62, 1.55, len);
+        c.rgb *= mix(0.7, 1.0, v);
+        c.r *= 1.02; c.b *= 0.985;               /* grading hangat halus */
+        gl_FragColor = c;
+      }`
+  });
+  function applyQuality() {
+    renderer.setPixelRatio(Math.min(devicePixelRatio, lowQ ? 1.5 : 2));
+    keyLight.shadow.mapSize.set(lowQ ? 1024 : 2048, lowQ ? 1024 : 2048);
+    if (keyLight.shadow.map) { keyLight.shadow.map.dispose(); keyLight.shadow.map = null; }
+    if (!lowQ && !composer) {
+      composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      bloomPass = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.32, 0.7, 0.86);
+      composer.addPass(bloomPass);
+      composer.addPass(VignettePass());
+      composer.addPass(new OutputPass());
+      composer.setSize(innerWidth, innerHeight);
+    }
+  }
+
+  /* ---- API publik ---- */
+  return {
+    get ready() { return ready; },
+    async start() {
+      if (ready) { buildTokens(); this.sync(); return; }
+      try { await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1500))]); } catch(e) {}
+      lowQ = matchMedia("(pointer:coarse)").matches || Math.min(screen.width, screen.height) < 768;
+      initRenderer(); buildEnvironment(); buildBoard(); buildDice(); buildTokens();
+      applyQuality(); ready = true; loop();
+      this.sync();
+      document.getElementById("loading3d").classList.add("done");
+      document.getElementById("qualityBtn").textContent = lowQ ? "✧" : "✦";
+    },
+    sync() { if (!ready) return; syncOwnership(); syncHouses(); placeTokensNow(); syncHighlight(); },
+    placeTokens() { if (ready) { placeTokensNow(); syncHighlight(); } },
+    stepToken, jailFx,
+    rollDice: rollDiceAnim,
+    buyFx(i, color) { ringFx(i, color); },
+    buildFx(i) { ringFx(i, "#F4C430"); },
+    winFx() { controls.autoRotate = true; controls.autoRotateSpeed = 1.1; flyTo(new THREE.Vector3(0, 13.5, 12), new THREE.Vector3(0,0,0), 1200); },
+    focusPlayer,
+    resetCam() { controls.autoRotate = false; flyTo(DEF_POS.clone(), DEF_TGT.clone(), 750); },
+    toggleQuality() {
+      if (!ready) return "";
+      lowQ = !lowQ; applyQuality();
+      document.getElementById("qualityBtn").textContent = lowQ ? "✧" : "✦";
+      return lowQ ? "Kualitas: Ringan" : "Kualitas: Premium";
+    }
+  };
+})();
+
+/* ============================================================
+   ENGINE — LAVA MONOPOLI
+   Disalin dari lava-monopoli.html (versi 2D) TANPA mengubah
+   aturan main. Satu-satunya perubahan: panggilan render DOM
+   (placeTokens/renderDice/buildBoardDOM) diganti bridge R3D.
+   ============================================================ */
+
+const TOKENS = ["🚗","🛵","🚌","🛺","⛵","🛩️","🚲","🏍️"];
+const PCOLORS = ["#E0271C","#1664C0","#1F9E5A","#7A3FF2"];
+const GROUPC = {coklat:"#8B5A2B",birumuda:"#7FC8EC",pink:"#D4368B",oranye:"#F08A1D",merah:"#E0271C",kuning:"#F4D000",hijau:"#1F9E5A",birutua:"#1664C0"};
+const START_MONEY=1500, GO_SALARY=200, JAIL_FEE=50, INCOME_TAX=200, LUXURY_TAX=100;
+const HOUSE_SUPPLY=32, HOTEL_SUPPLY=12;
+
+function P(name,group,price,rent,house,mtg,motif){return{t:"prop",name,group,price,rent,house,mtg,motif};}
+function R(name,motif){return{t:"rail",name,price:200,rent:[25,50,100,200],mtg:100,motif};}
+function U(name,motif){return{t:"util",name,price:150,mtg:75,motif};}
+
+const BOARD_DEF = [
+  {t:"go"},
+  P("Banda Aceh","coklat",60,[2,10,30,90,160,250],50,30,"lm-masjid"),
+  {t:"chest"},
+  P("Ternate","coklat",60,[4,20,60,180,320,450],50,30,"lm-volc"),
+  {t:"tax",name:"Pajak Penghasilan",amount:INCOME_TAX},
+  R("Bandara Kualanamu","lm-plane"),
+  P("Pontianak","birumuda",100,[6,30,90,270,400,550],50,50,"lm-tugu"),
+  {t:"chance"},
+  P("Palangka Raya","birumuda",100,[6,30,90,270,400,550],50,50,"lm-tower"),
+  P("Banjarmasin","birumuda",120,[8,40,100,300,450,600],50,60,"lm-masjid"),
+  {t:"jail"},
+  P("Manado","pink",140,[10,50,150,450,625,750],100,70,"lm-tower"),
+  U("Listrik PLN","lm-bolt"),
+  P("Makassar","pink",140,[10,50,150,450,625,750],100,70,"lm-tongkonan"),
+  P("Kendari","pink",160,[12,60,180,500,700,900],100,80,"lm-tower"),
+  R("Bandara Juanda","lm-plane"),
+  P("Padang","oranye",180,[14,70,200,550,750,950],100,90,"lm-rumahgadang"),
+  {t:"chest"},
+  P("Pekanbaru","oranye",180,[14,70,200,550,750,950],100,90,"lm-masjid"),
+  P("Palembang","oranye",200,[16,80,220,600,800,1000],100,100,"lm-ampera"),
+  {t:"park"},
+  P("Denpasar","merah",220,[18,90,250,700,875,1050],150,110,"lm-pura"),
+  {t:"chance"},
+  P("Yogyakarta","merah",220,[18,90,250,700,875,1050],150,110,"lm-tugujogja"),
+  P("Surakarta","merah",240,[20,100,300,750,925,1100],150,120,"lm-joglo"),
+  R("Bandara Ngurah Rai","lm-plane"),
+  P("Semarang","kuning",260,[22,110,330,800,975,1150],150,130,"lm-tower"),
+  P("Malang","kuning",260,[22,110,330,800,975,1150],150,130,"lm-tower"),
+  U("Air PDAM","lm-drop"),
+  P("Bogor","kuning",280,[24,120,360,850,1025,1200],150,140,"lm-gedungsate"),
+  {t:"g2j"},
+  P("Medan","hijau",300,[26,130,390,900,1100,1275],200,150,"lm-masjid"),
+  P("Bandung","hijau",300,[26,130,390,900,1100,1275],200,150,"lm-gedungsate"),
+  {t:"chest"},
+  P("Surabaya","hijau",320,[28,150,450,1000,1200,1400],200,160,"lm-tugu"),
+  R("Bandara Soekarno-Hatta","lm-plane"),
+  {t:"chance"},
+  P("Jakarta Selatan","birutua",350,[35,175,500,1100,1300,1500],200,175,"lm-tower"),
+  {t:"tax",name:"Pajak Barang Mewah",amount:LUXURY_TAX},
+  P("Jakarta Pusat","birutua",400,[50,200,600,1400,1700,2000],200,200,"lm-monas"),
+];
+
+const CHANCE=[
+  {txt:"Maju ke MULAI.",act:async p=>{await moveToIndex(p,0,true);}},
+  {txt:"Maju ke Jakarta Pusat (Monas).",act:async p=>{await moveToIndex(p,39,true);}},
+  {txt:"Maju ke Palembang (Jembatan Ampera). Jika lewat MULAI, ambil Rp200.",act:async p=>{await moveToIndex(p,19,true);}},
+  {txt:"Maju ke Bandung.",act:async p=>{await moveToIndex(p,32,true);}},
+  {txt:"Maju ke Yogyakarta. Jika lewat MULAI, ambil Rp200.",act:async p=>{await moveToIndex(p,23,true);}},
+  {txt:"Naik kereta ke Bandara terdekat di depan. Bayar 2x sewa bila dimiliki.",act:async p=>{await goNearest(p,nearestRailIdx(p),"rail");}},
+  {txt:"Maju ke utilitas terdekat (PLN/PDAM). Bayar 10x dadu bila dimiliki.",act:async p=>{await goNearest(p,nearestUtilIdx(p),"util");}},
+  {txt:"Bank membayar dividen Rp50.",act:async p=>{gainAmt(p,50);}},
+  {txt:"Kartu Bebas Penjara — simpan kartu ini.",act:async p=>{p.getOut++;log(`<b>${p.name}</b> menyimpan Kartu Bebas Penjara.`);renderSidebar();}},
+  {txt:"Mundur 3 langkah.",act:async p=>{log(`<b>${p.name}</b> mundur 3 langkah.`);await moveAnimateBy(p,-3);await processLanding(p);}},
+  {txt:"Masuk Penjara. Langsung ke penjara.",act:async p=>{goToJail(p);renderAll();log(`<b>${p.name}</b> masuk penjara.`,"bad");}},
+  {txt:"Biaya perbaikan umum: Rp25/rumah, Rp100/hotel.",act:async p=>{await payRepairs(p,25,100);}},
+  {txt:"Bayar denda kecepatan Rp15.",act:async p=>{await payMoney(p,15,null);}},
+  {txt:"Anda terpilih jadi ketua dewan. Bayar tiap pemain lain Rp50.",act:async p=>{await payEach(p,50);}},
+  {txt:"Pinjaman jatuh tempo: terima Rp150.",act:async p=>{gainAmt(p,150);}},
+  {txt:"Hasil investasi: terima Rp100.",act:async p=>{gainAmt(p,100);}},
+];
+const CHEST=[
+  {txt:"Maju ke MULAI.",act:async p=>{await moveToIndex(p,0,true);}},
+  {txt:"Kesalahan bank menguntungkan Anda. Terima Rp200.",act:async p=>{gainAmt(p,200);}},
+  {txt:"Biaya dokter Rp50.",act:async p=>{await payMoney(p,50,null);}},
+  {txt:"Hasil penjualan saham Rp50.",act:async p=>{gainAmt(p,50);}},
+  {txt:"Kartu Bebas Penjara — simpan kartu ini.",act:async p=>{p.getOut++;log(`<b>${p.name}</b> menyimpan Kartu Bebas Penjara.`);renderSidebar();}},
+  {txt:"Masuk Penjara. Langsung ke penjara.",act:async p=>{goToJail(p);renderAll();log(`<b>${p.name}</b> masuk penjara.`,"bad");}},
+  {txt:"Dana liburan jatuh tempo. Terima Rp100.",act:async p=>{gainAmt(p,100);}},
+  {txt:"Pengembalian pajak. Terima Rp20.",act:async p=>{gainAmt(p,20);}},
+  {txt:"Hari ulang tahun Anda. Tiap pemain lain memberi Rp10.",act:async p=>{collectEach(p,10);}},
+  {txt:"Klaim asuransi jiwa. Terima Rp100.",act:async p=>{gainAmt(p,100);}},
+  {txt:"Bayar biaya rumah sakit Rp100.",act:async p=>{await payMoney(p,100,null);}},
+  {txt:"Bayar uang sekolah Rp50.",act:async p=>{await payMoney(p,50,null);}},
+  {txt:"Terima jasa konsultasi Rp25.",act:async p=>{gainAmt(p,25);}},
+  {txt:"Perbaikan jalan: Rp40/rumah, Rp115/hotel.",act:async p=>{await payRepairs(p,40,115);}},
+  {txt:"Menang kontes. Terima Rp10.",act:async p=>{gainAmt(p,10);}},
+  {txt:"Warisan jatuh tempo. Terima Rp100.",act:async p=>{gainAmt(p,100);}},
+];
+
+let G=null;
+let setup={count:4, players:[], theme:"nusantara"};
+let busy=false;
+let AUC=null;
+
+const GROUP_IDX={};
+BOARD_DEF.forEach((sp,i)=>{ if(sp.t==="prop"){ (GROUP_IDX[sp.group]=GROUP_IDX[sp.group]||[]).push(i);} });
+
+const $=id=>document.getElementById(id);
+const fmt=n=>"Rp"+Math.round(n).toLocaleString("id-ID");
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function cur(){return G.players[G.current];}
+function spaceState(i){return G.board[i];}
+function def(i){return BOARD_DEF[i];}
+function isOwnable(i){const t=def(i).t;return t==="prop"||t==="rail"||t==="util";}
+function alive(){return G.players.filter(p=>!p.bankrupt);}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),1900);}
+
+/* ---------- SETUP UI ---------- */
+function renderSetup(){
+  document.querySelectorAll("#seg-count button").forEach(b=>{
+    b.classList.toggle("on", +b.dataset.n===setup.count);
+    b.onclick=()=>{setup.count=+b.dataset.n; renderSetup();};
+  });
+  document.querySelectorAll("#themepick .themecard").forEach(c=>{
+    c.classList.toggle("on", c.dataset.theme===setup.theme);
+    c.onclick=()=>{setup.theme=c.dataset.theme; document.body.setAttribute("data-theme",setup.theme); renderSetup();};
+  });
+  ensurePlayers(); buildPlayersGrid();
+}
+function ensurePlayers(){
+  const defaults=["Laura","AI Merah","AI Hijau","AI Biru"];
+  while(setup.players.length<setup.count){
+    const i=setup.players.length;
+    setup.players.push({name:defaults[i]||("Pemain "+(i+1)), isAI:i!==0, token:i});
+  }
+  setup.players.length=setup.count;
+}
+function buildPlayersGrid(){
+  const g=$("players-grid"); g.innerHTML="";
+  setup.players.forEach((p,i)=>{
+    const card=document.createElement("div"); card.className="pcard";
+    card.innerHTML=`
+      <div class="tokbig" style="background:${PCOLORS[i]}33;color:${PCOLORS[i]}">${TOKENS[p.token]}</div>
+      <input type="text" value="${p.name.replace(/"/g,'&quot;')}" maxlength="14" data-i="${i}" class="nameIn">
+      <div class="toktoggle">
+        <button data-i="${i}" data-v="0" class="${!p.isAI?'on':''}">Manusia</button>
+        <button data-i="${i}" data-v="1" class="${p.isAI?'on':''}">AI</button>
+      </div>
+      <div class="tokpick" data-i="${i}"></div>`;
+    g.appendChild(card);
+    const tp=card.querySelector(".tokpick");
+    TOKENS.forEach((tk,ti)=>{
+      const taken=setup.players.some((pp,pi)=>pi!==i && pp.token===ti);
+      const b=document.createElement("button");
+      b.textContent=tk; b.className=p.token===ti?"on":""; b.disabled=taken&&p.token!==ti;
+      b.onclick=()=>{p.token=ti; buildPlayersGrid();};
+      tp.appendChild(b);
+    });
+  });
+  g.querySelectorAll(".nameIn").forEach(inp=>inp.oninput=e=>{setup.players[+e.target.dataset.i].name=e.target.value||("Pemain "+(+e.target.dataset.i+1));});
+  g.querySelectorAll(".toktoggle button").forEach(b=>b.onclick=()=>{ setup.players[+b.dataset.i].isAI=b.dataset.v==="1"; buildPlayersGrid(); });
+}
+
+/* ---------- START ---------- */
+async function startGame(){
+  document.body.setAttribute("data-theme",setup.theme);
+  G={
+    players: setup.players.map((p,i)=>({
+      id:i, name:p.name.trim()||("Pemain "+(i+1)), isAI:p.isAI, token:p.token, color:PCOLORS[i],
+      money:START_MONEY, pos:0, inJail:false, jailTurns:0, getOut:0, bankrupt:false, props:[]
+    })),
+    current:0, doubles:0, rollAgain:false, over:false,
+    board: BOARD_DEF.map(()=>({owner:null,houses:0,mortgaged:false})),
+    houses:HOUSE_SUPPLY, hotels:HOTEL_SUPPLY,
+    chance:shuffle(CHANCE.map((_,i)=>i)), chest:shuffle(CHEST.map((_,i)=>i)),
+    chanceP:0, chestP:0, phase:"roll", lastRoll:[1,1], pendingDebt:null
+  };
+  $("setup").style.display="none";
+  $("game").style.display="block";
+  try{
+    await R3D.start();             /* 3D: bangun scene sebagai pengganti buildBoardDOM() */
+  }catch(err){
+    console.error(err);
+    document.querySelector("#loading3d .inner").innerHTML =
+      `<div style="font-size:15px;max-width:300px;line-height:1.5">Gagal memuat mode 3D (WebGL/koneksi CDN).<br>Silakan mainkan versi 2D: <a href="lava-monopoli.html" style="color:var(--gold)">lava-monopoli.html</a></div>`;
+    return;
+  }
+  renderAll();
+  log("Permainan dimulai. Modal awal "+fmt(START_MONEY)+" untuk tiap pemain.","hl");
+  beginTurn();
+}
+
+/* ---------- RENDER (UI HTML + sinkron 3D) ---------- */
+function renderAll(){ renderSidebar(); R3D.sync(); }
+function renderSidebar(){
+  const p=cur();
+  $("turnTk").textContent=TOKENS[p.token]; $("turnTk").style.background=p.color+"33";
+  $("turnName").textContent=p.name+(p.isAI?" 🤖":"");
+  $("turnCash").textContent=fmt(p.money);
+  const list=$("playersList"); list.innerHTML="";
+  G.players.forEach(pl=>{
+    const el=document.createElement("div");
+    el.className="pl"+(pl.id===G.current?" cur":"")+(pl.bankrupt?" bankrupt":"");
+    el.onclick=()=>{ if(busy)return; showPlayerSheet(pl.id); };
+    const dots=pl.props.map(i=>{const c=def(i).t==="prop"?GROUPC[def(i).group]:"#666";return `<i style="background:${c}"></i>`;}).join("");
+    el.innerHTML=`<div class="tk" style="background:${pl.color}33">${TOKENS[pl.token]}</div>
+      <div class="info"><div class="n">${pl.name}${pl.isAI?" 🤖":""}${pl.inJail?" 🔒":""}</div><div class="m">${fmt(pl.money)}</div></div>
+      <div class="dots">${dots}</div>`;
+    list.appendChild(el);
+  });
+  renderActions();
+}
+
+/* ---------- ACTIONS ---------- */
+function renderActions(){
+  const bar=$("actionBar"); bar.innerHTML="";
+  if(G.over) return;
+  const p=cur();
+  if(p.isAI){ bar.innerHTML=`<div style="color:var(--cream);opacity:.8;font-size:13px;padding:4px 8px">AI sedang berpikir…</div>`; return; }
+  if(G.pendingDebt){
+    addBtn(bar,"Kelola Aset","gold",openManageForDebt);
+    addBtn(bar,"Nyatakan Bangkrut","danger",()=>declareBankrupt(p, G.pendingDebt.creditor));
+    return;
+  }
+  if(G.phase==="roll"){
+    addBtn(bar,"🎲 Lempar Dadu","primary",rollDice);
+    if(p.inJail){
+      addBtn(bar,`Bayar ${fmt(JAIL_FEE)}`,"btn",()=>{
+        const pp=cur();
+        if(pp.money>=JAIL_FEE){ pp.money-=JAIL_FEE; pp.inJail=false; pp.jailTurns=0; log(`<b>${pp.name}</b> bayar ${fmt(JAIL_FEE)} & keluar penjara.`); renderSidebar(); }
+        else toast("Uang tidak cukup.");
+      });
+      if(p.getOut>0) addBtn(bar,"Pakai Kartu Bebas","gold",()=>{ const pp=cur(); pp.getOut--; pp.inJail=false; pp.jailTurns=0; log(`<b>${pp.name}</b> memakai Kartu Bebas Penjara.`); renderSidebar(); });
+    }
+    addBtn(bar,"Bangun","btn",openBuild);
+    addBtn(bar,"Gadai","btn",openMortgage);
+    addBtn(bar,"Tawar","ghost",openTrade);
+  } else {
+    if(G.rollAgain) addBtn(bar,"🎲 Lempar Lagi (dobel)","primary",rollDice);
+    else addBtn(bar,"Selesai ➜","primary",endTurn);
+    addBtn(bar,"Bangun","btn",openBuild);
+    addBtn(bar,"Gadai","btn",openMortgage);
+    addBtn(bar,"Tawar","ghost",openTrade);
+  }
+}
+function addBtn(bar,label,cls,fn){const b=document.createElement("button");b.className="btn "+(cls==="btn"?"":cls);b.textContent=label;b.onclick=()=>{if(busy)return;fn();};bar.appendChild(b);}
+
+/* ---------- LOG ---------- */
+function log(html,cls){
+  const l=$("log"); const ln=document.createElement("div");
+  ln.className="ln"+(cls?" "+cls:""); ln.innerHTML=html; l.appendChild(ln);
+  l.scrollTop=l.scrollHeight;
+  while(l.children.length>120) l.removeChild(l.firstChild);
+}
+function setMsg(t){$("centerMsg").innerHTML=t;}
+
+/* ---------- TURN FLOW ---------- */
+function beginTurn(){
+  if(G.over) return;
+  G.phase="roll"; G.doubles=0; G.rollAgain=false;
+  const p=cur();
+  renderAll();
+  R3D.focusPlayer(p);              /* 3D: kamera menyorot pemain aktif */
+  setMsg(`Giliran <b>${p.name}</b>${p.inJail?" — di penjara":""}.`);
+  if(p.isAI){ setTimeout(aiTurn, 750); }
+}
+function endTurn(){
+  if(G.over) return;
+  let n=G.current;
+  do{ n=(n+1)%G.players.length; }while(G.players[n].bankrupt);
+  G.current=n;
+  beginTurn();
+}
+async function rollDice(){
+  if(busy || G.over) return;
+  busy=true;
+  const p=cur();
+  G.rollAgain=false; renderActions();
+  const d1=1+Math.floor(Math.random()*6), d2=1+Math.floor(Math.random()*6);
+  G.lastRoll=[d1,d2];
+  await R3D.rollDice(d1,d2);       /* 3D: dadu fisik menggantikan animasi CSS */
+  const isDouble=d1===d2, sum=d1+d2;
+  log(`<b>${p.name}</b> melempar 🎲 ${d1} + ${d2} = <b>${sum}</b>${isDouble?" (dobel)":""}.`);
+
+  if(p.inJail){
+    if(isDouble){
+      log(`<b>${p.name}</b> dapat dobel — keluar penjara!`);
+      p.inJail=false; p.jailTurns=0;
+      await moveForwardRoll(p, sum);
+      await processLanding(p);
+      endTurnPhase(p, false);
+      return;
+    }
+    p.jailTurns++;
+    if(p.jailTurns>=3){
+      log(`<b>${p.name}</b> gagal 3x — wajib bayar ${fmt(JAIL_FEE)}.`,"bad");
+      p.inJail=false; p.jailTurns=0;
+      await payMoney(p, JAIL_FEE, null);
+      if(!G.over && !p.bankrupt){ await moveForwardRoll(p, sum); await processLanding(p); }
+      endTurnPhase(p, false);
+      return;
+    }
+    log(`<b>${p.name}</b> tetap di penjara (percobaan ${p.jailTurns}/3).`);
+    endTurnPhase(p, false);
+    return;
+  }
+
+  if(isDouble) G.doubles++; else G.doubles=0;
+  if(G.doubles===3){
+    log(`<b>${p.name}</b> tiga dobel beruntun — masuk penjara!`,"bad");
+    goToJail(p); renderAll();
+    endTurnPhase(p, false);
+    return;
+  }
+  await moveForwardRoll(p, sum);
+  await processLanding(p);
+  if(G.over) return;
+  endTurnPhase(p, isDouble && !p.inJail);
+}
+async function moveForwardRoll(p, steps){
+  for(let s=0;s<steps;s++){
+    p.pos=(p.pos+1)%40;
+    if(p.pos===0){ p.money+=GO_SALARY; log(`<b>${p.name}</b> lewat MULAI, terima ${fmt(GO_SALARY)}.`); }
+    await R3D.stepToken(p);        /* 3D: token melompat tile demi tile */
+  }
+  renderSidebar();
+}
+async function moveAnimateTo(p, target, collectGo){
+  let steps=(target - p.pos + 40)%40;
+  for(let s=0;s<steps;s++){
+    p.pos=(p.pos+1)%40;
+    if(p.pos===0 && collectGo){ p.money+=GO_SALARY; log(`<b>${p.name}</b> lewat MULAI, terima ${fmt(GO_SALARY)}.`); }
+    await R3D.stepToken(p);
+  }
+  renderSidebar();
+}
+async function moveAnimateBy(p, delta){
+  const dir=delta<0?-1:1, n=Math.abs(delta);
+  for(let s=0;s<n;s++){ p.pos=(p.pos+dir+40)%40; await R3D.stepToken(p); }
+  renderSidebar();
+}
+async function processLanding(p){
+  if(G.over) return;
+  const i=p.pos, d=def(i), ss=spaceState(i);
+  setMsg(`<b>${p.name}</b> mendarat di <b>${landName(i)}</b>.`);
+  if(d.t==="go"){ log(`<b>${p.name}</b> di MULAI, terima ${fmt(GO_SALARY)}.`); return; }
+  if(d.t==="park"){ log(`<b>${p.name}</b> parkir bebas — santai.`); return; }
+  if(d.t==="jail"){ log(`<b>${p.name}</b> numpang lewat penjara.`); return; }
+  if(d.t==="g2j"){ log(`<b>${p.name}</b> diciduk — masuk penjara!`,"bad"); goToJail(p); renderAll(); return; }
+  if(d.t==="tax"){ log(`<b>${p.name}</b> kena ${d.name} ${fmt(d.amount)}.`); await payMoney(p, d.amount, null); return; }
+  if(d.t==="chance"){ await drawCard(p,"chance"); return; }
+  if(d.t==="chest"){ await drawCard(p,"chest"); return; }
+  if(ss.owner===null){ await acquireDecision(p, i); return; }
+  if(ss.owner===p.id){ log(`<b>${p.name}</b> singgah di propertinya sendiri.`); return; }
+  if(ss.mortgaged){ log(`${landName(i)} sedang digadai — tanpa sewa.`); return; }
+  const owner=G.players[ss.owner];
+  const rent=calcRent(i, ss.owner, G.lastRoll[0]+G.lastRoll[1]);
+  log(`<b>${p.name}</b> bayar sewa ${fmt(rent)} ke <b>${owner.name}</b>.`,"hl");
+  await payMoney(p, rent, owner);
+}
+function endTurnPhase(p, rollAgain){
+  if(G.over) return;
+  busy=false;
+  if(p.bankrupt){ endTurn(); return; }
+  G.rollAgain=!!rollAgain;
+  G.phase="end";
+  renderActions();
+  if(p.isAI){
+    aiBuildPhase(p);
+    if(G.rollAgain) setTimeout(rollDice, 850);
+    else setTimeout(endTurn, 850);
+  }
+}
+function acquireDecision(p, i){
+  return new Promise(res=>{
+    if(G.over){ res(); return; }
+    if(p.isAI){
+      if(aiWantsToBuy(p,i)){ doBuy(p,i); res(); }
+      else { log(`<b>${p.name}</b> tidak membeli ${landName(i)} → lelang.`); runAuction(i).then(res); }
+    } else {
+      buyPrompt(p, i, res);
+    }
+  });
+}
+async function goNearest(p, target, kind){
+  await moveAnimateTo(p, target, true);
+  if(G.over) return;
+  const ss=spaceState(target);
+  setMsg(`<b>${p.name}</b> menuju <b>${landName(target)}</b>.`);
+  if(ss.owner===null){ await acquireDecision(p, target); return; }
+  if(ss.owner===p.id || ss.mortgaged){ log(`<b>${p.name}</b> aman di ${landName(target)}.`); return; }
+  const owner=G.players[ss.owner];
+  let rent;
+  if(kind==="rail"){ rent=calcRent(target, ss.owner, 0)*2; log(`Sewa bandara digandakan.`); }
+  else { const dice=(1+Math.floor(Math.random()*6))+(1+Math.floor(Math.random()*6)); rent=dice*10; log(`Lempar utilitas: ${dice} → 10x.`); }
+  log(`<b>${p.name}</b> bayar ${fmt(rent)} ke <b>${owner.name}</b>.`,"hl");
+  await payMoney(p, rent, owner);
+}
+function nextAhead(pos, arr){ const t=arr.find(x=>x>pos); return t===undefined?arr[0]:t; }
+function nearestRailIdx(p){ return nextAhead(p.pos,[5,15,25,35]); }
+function nearestUtilIdx(p){ return nextAhead(p.pos,[12,28]); }
+function landName(i){const d=def(i);return d.name|| ({go:"MULAI",jail:"Penjara",park:"Parkir Bebas",g2j:"Masuk Penjara",chance:"Kesempatan",chest:"Dana Umum"})[d.t];}
+
+/* ---------- RENT ---------- */
+function calcRent(i, ownerId, diceSum){
+  const d=def(i), ss=spaceState(i);
+  if(ss.mortgaged) return 0;
+  if(d.t==="prop"){
+    if(ss.houses>0) return d.rent[ss.houses];
+    return ownsFullGroup(ownerId,d.group) ? d.rent[0]*2 : d.rent[0];
+  }
+  if(d.t==="rail"){ const cnt=countOwned(ownerId,"rail"); return d.rent[Math.max(0,cnt-1)]; }
+  if(d.t==="util"){ const cnt=countOwned(ownerId,"util"); return diceSum*(cnt>=2?10:4); }
+  return 0;
+}
+function ownsFullGroup(ownerId,group){return GROUP_IDX[group].every(i=>spaceState(i).owner===ownerId);}
+function countOwned(ownerId,type){let c=0;for(let i=0;i<40;i++){if(def(i).t===type&&spaceState(i).owner===ownerId)c++;}return c;}
+
+/* ---------- BUY / AUCTION ---------- */
+function buyPrompt(p, i, done){
+  const d=def(i);
+  openModal({ eb:"Properti Kosong", title:landName(i),
+    body: deedHTML(i)+`<div class="note">Beli seharga <span class="money">${fmt(d.price)}</span>? Jika tidak, properti dilelang ke semua pemain.</div>`,
+    buttons:[
+      {label:`Beli ${fmt(d.price)}`, cls:"primary", disabled:p.money<d.price, fn:()=>{ closeModal(); doBuy(p,i); done(); }},
+      {label:"Lelang", cls:"ghost", fn:()=>{ closeModal(); log(`<b>${p.name}</b> melepas ${landName(i)} ke lelang.`); runAuction(i).then(done); }}
+    ]});
+}
+function doBuy(p, i){
+  const d=def(i);
+  p.money-=d.price; spaceState(i).owner=p.id; p.props.push(i); p.props.sort((a,b)=>a-b);
+  log(`<b>${p.name}</b> membeli <b>${landName(i)}</b> seharga ${fmt(d.price)}.`,"hl");
+  R3D.buyFx(i, p.color);           /* 3D: efek cincin saat beli */
+  renderAll();
+}
+function runAuction(i){
+  return new Promise(resolve=>{
+    const participants=alive().map(p=>p.id);
+    AUC={ idx:i, bid:0, high:null, active:new Set(participants), order:participants.slice(), ptr:0, done:resolve };
+    const startIdx=AUC.order.indexOf(G.current);
+    AUC.order=AUC.order.slice(startIdx).concat(AUC.order.slice(0,startIdx));
+    log(`Lelang <b>${landName(i)}</b> dimulai.`);
+    auctionStep();
+  });
+}
+function auctionStep(){
+  if(!AUC) return;
+  if(AUC.active.size<=1){ finishAuction(); return; }
+  let guard=0;
+  while(!AUC.active.has(AUC.order[AUC.ptr])){ AUC.ptr=(AUC.ptr+1)%AUC.order.length; if(++guard>30){ finishAuction(); return; } }
+  const pid=AUC.order[AUC.ptr], p=G.players[pid], next=AUC.bid+10;
+  if(p.isAI){
+    const max=aiAuctionMax(p, AUC.idx);
+    if(next<=max && p.money>=next){
+      AUC.bid=next; AUC.high=pid; renderAuction(`${p.name} menawar ${fmt(next)}`);
+      AUC.ptr=(AUC.ptr+1)%AUC.order.length; setTimeout(auctionStep, 650);
+    } else {
+      AUC.active.delete(pid); renderAuction(`${p.name} mundur.`);
+      AUC.ptr=(AUC.ptr+1)%AUC.order.length; setTimeout(auctionStep, 550);
+    }
+  } else {
+    renderAuction(null, pid);
+  }
+}
+function renderAuction(infoLine, humanPid){
+  const i=AUC.idx, high=AUC.high!==null?G.players[AUC.high].name:"—";
+  let footHTML;
+  if(humanPid!=null){
+    const p=G.players[humanPid], next=AUC.bid+10;
+    footHTML=`<button class="btn primary" id="aucBid" ${p.money<next?"disabled":""}>Tawar ${fmt(next)}</button>
+      <button class="btn" id="aucBid50" ${p.money<AUC.bid+50?"disabled":""}>+${fmt(50)}</button>
+      <button class="btn ghost" id="aucPass">Mundur</button>`;
+  } else { footHTML=`<div style="flex:1;text-align:center;color:#666;font-size:13px">Menunggu peserta lain…</div>`; }
+  renderModal({ eb:"Lelang", title:landName(i),
+    body:`${deedHTML(i)}
+      <div class="auctionbid">${AUC.bid>0?fmt(AUC.bid):"Belum ada tawaran"}</div>
+      <div class="bidder">Penawar tertinggi: <b>${high}</b></div>
+      ${infoLine?`<div class="note" style="text-align:center">${infoLine}</div>`:""}
+      ${humanPid!=null?`<div class="note" style="text-align:center">Giliran <b>${G.players[humanPid].name}</b> menawar.</div>`:""}`,
+    footRaw: footHTML });
+  if(humanPid!=null){
+    $("aucBid").onclick=()=>{ AUC.bid+=10; AUC.high=humanPid; AUC.ptr=(AUC.ptr+1)%AUC.order.length; auctionStep(); };
+    $("aucBid50").onclick=()=>{ AUC.bid+=50; AUC.high=humanPid; AUC.ptr=(AUC.ptr+1)%AUC.order.length; auctionStep(); };
+    $("aucPass").onclick=()=>{ AUC.active.delete(humanPid); AUC.ptr=(AUC.ptr+1)%AUC.order.length; auctionStep(); };
+  }
+}
+function finishAuction(){
+  const i=AUC.idx, done=AUC.done;
+  if(AUC.high!==null && AUC.bid>0){
+    const p=G.players[AUC.high];
+    p.money-=AUC.bid; spaceState(i).owner=p.id; p.props.push(i); p.props.sort((a,b)=>a-b);
+    log(`<b>${p.name}</b> memenangkan lelang <b>${landName(i)}</b> seharga ${fmt(AUC.bid)}.`,"hl");
+    R3D.buyFx(i, p.color);
+  } else { log(`Lelang ${landName(i)} tanpa penawar — tetap milik bank.`); }
+  AUC=null; closeModal(); renderAll();
+  if(done) done();
+}
+
+/* ---------- CARDS ---------- */
+async function drawCard(p, type){
+  if(G.over) return;
+  const deck=type==="chance"?G.chance:G.chest;
+  let ptr=type==="chance"?G.chanceP:G.chestP;
+  const cardIdx=deck[ptr]; ptr=(ptr+1)%deck.length;
+  if(type==="chance") G.chanceP=ptr; else G.chestP=ptr;
+  const card=(type==="chance"?CHANCE:CHEST)[cardIdx];
+  log(`<b>${p.name}</b> mengambil kartu ${type==="chance"?"Kesempatan":"Dana Umum"}.`);
+  await showCardModal(p, type, card.txt);
+  closeModal();
+  await card.act(p);
+}
+function showCardModal(p, type, txt){
+  return new Promise(res=>{
+    openModal({ raw:`<div class="bd"><div class="cardface ${type}">
+      <div class="ct">${type==="chance"?"Kesempatan":"Dana Umum"}</div>
+      <div class="ic">${type==="chance"?"❓":"🎁"}</div>
+      <div>${txt}</div></div></div>
+      ${p.isAI?"":`<div class="ft"><button class="btn primary" id="cardOk">Lanjut</button></div>`}` });
+    if(p.isAI){ setTimeout(res, 1150); }
+    else { $("cardOk").onclick=()=>res(); }
+  });
+}
+async function moveToIndex(p, target, collectGo){
+  await moveAnimateTo(p, target, collectGo);
+  await processLanding(p);
+}
+function gainAmt(p, amt){ p.money+=amt; log(`<b>${p.name}</b> menerima ${fmt(amt)}.`); renderSidebar(); }
+function payMoney(p, amt, creditor){
+  return new Promise(res=>{
+    if(p.money>=amt){ p.money-=amt; if(creditor) creditor.money+=amt; log(`<b>${p.name}</b> membayar ${fmt(amt)}${creditor?` ke <b>${creditor.name}</b>`:""}.`); renderSidebar(); res(); }
+    else { resolveDebt(p, amt, creditor, ()=>{ p.money-=amt; if(creditor) creditor.money+=amt; log(`<b>${p.name}</b> melunasi ${fmt(amt)}.`); renderSidebar(); res(); }, ()=>res()); }
+  });
+}
+async function payRepairs(p, ph, pt){
+  let h=0,ht=0; p.props.forEach(i=>{const ss=spaceState(i);if(def(i).t==="prop"){if(ss.houses===5)ht++;else h+=ss.houses;}});
+  const total=h*ph+ht*pt;
+  if(total===0){ log(`<b>${p.name}</b> tak punya bangunan — bebas biaya.`); return; }
+  log(`<b>${p.name}</b> bayar perbaikan ${h} rumah & ${ht} hotel = ${fmt(total)}.`);
+  await payMoney(p, total, null);
+}
+function payEach(p, amt){
+  const others=alive().filter(o=>o.id!==p.id);
+  const total=amt*others.length;
+  return new Promise(res=>{
+    if(p.money>=total){ others.forEach(o=>{p.money-=amt;o.money+=amt;}); log(`<b>${p.name}</b> membayar ${fmt(amt)} ke tiap pemain lain.`); renderSidebar(); res(); }
+    else { resolveDebt(p, total, null, ()=>{ others.forEach(o=>{p.money-=amt;o.money+=amt;}); renderSidebar(); res(); }, ()=>res()); }
+  });
+}
+function collectEach(p, amt){
+  const others=alive().filter(o=>o.id!==p.id);
+  others.forEach(o=>{ const g=Math.min(amt,o.money); o.money-=g; p.money+=g; });
+  log(`<b>${p.name}</b> menerima ${fmt(amt)} dari tiap pemain lain.`); renderSidebar();
+}
+
+/* ---------- JAIL ---------- */
+function goToJail(p){ p.pos=10; p.inJail=true; p.jailTurns=0; G.doubles=0; R3D.jailFx(p); }
+
+/* ---------- DEBT / BANKRUPTCY ---------- */
+function resolveDebt(p, amount, creditor, onPaid, onBankrupt){
+  G.pendingDebt={ amount, creditor: creditor?creditor.id:null, onPaid, onBankrupt };
+  log(`<b>${p.name}</b> kekurangan dana untuk ${fmt(amount)} — harus menjual/menggadai aset.`,"bad");
+  if(p.isAI){ aiRaiseFunds(p); }
+  else { renderActions(); openManageForDebt(); }
+}
+function trySettleDebt(p){
+  if(!G.pendingDebt) return;
+  if(p.money>=G.pendingDebt.amount){ const cb=G.pendingDebt.onPaid; G.pendingDebt=null; closeModal(); if(cb)cb(); renderAll(); }
+  else toast("Dana masih kurang "+fmt(G.pendingDebt.amount-p.money));
+}
+function declareBankrupt(p, creditorId){
+  const cb=G.pendingDebt?G.pendingDebt.onBankrupt:null;
+  log(`<b>${p.name}</b> dinyatakan BANGKRUT.`,"bad");
+  const creditor=creditorId!=null?G.players[creditorId]:null;
+  p.props.forEach(i=>{const ss=spaceState(i);if(ss.houses>0){ if(ss.houses===5)G.hotels++; else G.houses+=ss.houses; ss.houses=0; }});
+  if(creditor){
+    creditor.money+=p.money;
+    p.props.forEach(i=>{ spaceState(i).owner=creditor.id; creditor.props.push(i); });
+    creditor.props.sort((a,b)=>a-b);
+    creditor.getOut+=p.getOut;
+    log(`Aset <b>${p.name}</b> jatuh ke <b>${creditor.name}</b>.`);
+  } else {
+    p.props.forEach(i=>{ const ss=spaceState(i); ss.owner=null; ss.mortgaged=false; });
+    log(`Aset <b>${p.name}</b> kembali ke bank.`);
+  }
+  p.props=[]; p.money=0; p.bankrupt=true; p.getOut=0;
+  G.pendingDebt=null; closeModal(); renderAll();
+  if(alive().length<=1){ gameOver(alive()[0]); if(cb)cb(); return; }
+  if(cb) cb();
+}
+function gameOver(winner){
+  G.over=true; busy=true;
+  R3D.winFx();                     /* 3D: kamera orbit kemenangan */
+  openModal({raw:`<div class="bd"><div class="winwrap"><div class="crown">👑</div>
+    <div class="eyebrow">Pemenang</div><h3 class="wordmark">${winner?winner.name:"—"}</h3>
+    <p style="color:#444">menguasai Nusantara dengan kas akhir <b>${winner?fmt(winner.money):"-"}</b>.</p></div></div>
+    <div class="ft"><button class="btn primary" onclick="location.reload()">Main Lagi</button></div>`});
+}
+
+/* ---------- MANAGE: BUILD ---------- */
+function openBuild(){
+  const p=cur();
+  const monos = Object.keys(GROUP_IDX).filter(g=>ownsFullGroup(p.id,g) && GROUP_IDX[g].every(i=>!spaceState(i).mortgaged));
+  let body="";
+  if(monos.length===0){ body=`<div class="note">Anda belum memiliki satu set warna lengkap (tanpa gadai). Bangun rumah hanya bisa pada set lengkap. Sisa bank: ${G.houses} rumah, ${G.hotels} hotel.</div>`; }
+  else {
+    body=`<div class="note">Bangun merata: selisih rumah antar properti satu set maksimal 1. Hotel = 5 rumah. Sisa bank: <b>${G.houses}</b> rumah · <b>${G.hotels}</b> hotel.</div><div class="mlist">`;
+    monos.forEach(g=>{
+      GROUP_IDX[g].forEach(i=>{
+        const ss=spaceState(i),d=def(i);
+        const houses = ss.houses===5?'<i class="hotel"></i>':Array(ss.houses).fill('<i></i>').join('');
+        body+=`<div class="mrow"><div class="swatch" style="background:${GROUPC[g]}"></div>
+          <div class="mi"><div class="mn">${d.name}</div><div class="ms">Rumah ${fmt(d.house)} · sewa kini ${fmt(calcRent(i,p.id,7))}</div></div>
+          <div class="houses">${houses}</div>
+          <div class="stepbtns"><button data-sell="${i}">−</button><button data-buy="${i}">+</button></div></div>`;
+      });
+    });
+    body+=`</div>`;
+  }
+  openModal({eb:"Kelola Bangunan", title:"Bangun Rumah & Hotel", body,
+    buttons:[{label:"Tutup",cls:"ghost",fn:()=>{ closeModal(); if(G.pendingDebt) openManageForDebt(); }}]});
+  document.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>{buildHouse(p,+b.dataset.buy);openBuild();});
+  document.querySelectorAll("[data-sell]").forEach(b=>b.onclick=()=>{sellHouse(p,+b.dataset.sell);openBuild();});
+}
+function canBuildOn(p,i){
+  const d=def(i),ss=spaceState(i),g=d.group;
+  if(!ownsFullGroup(p.id,g))return false;
+  if(GROUP_IDX[g].some(j=>spaceState(j).mortgaged))return false;
+  if(ss.houses>=5)return false;
+  const min=Math.min(...GROUP_IDX[g].map(j=>spaceState(j).houses));
+  if(ss.houses>min)return false;
+  if(ss.houses<4){ if(G.houses<1)return false; } else { if(G.hotels<1)return false; }
+  if(p.money<d.house)return false;
+  return true;
+}
+function buildHouse(p,i){
+  if(!canBuildOn(p,i)){ toast("Tidak bisa membangun di sini sekarang."); return; }
+  const d=def(i),ss=spaceState(i);
+  p.money-=d.house;
+  if(ss.houses<4){ G.houses--; ss.houses++; }
+  else { G.houses+=4; G.hotels--; ss.houses=5; }
+  log(`<b>${p.name}</b> membangun di <b>${d.name}</b> (${ss.houses===5?"HOTEL":ss.houses+" rumah"}).`);
+  R3D.buildFx(i);                  /* 3D: efek saat membangun */
+  renderAll();
+}
+function canSellOn(p,i){
+  const d=def(i),ss=spaceState(i),g=d.group;
+  if(ss.houses<=0)return false;
+  const max=Math.max(...GROUP_IDX[g].map(j=>spaceState(j).houses));
+  if(ss.houses<max)return false;
+  if(ss.houses===5){ if(G.houses<4)return false; }
+  return true;
+}
+function sellHouse(p,i){
+  if(!canSellOn(p,i)){ toast("Jual harus merata (dari yang terbanyak)."); return; }
+  const d=def(i),ss=spaceState(i);
+  const refund=Math.floor(d.house/2);
+  if(ss.houses===5){ ss.houses=4; G.hotels++; G.houses-=4; p.money+=refund; }
+  else { ss.houses--; G.houses++; p.money+=refund; }
+  log(`<b>${p.name}</b> menjual bangunan di <b>${d.name}</b> (+${fmt(refund)}).`);
+  renderAll();
+}
+
+/* ---------- MANAGE: MORTGAGE ---------- */
+function openMortgage(){
+  const p=cur();
+  let body=`<div class="note">Gadai = terima ½ harga. Tebus = nilai gadai + 10% bunga. Properti dengan bangunan harus dijual dulu.</div><div class="mlist">`;
+  if(p.props.length===0) body+=`<div style="text-align:center;color:#888;padding:10px">Belum punya properti.</div>`;
+  p.props.forEach(i=>{
+    const d=def(i),ss=spaceState(i);
+    const col=d.t==="prop"?GROUPC[d.group]:"#555";
+    const hasHouses=ss.houses>0;
+    const unmortCost=Math.ceil(d.mtg*1.1);
+    body+=`<div class="mrow"><div class="swatch" style="background:${col}"></div>
+      <div class="mi"><div class="mn">${d.name}</div><div class="ms">${ss.mortgaged?`Tebus ${fmt(unmortCost)}`:`Gadai +${fmt(d.mtg)}`}${hasHouses?" · ada bangunan":""}</div></div>
+      ${ss.mortgaged
+        ? `<button class="btn sm gold" data-unmort="${i}" ${p.money<unmortCost?"disabled":""}>Tebus</button>`
+        : `<button class="btn sm" data-mort="${i}" ${hasHouses?"disabled":""}>Gadai</button>`}
+      </div>`;
+  });
+  body+=`</div>`;
+  openModal({eb:"Gadai Properti", title:"Gadai & Tebus", body, buttons:[{label:"Tutup",cls:"ghost",fn:()=>{ closeModal(); if(G.pendingDebt)openManageForDebt(); }}]});
+  document.querySelectorAll("[data-mort]").forEach(b=>b.onclick=()=>{ mortgage(p,+b.dataset.mort); if(G.pendingDebt && p.money>=G.pendingDebt.amount){ openManageForDebt(); } else openMortgage(); });
+  document.querySelectorAll("[data-unmort]").forEach(b=>b.onclick=()=>{unmortgage(p,+b.dataset.unmort);openMortgage();});
+}
+function mortgage(p,i){
+  const ss=spaceState(i),d=def(i);
+  if(ss.mortgaged||ss.houses>0){toast("Tidak bisa digadai.");return;}
+  ss.mortgaged=true; p.money+=d.mtg;
+  log(`<b>${p.name}</b> menggadai <b>${d.name}</b> (+${fmt(d.mtg)}).`);
+  renderAll();
+}
+function unmortgage(p,i){
+  const ss=spaceState(i),d=def(i); const cost=Math.ceil(d.mtg*1.1);
+  if(!ss.mortgaged||p.money<cost){toast("Dana tidak cukup.");return;}
+  ss.mortgaged=false; p.money-=cost;
+  log(`<b>${p.name}</b> menebus <b>${d.name}</b> (−${fmt(cost)}).`);
+  renderAll();
+}
+function openManageForDebt(){
+  const p=cur();
+  openModal({eb:"Butuh Dana", title:`Kurang ${fmt(Math.max(0,G.pendingDebt.amount - p.money))}`,
+    body:`<div class="note">Anda harus membayar <b>${fmt(G.pendingDebt.amount)}</b>. Kas: <b>${fmt(p.money)}</b>. Jual bangunan atau gadai properti. Bila tak sanggup, nyatakan bangkrut.</div>`,
+    buttons:[
+      {label:"Jual Bangunan",cls:"btn",fn:()=>{closeModal();openBuild();}},
+      {label:"Gadai Properti",cls:"gold",fn:()=>{closeModal();openMortgage();}},
+      {label: p.money>=G.pendingDebt.amount?"Bayar Sekarang":"Bayar (kurang)",cls:"primary",disabled:p.money<G.pendingDebt.amount,fn:()=>trySettleDebt(p)},
+      {label:"Bangkrut",cls:"danger",fn:()=>declareBankrupt(p, G.pendingDebt.creditor)}
+    ]});
+}
+
+/* ---------- TRADE ---------- */
+let TRADE=null;
+function openTrade(){
+  const me=cur();
+  const others=alive().filter(o=>o.id!==me.id);
+  if(others.length===0){toast("Tidak ada lawan.");return;}
+  TRADE={partner:others[0].id, give:new Set(), get:new Set(), giveCash:0, getCash:0};
+  renderTrade();
+}
+function renderTrade(){
+  const me=cur(); const partner=G.players[TRADE.partner];
+  const others=alive().filter(o=>o.id!==me.id);
+  const partnersBtns=others.map(o=>`<button data-pt="${o.id}" class="${o.id===TRADE.partner?'on':''}">${o.name}</button>`).join("");
+  const propRow=(i,owner,set)=>{
+    const d=def(i),ss=spaceState(i),col=d.t==="prop"?GROUPC[d.group]:"#555";
+    const chk=set.has(i)?"checked":""; const dis=ss.houses>0?"disabled":"";
+    return `<label class="mrow" style="padding:7px"><input type="checkbox" class="cb" data-side="${owner}" data-i="${i}" ${chk} ${dis}>
+      <div class="swatch" style="background:${col}"></div>
+      <div class="mi"><div class="mn" style="font-size:12.5px">${d.name}</div><div class="ms">${ss.houses>0?"ada bangunan":fmt(d.price)}</div></div></label>`;
+  };
+  const body=`
+    <div class="partnersel">${partnersBtns}</div>
+    <div class="tradecols">
+      <div class="tradecol"><h4>Anda beri</h4>${me.props.map(i=>propRow(i,"give",TRADE.give)).join("")||'<div class="ms">—</div>'}
+        <input type="number" class="cashin" id="giveCash" placeholder="+ uang" value="${TRADE.giveCash||''}" min="0"></div>
+      <div class="tradecol"><h4>Anda terima</h4>${partner.props.map(i=>propRow(i,"get",TRADE.get)).join("")||'<div class="ms">—</div>'}
+        <input type="number" class="cashin" id="getCash" placeholder="+ uang" value="${TRADE.getCash||''}" min="0"></div>
+    </div>
+    <div class="note" id="tradeEval"></div>`;
+  openModal({eb:"Tawar-menawar", title:`Tawar dengan ${partner.name}`, body,
+    buttons:[ {label:"Ajukan",cls:"primary",fn:submitTrade}, {label:"Batal",cls:"ghost",fn:closeModal} ]});
+  document.querySelectorAll("[data-pt]").forEach(b=>b.onclick=()=>{TRADE.partner=+b.dataset.pt;TRADE.give.clear();TRADE.get.clear();renderTrade();});
+  document.querySelectorAll(".cb").forEach(cb=>cb.onchange=()=>{
+    const i=+cb.dataset.i, set=cb.dataset.side==="give"?TRADE.give:TRADE.get;
+    if(cb.checked)set.add(i);else set.delete(i);
+  });
+  $("giveCash").oninput=e=>TRADE.giveCash=Math.max(0,+e.target.value||0);
+  $("getCash").oninput=e=>TRADE.getCash=Math.max(0,+e.target.value||0);
+}
+function tradeAssetValue(set,cash){ let v=cash; set.forEach(i=>{ const d=def(i),ss=spaceState(i); v+= ss.mortgaged? d.mtg : d.price; }); return v; }
+function submitTrade(){
+  const me=cur(), partner=G.players[TRADE.partner];
+  if(TRADE.give.size+TRADE.get.size===0 && TRADE.giveCash===0 && TRADE.getCash===0){toast("Tawaran kosong.");return;}
+  if(me.money<TRADE.giveCash){toast("Uang Anda tidak cukup.");return;}
+  if(partner.money<TRADE.getCash){toast("Uang lawan tidak cukup.");return;}
+  const valIn=tradeAssetValue(TRADE.give,TRADE.giveCash);
+  const valOut=tradeAssetValue(TRADE.get,TRADE.getCash);
+  let accept;
+  if(partner.isAI){
+    let bonus=0, penalty=0;
+    const partnerSet=new Set(partner.props);
+    TRADE.give.forEach(i=>partnerSet.add(i)); TRADE.get.forEach(i=>partnerSet.delete(i));
+    Object.keys(GROUP_IDX).forEach(g=>{ if(GROUP_IDX[g].every(i=>partnerSet.has(i))) bonus+=GROUP_IDX[g].reduce((a,i)=>a+def(i).price,0)*0.5; });
+    Object.keys(GROUP_IDX).forEach(g=>{ const before=GROUP_IDX[g].every(i=>partner.props.includes(i)); const aft=GROUP_IDX[g].every(i=>partnerSet.has(i)); if(before&&!aft)penalty+=GROUP_IDX[g].reduce((a,i)=>a+def(i).price,0)*0.6; });
+    accept = (valIn + bonus - penalty) >= valOut && (partner.money - TRADE.getCash + TRADE.giveCash)>=0;
+  } else { accept=true; }
+  if(accept){ executeTrade(me,partner); log(`Tukar disetujui: <b>${me.name}</b> ⇄ <b>${partner.name}</b>.`,"hl"); closeModal(); renderAll(); }
+  else { $("tradeEval").innerHTML=`<b>${partner.name}</b> menolak tawaran ini. Coba beri lebih.`; }
+}
+function executeTrade(me,partner){
+  TRADE.give.forEach(i=>{ spaceState(i).owner=partner.id; me.props=me.props.filter(x=>x!==i); partner.props.push(i); });
+  TRADE.get.forEach(i=>{ spaceState(i).owner=me.id; partner.props=partner.props.filter(x=>x!==i); me.props.push(i); });
+  me.money-=TRADE.giveCash; partner.money+=TRADE.giveCash;
+  me.money+=TRADE.getCash; partner.money-=TRADE.getCash;
+  me.props.sort((a,b)=>a-b); partner.props.sort((a,b)=>a-b);
+  TRADE=null;
+}
+
+/* ---------- PLAYER SHEET ---------- */
+function showPlayerSheet(pid){
+  const p=G.players[pid];
+  let rows="";
+  if(p.props.length===0) rows=`<div style="color:#888;text-align:center;padding:8px">Belum punya properti.</div>`;
+  else{
+    rows=`<div class="mlist">`;
+    p.props.forEach(i=>{const d=def(i),ss=spaceState(i),col=d.t==="prop"?GROUPC[d.group]:"#555";
+      const st = ss.mortgaged?"digadai":(ss.houses===5?"HOTEL":ss.houses>0?ss.houses+" rumah":"—");
+      rows+=`<div class="mrow"><div class="swatch" style="background:${col}"></div><div class="mi"><div class="mn">${d.name}</div><div class="ms">${st} · sewa ${fmt(calcRent(i,pid,7))}</div></div></div>`;});
+    rows+=`</div>`;
+  }
+  openModal({eb:p.isAI?"AI":"Pemain", title:p.name,
+    body:`<div class="note">Kas <b>${fmt(p.money)}</b> · ${p.props.length} properti · ${p.getOut} kartu bebas penjara${p.inJail?" · di penjara":""}</div>${rows}`,
+    buttons:[{label:"Tutup",cls:"ghost",fn:closeModal}]});
+}
+
+/* ---------- AI ---------- */
+function aiTurn(){
+  if(G.over) return;
+  const p=cur();
+  if(p.inJail){
+    if(p.getOut>0){ p.getOut--; p.inJail=false; p.jailTurns=0; log(`<b>${p.name}</b> pakai Kartu Bebas Penjara.`); renderSidebar(); rollDice(); return; }
+    if(p.money>JAIL_FEE+150 && p.props.length>=3){ p.money-=JAIL_FEE; p.inJail=false; p.jailTurns=0; log(`<b>${p.name}</b> bayar ${fmt(JAIL_FEE)} keluar penjara.`); renderSidebar(); rollDice(); return; }
+    rollDice(); return;
+  }
+  rollDice();
+}
+function cashBuffer(p){ return 150 + (p.props.length>4?100:0); }
+function aiWantsToBuy(p,i){
+  const d=def(i), price=d.price;
+  if(p.money < price) return false;
+  let score=0;
+  if(d.t==="rail"){ score = 0.7 + countOwned(p.id,"rail")*0.25; }
+  else if(d.t==="util"){ score = 0.35 + countOwned(p.id,"util")*0.2; }
+  else {
+    const groupBaseline={coklat:.4,birumuda:.5,pink:.7,oranye:.95,merah:.85,kuning:.7,hijau:.75,birutua:.65}[d.group];
+    score=groupBaseline;
+    const owned=GROUP_IDX[d.group].filter(j=>spaceState(j).owner===p.id).length;
+    const oppOwned=GROUP_IDX[d.group].filter(j=>{const o=spaceState(j).owner;return o!==null&&o!==p.id;}).length;
+    if(owned===GROUP_IDX[d.group].length-1) score+=0.6;
+    else if(owned>0) score+=0.25;
+    if(oppOwned>0 && owned===0) score-=0.15;
+  }
+  const afterCash=p.money-price;
+  if(afterCash < cashBuffer(p)) score-=0.4;
+  if(afterCash < 0) return false;
+  return score>=0.55;
+}
+function aiAuctionMax(p,i){
+  const d=def(i);
+  let base=d.price, mult=0.6;
+  if(d.t==="rail") mult=0.7+countOwned(p.id,"rail")*0.15;
+  else if(d.t==="prop"){
+    const owned=GROUP_IDX[d.group].filter(j=>spaceState(j).owner===p.id).length;
+    if(owned===GROUP_IDX[d.group].length-1) mult=1.3;
+    else if(owned>0) mult=0.9; else mult=0.55;
+  } else mult=0.5;
+  let max=Math.floor(base*mult);
+  max=Math.min(max, Math.max(0, p.money-80));
+  return max;
+}
+function aiBuildPhase(p){
+  let guard=0;
+  while(p.money > 300 + Math.random()*150 && guard<20){
+    guard++;
+    let best=null,bestScore=-1;
+    Object.keys(GROUP_IDX).forEach(g=>{
+      if(!ownsFullGroup(p.id,g))return;
+      if(GROUP_IDX[g].some(j=>spaceState(j).mortgaged))return;
+      GROUP_IDX[g].forEach(i=>{
+        if(!canBuildOn(p,i))return;
+        const d=def(i),ss=spaceState(i);
+        const gain=d.rent[ss.houses+1]-(ss.houses>0?d.rent[ss.houses]:calcRent(i,p.id,7));
+        const roi=gain/d.house;
+        if(roi>bestScore){bestScore=roi;best=i;}
+      });
+    });
+    if(best===null)break;
+    buildHouse(p,best);
+  }
+}
+function aiRaiseFunds(p){
+  let guard=0;
+  while(G.pendingDebt && p.money < G.pendingDebt.amount && guard<80){
+    guard++;
+    let cand=null,maxH=0;
+    p.props.forEach(i=>{const ss=spaceState(i);if(ss.houses>0&&canSellOn(p,i)&&ss.houses>=maxH){maxH=ss.houses;cand=i;}});
+    if(cand!==null){ sellHouse(p,cand); continue; }
+    let mc=null,mv=1e9;
+    p.props.forEach(i=>{const ss=spaceState(i),d=def(i);if(!ss.mortgaged&&ss.houses===0){ let val=d.mtg; if(d.t==="prop"&&ownsFullGroup(p.id,d.group))val+=500; if(val<mv){mv=val;mc=i;} }});
+    if(mc!==null){ mortgage(p,mc); } else break;
+  }
+  if(G.pendingDebt){
+    if(p.money>=G.pendingDebt.amount){ trySettleDebt(p); }
+    else { declareBankrupt(p, G.pendingDebt.creditor); }
+  }
+}
+
+/* ---------- MODAL ---------- */
+function openModal(opts){ renderModal(opts); }
+function renderModal(opts){
+  const root=$("modalRoot");
+  let inner;
+  if(opts.raw){ inner=`<div class="modal">${opts.raw}</div>`; }
+  else {
+    const top=(opts.eb||opts.title)?`<div class="top">${opts.eb?`<div class="eb">${opts.eb}</div>`:""}${opts.title?`<h3 class="wordmark">${opts.title}</h3>`:""}</div>`:"";
+    const bd=opts.body!=null?`<div class="bd">${opts.body}</div>`:"";
+    let ft="";
+    if(opts.footRaw){ ft=`<div class="ft">${opts.footRaw}</div>`; }
+    else if(opts.buttons){ ft=`<div class="ft">${opts.buttons.map((b,k)=>`<button class="btn ${b.cls||''}" data-bk="${k}" ${b.disabled?"disabled":""}>${b.label}</button>`).join("")}</div>`; }
+    inner=`<div class="modal">${top}${bd}${ft}</div>`;
+  }
+  root.innerHTML=`<div class="scrim">${inner}</div>`;
+  if(opts.buttons){ opts.buttons.forEach((b,k)=>{const el=root.querySelector(`[data-bk="${k}"]`); if(el)el.onclick=()=>b.fn();}); }
+}
+function closeModal(){ $("modalRoot").innerHTML=""; }
+
+/* ---------- DEED CARD ---------- */
+function deedHTML(i){
+  const d=def(i);
+  if(d.t==="prop"){
+    return `<div class="deedcard"><div class="head" style="background:${GROUPC[d.group]}">${d.name}</div>
+      <div class="deedart"><svg style="color:${GROUPC[d.group]}"><use href="#${d.motif}"/></svg></div>
+      <div class="deedbody"><table>
+        <tr><td>Sewa</td><td>${fmt(d.rent[0])}</td></tr>
+        <tr><td>Set lengkap</td><td>${fmt(d.rent[0]*2)}</td></tr>
+        <tr><td>1 rumah</td><td>${fmt(d.rent[1])}</td></tr>
+        <tr><td>2 rumah</td><td>${fmt(d.rent[2])}</td></tr>
+        <tr><td>3 rumah</td><td>${fmt(d.rent[3])}</td></tr>
+        <tr><td>4 rumah</td><td>${fmt(d.rent[4])}</td></tr>
+        <tr><td>Hotel</td><td>${fmt(d.rent[5])}</td></tr>
+        <hr>
+        <tr><td>Harga rumah</td><td>${fmt(d.house)}</td></tr>
+        <tr><td>Nilai gadai</td><td>${fmt(d.mtg)}</td></tr>
+      </table></div></div>`;
+  }
+  if(d.t==="rail"){
+    return `<div class="deedcard"><div class="head" style="background:#333">${d.name}</div>
+      <div class="deedart"><svg style="color:#333"><use href="#${d.motif}"/></svg></div>
+      <div class="deedbody"><table>
+        <tr><td>1 bandara</td><td>${fmt(25)}</td></tr><tr><td>2 bandara</td><td>${fmt(50)}</td></tr>
+        <tr><td>3 bandara</td><td>${fmt(100)}</td></tr><tr><td>4 bandara</td><td>${fmt(200)}</td></tr>
+        <hr><tr><td>Nilai gadai</td><td>${fmt(d.mtg)}</td></tr></table></div></div>`;
+  }
+  return `<div class="deedcard"><div class="head" style="background:#444">${d.name}</div>
+    <div class="deedart"><svg><use href="#${d.motif}"/></svg></div>
+    <div class="deedbody"><table>
+      <tr><td>1 utilitas</td><td>4x dadu</td></tr><tr><td>2 utilitas</td><td>10x dadu</td></tr>
+      <hr><tr><td>Nilai gadai</td><td>${fmt(d.mtg)}</td></tr></table></div></div>`;
+}
+
+/* ---------- BOOT ---------- */
+renderSetup();
+$("startBtn").onclick=startGame;
+$("panelToggle").onclick=()=>$("rightpanel").classList.toggle("open");
+$("camBtn").onclick=()=>R3D.resetCam();
+$("qualityBtn").onclick=()=>toast(R3D.toggleQuality());
+
+</script>
+</body>
+</html>

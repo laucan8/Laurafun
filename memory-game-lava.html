@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Memory Game — LaVa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#ff7fb6; --pink2:#ff5fa0; --lav:#b89bff; --peach:#ffc7a3; --mint:#7fd9c4; --gold:#ffd86b;
+    --ink:#fff4fb;
+    --panel:rgba(255,255,255,0.14);
+    --panel-bd:rgba(255,255,255,0.32);
+    --p1:#ff7fb6; --p2:#b89bff; --p3:#ffb38a; --p4:#7fd9c4;
+    --font:"Fredoka","Trebuchet MS","Avenir Next",Verdana,sans-serif;
+    --script:"Pacifico",var(--font);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation;}
+  html,body{margin:0; min-height:100%;}
+  body{font-family:var(--font); color:var(--ink); min-height:100vh; overflow-x:hidden; position:relative;
+    background:linear-gradient(160deg,#3a1d52,#5a2466 50%,#7a2f74);}
+
+  /* selectable scenery background */
+  #bgScene{position:fixed; inset:0; z-index:0; overflow:hidden;}
+  #bgScene svg{width:100%; height:100%; display:block;}
+  #bgScene::after{content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(40,16,52,.30), rgba(40,16,52,.55));}
+
+  /* floating hearts + sparkles */
+  .floaty{position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden;}
+  .floaty span{position:absolute; bottom:-24px; opacity:0; animation:rise linear infinite;}
+  .floaty .dot{width:8px; height:8px; border-radius:50%;}
+  .floaty .hrt{font-size:18px; line-height:1;}
+  @keyframes rise{0%{transform:translateY(0) rotate(0); opacity:0;}10%{opacity:.85;}90%{opacity:.7;}100%{transform:translateY(-108vh) rotate(40deg); opacity:0;}}
+
+  .wrap{position:relative; z-index:2; max-width:1000px; margin:0 auto; padding:14px 14px 46px;}
+
+  /* logo */
+  .logo{text-align:center; margin:4px 0 2px;}
+  .logo .eyebrow{font-size:12px; letter-spacing:5px; text-transform:uppercase; opacity:.8; margin:0; font-weight:500;}
+  .logo h1{margin:0; font-family:var(--script); font-weight:400; line-height:1;
+    font-size:clamp(40px,9vw,72px);
+    background:linear-gradient(180deg,#fff 0%,#ffd6ec 38%,var(--pink) 70%,var(--lav) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 4px 14px rgba(255,120,180,.5));}
+  .logo .by{margin:4px 0 0; font-size:13px; opacity:.9; letter-spacing:.5px;}
+  .logo .by b{color:#ffd6ec; font-weight:600;}
+
+  /* HUD */
+  .hud{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:14px 0 8px;}
+  .pchip{display:flex; align-items:center; gap:9px; background:var(--panel); border:1.5px solid var(--panel-bd);
+    border-radius:18px; padding:8px 14px; backdrop-filter:blur(6px); transition:transform .2s, box-shadow .2s, border-color .2s;}
+  .pchip .dot{width:14px; height:14px; border-radius:50%;}
+  .pchip .nm{font-weight:600; font-size:15px; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .pchip .sc{font-weight:700; font-size:20px; min-width:22px; text-align:center;}
+  .pchip.active{transform:translateY(-3px) scale(1.05); border-color:#fff; box-shadow:0 0 0 2px rgba(255,255,255,.4), 0 8px 22px rgba(0,0,0,.3);}
+  .pchip.active::after{content:"giliran"; font-size:10px; text-transform:uppercase; letter-spacing:1px; background:#fff; color:#a02d6a; padding:2px 7px; border-radius:8px; font-weight:700;}
+
+  .meta{display:flex; gap:12px; justify-content:center; align-items:center; margin-bottom:14px; flex-wrap:wrap;}
+  .meta .m{font-size:13px; opacity:.9;} .meta .m b{font-size:16px;}
+  .btn{font-family:inherit; cursor:pointer; font-weight:600; font-size:14px; color:#9a2360;
+    background:#ffe2f1; border:none; border-bottom:4px solid #e89bc2; border-radius:14px; padding:9px 16px; transition:transform .08s, filter .15s;}
+  .btn:hover{filter:brightness(1.04);} .btn:active{transform:translateY(2px); border-bottom-width:2px;}
+  .btn.ghost{background:rgba(255,255,255,.16); color:#fff; border-bottom-color:rgba(0,0,0,.28);}
+  .btn.go{background:linear-gradient(180deg,#ffc1e0,var(--pink2)); color:#fff; border-bottom-color:#c93f80; font-size:17px; padding:13px 30px;}
+
+  /* board */
+  .board{display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:11px; margin:0 auto;}
+  @media(max-width:600px){.board{grid-template-columns:repeat(4,minmax(0,1fr))!important; gap:8px;}}
+  @media(max-width:400px){.board{grid-template-columns:repeat(3,minmax(0,1fr))!important;}}
+  .card{perspective:900px; aspect-ratio:200/260; cursor:pointer;}
+  .card-inner{position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .5s cubic-bezier(.2,.8,.2,1);}
+  .card.flipped .card-inner, .card.matched .card-inner{transform:rotateY(180deg);}
+  .face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:13px; overflow:hidden; box-shadow:0 6px 16px rgba(40,0,40,.4);}
+  .face svg{display:block; width:100%; height:100%;}
+  .front{transform:rotateY(180deg); border:2.5px solid #fff;}
+  .card.matched{opacity:.92;}
+  .card.matched .front{box-shadow:0 0 0 3px var(--gold), 0 0 20px 4px rgba(255,216,107,.7); animation:pop .45s ease;}
+  @keyframes pop{0%{transform:rotateY(180deg) scale(1);}45%{transform:rotateY(180deg) scale(1.07);}100%{transform:rotateY(180deg) scale(1);}}
+  .card:not(.flipped):not(.matched):hover .card-inner{transform:translateY(-4px) rotateX(4deg);}
+
+  .spark-dot{position:fixed; width:11px; height:11px; pointer-events:none; z-index:40; border-radius:2px; transform:rotate(45deg); animation:burst .7s ease-out forwards;}
+  @keyframes burst{0%{opacity:1; transform:translate(0,0) scale(1) rotate(45deg);}100%{opacity:0; transform:translate(var(--dx),var(--dy)) scale(.2) rotate(220deg);}}
+
+  /* overlays */
+  .overlay{position:fixed; inset:0; z-index:60; display:none; align-items:center; justify-content:center; padding:16px; overflow:auto;
+    background:rgba(30,10,42,.62); backdrop-filter:blur(5px);}
+  .overlay.show{display:flex; animation:fade .3s ease;}
+  @keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .sheet{background:linear-gradient(180deg,#46215e,#5a2466); border:2px solid rgba(255,255,255,.2); border-radius:26px;
+    padding:22px; width:min(540px,95vw); max-height:92vh; overflow:auto; text-align:center; box-shadow:0 24px 70px rgba(0,0,0,.55);
+    animation:rise2 .4s cubic-bezier(.2,.9,.2,1.2);}
+  @keyframes rise2{from{transform:translateY(26px) scale(.94); opacity:0;}to{transform:none; opacity:1;}}
+  .sheet h2{margin:2px 0 2px; font-size:24px;} .sheet h2 span{font-family:var(--script); font-weight:400;
+    background:linear-gradient(180deg,#fff,var(--pink)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .sheet .lead{margin:2px 0 14px; opacity:.88; font-size:14px;}
+  .dots{display:flex; gap:7px; justify-content:center; margin:10px 0 14px;}
+  .dots i{width:9px; height:9px; border-radius:50%; background:rgba(255,255,255,.3);}
+  .dots i.on{background:var(--pink); width:22px; border-radius:5px;}
+
+  .seg{display:flex; gap:8px; justify-content:center; margin:12px 0;}
+  .seg button{width:54px; height:54px; border-radius:15px; font-size:21px; font-weight:700; border:2px solid var(--panel-bd); background:var(--panel); color:#fff; cursor:pointer; transition:.15s;}
+  .seg button.sel{background:linear-gradient(180deg,#ffc1e0,var(--pink2)); color:#fff; border-color:#fff;}
+  .names{display:flex; flex-direction:column; gap:9px; margin:14px 0 4px; text-align:left;}
+  .names .row{display:flex; align-items:center; gap:10px;}
+  .names .row .dot{width:16px; height:16px; border-radius:50%; flex:0 0 auto;}
+  .names input{flex:1; font-family:inherit; font-size:15px; padding:11px 13px; border-radius:12px; border:1.5px solid var(--panel-bd); background:rgba(255,255,255,.96); color:#3a1342; outline:none;}
+  .names input:focus{box-shadow:0 0 0 3px rgba(255,140,190,.55);}
+
+  .levels{display:flex; flex-direction:column; gap:11px; margin:8px 0 4px;}
+  .lvl{display:flex; align-items:center; gap:14px; text-align:left; background:var(--panel); border:2px solid var(--panel-bd); border-radius:16px; padding:13px 16px; cursor:pointer; transition:.15s;}
+  .lvl .ic{font-size:26px; width:34px; text-align:center;}
+  .lvl .t{font-weight:600; font-size:17px;} .lvl .d{font-size:13px; opacity:.82;}
+  .lvl.sel{border-color:var(--pink); background:rgba(255,127,182,.18); box-shadow:0 0 0 2px rgba(255,127,182,.3);}
+  .lvl .stars{margin-left:auto; color:var(--gold); font-size:15px; letter-spacing:1px;}
+
+  .bgs{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:8px 0 4px;}
+  @media(max-width:460px){.bgs{grid-template-columns:repeat(2,1fr);}}
+  .bgt{cursor:pointer; border-radius:14px; overflow:hidden; border:2.5px solid rgba(255,255,255,.25); position:relative; transition:.15s;}
+  .bgt .thumb{aspect-ratio:16/10; overflow:hidden;} .bgt .thumb svg{width:100%; height:100%; display:block;}
+  .bgt .lab{position:absolute; left:0; right:0; bottom:0; font-size:12px; font-weight:600; padding:5px 8px; background:linear-gradient(transparent,rgba(0,0,0,.55)); text-align:left;}
+  .bgt.sel{border-color:var(--gold); box-shadow:0 0 0 3px rgba(255,216,107,.45);}
+  .bgt.sel::after{content:"✓"; position:absolute; top:5px; right:7px; background:var(--gold); color:#7a4a00; width:20px; height:20px; border-radius:50%; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center;}
+
+  .navrow{display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap;}
+  .rank{margin:8px 0 16px; display:flex; flex-direction:column; gap:8px;}
+  .rank .r{display:flex; align-items:center; gap:10px; background:var(--panel); border:1.5px solid var(--panel-bd); border-radius:13px; padding:9px 13px;}
+  .rank .r .pos{font-weight:700; font-size:16px; width:24px; opacity:.85;}
+  .rank .r .dot{width:14px; height:14px; border-radius:50%;}
+  .rank .r .nm{flex:1; font-weight:600; text-align:left;} .rank .r .sc{font-weight:700; font-size:18px;}
+  .rank .r.win{border-color:var(--gold); box-shadow:0 0 0 2px rgba(255,216,107,.4);}
+  .trophy{font-size:42px; margin:0 0 2px;}
+  canvas#confetti{position:fixed; inset:0; z-index:55; pointer-events:none;}
+  .hide{display:none !important;}
+</style>
+</head>
+<body>
+<div id="bgScene"></div>
+<div class="floaty" id="floaty"></div>
+<canvas id="confetti"></canvas>
+
+<div class="wrap">
+  <div class="logo">
+    <p class="eyebrow">Memory Game</p>
+    <h1>LaVa</h1>
+    <p class="by">by <b>Laura Vanessa</b> · jelajah kota Indonesia</p>
+  </div>
+
+  <div id="game" class="hide">
+    <div class="hud" id="hud"></div>
+    <div class="meta">
+      <span class="m">Pasangan <b id="found">0</b>/<b id="total">0</b></span>
+      <span class="m">Giliran ke <b id="moves">0</b></span>
+      <button class="btn ghost" id="restart">Ulang</button>
+      <button class="btn ghost" id="newPlayers">Menu</button>
+    </div>
+    <div class="board" id="board"></div>
+  </div>
+</div>
+
+<!-- SETUP (3 steps) -->
+<div class="overlay show" id="setup">
+  <div class="sheet">
+    <div class="dots"><i class="on" id="d1"></i><i id="d2"></i><i id="d3"></i></div>
+
+    <!-- step 1 : players -->
+    <div class="step" data-step="1">
+      <h2><span>Siapa yang main?</span></h2>
+      <p class="lead">Pilih jumlah pemain &amp; tulis namanya 💕</p>
+      <div class="seg" id="seg">
+        <button data-n="1">1</button><button data-n="2" class="sel">2</button>
+        <button data-n="3">3</button><button data-n="4">4</button>
+      </div>
+      <div class="names" id="nameRows"></div>
+      <div class="navrow"><button class="btn go" id="toLevel">Lanjut →</button></div>
+    </div>
+
+    <!-- step 2 : level -->
+    <div class="step hide" data-step="2">
+      <h2><span>Pilih tingkat</span></h2>
+      <p class="lead">Makin tinggi, makin banyak kota 🌸</p>
+      <div class="levels" id="levels"></div>
+      <div class="navrow"><button class="btn ghost" id="backP">← Kembali</button><button class="btn go" id="toBg">Lanjut →</button></div>
+    </div>
+
+    <!-- step 3 : background -->
+    <div class="step hide" data-step="3">
+      <h2><span>Pilih pemandangan</span></h2>
+      <p class="lead">Latar belakang papan permainan ✨</p>
+      <div class="bgs" id="bgs"></div>
+      <div class="navrow"><button class="btn ghost" id="backL">← Kembali</button><button class="btn go" id="start">Mulai bermain ✨</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- WIN -->
+<div class="overlay" id="win">
+  <div class="sheet">
+    <div class="trophy" id="winTrophy">🏆</div>
+    <h2 id="winTitle"><span>Selamat!</span></h2>
+    <p class="lead" id="winSub"></p>
+    <div class="rank" id="rank"></div>
+    <div class="navrow"><button class="btn go" id="again">Main lagi</button><button class="btn ghost" id="changeWin">Menu</button></div>
+  </div>
+</div>
+
+<script>
+function rand(s){ let x=Math.sin(s)*10000; return x-Math.floor(x); }
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[<>&]/g,m=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[m]));
+
+/* ============================================================
+   MOOD presets (sky / sun / clouds / distant haze)
+   ============================================================ */
+const MOOD={
+  golden:{sky:['#ff9a5a','#ffc59a','#ffe9cf'], sun:'#fff2c4', glow:'#ffcf7a', cloud:'#fff3e3', far:'#cf8a6e', night:false},
+  day:{sky:['#5ab4ff','#9fd6ff','#e6f5ff'], sun:'#fff6d0', glow:'#fff2b0', cloud:'#ffffff', far:'#8fb6d6', night:false},
+  sunset:{sky:['#ff6f91','#ffac7e','#ffe1b6'], sun:'#ffd86b', glow:'#ff9e6b', cloud:'#ffd9c8', far:'#c4708c', night:false},
+  twilight:{sky:['#3a2f86','#7a5fb0','#e7aac6'], sun:'#ffe9d0', glow:'#ffd0b0', cloud:'#bca9d8', far:'#4a3f7a', night:true},
+  tropic:{sky:['#2ec4d6','#8fe6e0','#e2fbf6'], sun:'#fff6d0', glow:'#d6fff6', cloud:'#ffffff', far:'#5fb8c8', night:false},
+  dawn:{sky:['#6a5acd','#ff9aa2','#ffd9b4'], sun:'#ffe08a', glow:'#ffb48a', cloud:'#ffd9d2', far:'#7a6aa0', night:false},
+  reef:{sky:['#1f8fb5','#4fc0d6','#bdeef2'], sun:'#dffaff', glow:'#bdeef2', cloud:'#ffffff', far:'#3f9ec0', night:false}
+};
+
+function sunEl(m){
+  if(m.night) return `<circle cx="150" cy="48" r="24" fill="${m.glow}" opacity=".4"/><circle cx="150" cy="48" r="15" fill="#f3efda"/><circle cx="143" cy="44" r="12.5" fill="${m.sky[0]}"/>`;
+  return `<circle cx="150" cy="52" r="32" fill="${m.glow}" opacity=".4"/><circle cx="150" cy="52" r="20" fill="${m.sun}"/>`;
+}
+function cloudsEl(m){ const c=m.cloud; return `<g fill="${c}" opacity=".85">`+
+  `<g transform="translate(42,50)"><ellipse cx="0" cy="0" rx="16" ry="8"/><ellipse cx="14" cy="2" rx="12" ry="7"/><ellipse cx="-12" cy="3" rx="11" ry="6"/></g>`+
+  `<g transform="translate(118,32) scale(.8)"><ellipse cx="0" cy="0" rx="16" ry="8"/><ellipse cx="14" cy="2" rx="12" ry="7"/><ellipse cx="-12" cy="3" rx="11" ry="6"/></g></g>`; }
+function starsEl(m,i){ if(!m.night) return ''; let s=''; for(let k=0;k<16;k++){const x=(rand(i*9+k)*190+6).toFixed(0),y=(rand(i*4+k+3)*118+6).toFixed(0),r=(rand(i*7+k+1)*1.2+.5).toFixed(1); s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" opacity=".75"/>`;} return s; }
+function hillsEl(m){ return `<path d="M0 202 Q48 172 100 194 Q152 214 200 190 L200 210 L0 210Z" fill="${m.far}" opacity=".5"/>`; }
+function skylineEl(m){ const f=m.far, ys=[178,170,184,162,174,166,182,172]; let b='',x=14; for(let k=0;k<8;k++){const w=15+(k%3)*4; b+=`<rect x="${x}" y="${ys[k]}" width="${w}" height="${202-ys[k]}" fill="${f}"/>`; x+=w+4;} return `<g opacity=".48">${b}</g>`; }
+
+const BANNER_C='#ff7aa8';
+function banner(name){ const fs=name.length>11?14:(name.length>9?15:17);
+  return `<g><rect x="12" y="218" width="176" height="32" rx="16" fill="${BANNER_C}"/>`+
+    `<rect x="12" y="218" width="176" height="11" rx="5.5" fill="#fff" opacity=".22"/>`+
+    `<text x="100" y="239" text-anchor="middle" font-family="Fredoka,Trebuchet MS,sans-serif" font-weight="600" font-size="${fs}" fill="#fff">${name}</text></g>`; }
+
+/* ============================================================
+   18 KOTA — ilustrasi berwarna + berbayang (edukatif)
+   mood / far / ground per kota; draw = SVG landmark
+   ============================================================ */
+const CITIES=[
+ {name:"Jakarta", mood:"golden", far:"skyline", ground:"land", draw:
+  `<rect x="78" y="196" width="44" height="6" fill="#c9bd9f"/><rect x="84" y="152" width="32" height="46" fill="#efe6d2"/><rect x="100" y="152" width="16" height="46" fill="#dccfb4"/>`+
+  `<rect x="90" y="172" width="8" height="14" fill="#9a8f74"/><rect x="104" y="172" width="8" height="14" fill="#867c64"/>`+
+  `<polygon points="94,116 106,116 110,152 90,152" fill="#f4ecd8"/><polygon points="100,116 110,152 100,152" fill="#ddd1b5"/>`+
+  `<rect x="96" y="100" width="8" height="16" fill="#e9dcc0"/><circle cx="100" cy="92" r="15" fill="#ffd86b" opacity=".4"/>`+
+  `<path d="M100 74 C 110 86 107 98 100 100 C 93 98 90 86 100 74 Z" fill="#ffcf4d"/><path d="M100 84 C 105 90 104 98 100 100 C 96 98 95 90 100 84 Z" fill="#ff8e3c"/>`},
+
+ {name:"Bandung", mood:"day", far:"hills", ground:"land", draw:
+  `<rect x="46" y="150" width="108" height="8" fill="#b8553f"/><rect x="48" y="158" width="104" height="44" fill="#efe7d6"/><rect x="100" y="158" width="52" height="44" fill="#e0d5bf"/>`+
+  `<g fill="#5a4a3a"><rect x="56" y="170" width="9" height="32" rx="4.5"/><rect x="72" y="170" width="9" height="32" rx="4.5"/><rect x="119" y="170" width="9" height="32" rx="4.5"/><rect x="135" y="170" width="9" height="32" rx="4.5"/></g>`+
+  `<rect x="86" y="116" width="28" height="6" fill="#b8553f"/><rect x="88" y="122" width="24" height="36" fill="#e8dfc9"/><rect x="100" y="122" width="12" height="36" fill="#d8cdb6"/>`+
+  `<line x1="100" y1="80" x2="100" y2="116" stroke="#caa23a" stroke-width="3"/>`+
+  `<g fill="#f2ead4" stroke="#caa23a" stroke-width="1"><circle cx="100" cy="86" r="4.5"/><circle cx="100" cy="96" r="5.5"/><circle cx="100" cy="107" r="6"/></g><circle cx="100" cy="77" r="2.6" fill="#caa23a"/>`},
+
+ {name:"Yogyakarta", mood:"twilight", far:"hills", ground:"land", draw:
+  `<rect x="54" y="162" width="92" height="14" fill="#5f5968"/>`+
+  `<polygon points="62,162 76,162 73,146 65,146" fill="#6f6878"/><polygon points="65,148 73,148 70,132 68,132" fill="#7a7382"/><polygon points="69,124 65,134 73,134" fill="#837c8a"/>`+
+  `<polygon points="124,162 138,162 135,146 127,146" fill="#6f6878"/><polygon points="127,148 135,148 132,132 130,132" fill="#7a7382"/><polygon points="131,124 127,134 135,134" fill="#837c8a"/>`+
+  `<polygon points="88,162 112,162 108,138 92,138" fill="#6f6878"/><polygon points="92,140 108,140 105,118 95,118" fill="#7a7382"/><polygon points="95,120 105,120 102,100 98,100" fill="#6f6878"/><polygon points="100,90 95,102 105,102" fill="#8a8392"/>`+
+  `<polygon points="100,138 112,162 100,162" fill="#4f4a58" opacity=".55"/>`},
+
+ {name:"Surabaya", mood:"day", far:"skyline", ground:"land", draw:
+  `<rect x="82" y="190" width="36" height="12" fill="#d9d9de"/><polygon points="95,84 105,84 110,190 90,190" fill="#f1f1f3"/><polygon points="100,84 110,190 100,190" fill="#dcdce1"/>`+
+  `<g stroke="#c9c9d0" stroke-width="1.2"><line x1="95" y1="100" x2="105" y2="100"/><line x1="94" y1="120" x2="106" y2="120"/><line x1="93" y1="140" x2="107" y2="140"/><line x1="92" y1="160" x2="108" y2="160"/><line x1="91" y1="178" x2="109" y2="178"/></g><polygon points="97,78 103,78 100,84" fill="#e0e0e6"/>`},
+
+ {name:"Semarang", mood:"golden", far:"hills", ground:"land", draw:
+  `<rect x="44" y="150" width="112" height="8" fill="#b85540"/><polygon points="46,150 70,150 58,140" fill="#a04a38"/><polygon points="130,150 154,150 142,140" fill="#a04a38"/>`+
+  `<rect x="46" y="158" width="108" height="44" fill="#efe7d6"/><rect x="48" y="136" width="20" height="66" fill="#e6ddca"/><rect x="132" y="136" width="20" height="66" fill="#e6ddca"/>`+
+  `<rect x="48" y="132" width="20" height="6" fill="#b85540"/><rect x="132" y="132" width="20" height="6" fill="#b85540"/>`+
+  `<g fill="#6a5a48"><rect x="76" y="164" width="10" height="26" rx="5"/><rect x="92" y="164" width="10" height="26" rx="5"/><rect x="108" y="164" width="10" height="26" rx="5"/></g>`},
+
+ {name:"Medan", mood:"day", far:"hills", ground:"land", draw:
+  `<rect x="52" y="160" width="96" height="42" fill="#f0c84a"/><rect x="100" y="160" width="48" height="42" fill="#e0b63a"/>`+
+  `<rect x="80" y="138" width="40" height="22" fill="#f3ce55"/><path d="M80 138 q20 -20 40 0Z" fill="#f3ce55"/>`+
+  `<rect x="94" y="120" width="12" height="20" fill="#3a3a44"/><path d="M94 120 q6 -12 12 0Z" fill="#3a3a44"/><circle cx="100" cy="112" r="2.2" fill="#caa23a"/>`+
+  `<path d="M92 202 q8 -30 16 0Z" fill="#7a5a1a"/><g fill="#caa23a"><path d="M62 202 q6 -20 12 0Z"/><path d="M126 202 q6 -20 12 0Z"/></g>`},
+
+ {name:"Padang", mood:"tropic", far:"hills", ground:"land", draw:
+  `<g stroke="#5a3a22" stroke-width="4"><line x1="70" y1="172" x2="70" y2="192"/><line x1="100" y1="174" x2="100" y2="192"/><line x1="130" y1="172" x2="130" y2="192"/></g>`+
+  `<rect x="58" y="152" width="84" height="22" fill="#7a1f2a"/><rect x="58" y="152" width="84" height="6" fill="#caa23a"/>`+
+  `<g fill="#e8c84a"><rect x="66" y="160" width="10" height="12"/><rect x="124" y="160" width="10" height="12"/></g><rect x="92" y="158" width="16" height="16" fill="#caa23a"/>`+
+  `<path d="M50 154 Q66 152 70 152 Q66 116 70 106 Q82 124 86 154 Z" fill="#2e2a30"/><path d="M84 154 Q98 152 100 152 Q96 110 100 100 Q108 118 116 154 Z" fill="#2e2a30"/><path d="M114 154 Q130 152 130 152 Q134 116 130 106 Q142 122 150 154 Z" fill="#2e2a30"/>`},
+
+ {name:"Palembang", mood:"sunset", far:"skyline", ground:"sea", draw:
+  `<rect x="56" y="118" width="11" height="80" fill="#c23f3f"/><rect x="133" y="118" width="11" height="80" fill="#c23f3f"/>`+
+  `<rect x="52" y="112" width="19" height="8" fill="#e8c84a"/><rect x="129" y="112" width="19" height="8" fill="#e8c84a"/>`+
+  `<rect x="38" y="150" width="124" height="9" fill="#b83636"/><rect x="38" y="159" width="124" height="3" fill="#e8c84a"/>`+
+  `<path d="M61 120 Q100 142 139 120" stroke="#e8c84a" stroke-width="2.4" fill="none"/>`+
+  `<g stroke="#b83636" stroke-width="1"><line x1="74" y1="129" x2="74" y2="150"/><line x1="88" y1="135" x2="88" y2="150"/><line x1="112" y1="135" x2="112" y2="150"/><line x1="126" y1="129" x2="126" y2="150"/></g>`+
+  `<g opacity=".3"><rect x="56" y="162" width="11" height="18" fill="#c23f3f"/><rect x="133" y="162" width="11" height="18" fill="#c23f3f"/></g>`},
+
+ {name:"Makassar", mood:"sunset", far:"none", ground:"sea", draw:
+  `<line x1="82" y1="96" x2="82" y2="160" stroke="#5a3418" stroke-width="3"/><line x1="116" y1="92" x2="116" y2="160" stroke="#5a3418" stroke-width="3"/>`+
+  `<polygon points="84,100 84,156 116,156" fill="#f2ead4"/><polygon points="80,108 80,156 54,156" fill="#e9e0c6"/><polygon points="118,96 118,156 148,156" fill="#f2ead4"/>`+
+  `<polygon points="84,100 116,156 84,156" fill="#dcd2b6" opacity=".5"/>`+
+  `<path d="M48 174 Q100 192 152 174 L142 160 L58 160 Z" fill="#7a4a28"/><path d="M48 174 Q100 192 152 174 L150 168 Q100 184 50 168 Z" fill="#5a3418"/><rect x="58" y="160" width="84" height="4" fill="#caa05a"/>`},
+
+ {name:"Bali", mood:"dawn", far:"hills", ground:"land", draw:
+  `<polygon points="60,202 60,150 66,142 66,128 74,116 80,108 86,202" fill="#8a8276"/><polygon points="74,202 74,150 78,140 82,130 86,118 86,202" fill="#6f6760"/>`+
+  `<polygon points="140,202 140,150 134,142 134,128 126,116 120,108 114,202" fill="#8a8276"/><polygon points="126,202 126,150 122,140 118,130 114,118 114,202" fill="#6f6760"/>`+
+  `<polygon points="80,108 83,100 86,108" fill="#e8c84a"/><polygon points="114,108 117,100 120,108" fill="#e8c84a"/>`+
+  `<line x1="46" y1="200" x2="46" y2="150" stroke="#7a5a2a" stroke-width="2"/><path d="M30 150 q16 -14 32 0 Z" fill="#d23f5a"/><path d="M30 150 h32 l-3 5 h-26Z" fill="#e8c84a"/>`+
+  `<g fill="#2f9e5a"><ellipse cx="158" cy="196" rx="14" ry="18"/><ellipse cx="150" cy="200" rx="9" ry="12"/></g>`},
+
+ {name:"Toraja", mood:"day", far:"hills", ground:"land", draw:
+  `<g transform="translate(54,6)"><g stroke="#5a3a22" stroke-width="3"><line x1="50" y1="166" x2="50" y2="180"/><line x1="66" y1="166" x2="66" y2="180"/></g><rect x="46" y="156" width="24" height="12" fill="#a0402e"/><path d="M40 144 Q52 154 58 154 Q64 154 76 144 Q66 162 58 162 Q50 162 40 144Z" fill="#33303a"/></g>`+
+  `<g stroke="#5a3a22" stroke-width="4"><line x1="84" y1="170" x2="84" y2="190"/><line x1="100" y1="172" x2="100" y2="190"/><line x1="116" y1="170" x2="116" y2="190"/></g>`+
+  `<rect x="80" y="156" width="40" height="16" fill="#b8543f"/><rect x="80" y="156" width="40" height="5" fill="#e8c84a"/><rect x="94" y="160" width="12" height="12" fill="#2e2a30"/>`+
+  `<path d="M64 146 Q86 158 100 158 Q114 158 136 146 Q118 166 100 166 Q82 166 64 146Z" fill="#33303a"/><path d="M70 148 Q86 156 100 156 Q114 156 130 148 Q116 160 100 160 Q84 160 70 148Z" fill="#46414e"/>`},
+
+ {name:"Raja Ampat", mood:"tropic", far:"none", ground:"sea", draw:
+  `<path d="M40 196 q-2 -8 12 -9 q14 1 12 9Z" fill="#7a6b54"/><path d="M40 188 q-2 -22 24 -26 q26 4 24 26 Z" fill="#3f9e54"/><path d="M44 188 q0 -18 20 -22 q6 1 10 3 q-16 2 -18 19Z" fill="#56b86a"/>`+
+  `<path d="M120 196 q-2 -6 9 -7 q11 1 9 7Z" fill="#7a6b54"/><path d="M118 190 q-2 -18 20 -20 q22 2 20 20Z" fill="#3f9e54"/><path d="M150 196 q0 -10 8 -10 q8 0 8 10Z" fill="#3f9e54"/>`+
+  `<path d="M86 198 q10 6 22 0 l-3 -4 h-16Z" fill="#caa05a"/><rect x="96" y="186" width="2" height="8" fill="#7a5a2a"/>`},
+
+ {name:"Lombok", mood:"day", far:"hills", ground:"land", draw:
+  `<polygon points="100,86 156,202 44,202" fill="#4a7a8a"/><polygon points="100,86 156,202 100,202" fill="#3a6676"/>`+
+  `<polygon points="86,104 100,86 114,104 108,112 92,112" fill="#eef7fa"/><polygon points="118,140 134,178 102,178" fill="#5a8a9a"/>`},
+
+ {name:"Bromo", mood:"dawn", far:"hills", ground:"sand", draw:
+  `<polygon points="100,112 158,202 42,202" fill="#6a6470"/><polygon points="100,112 158,202 100,202" fill="#544f5e"/><polygon points="84,124 116,124 110,114 90,114" fill="#cfd0d8"/>`+
+  `<g fill="#cfcfcf" opacity=".8"><circle cx="98" cy="102" r="9"/><circle cx="107" cy="90" r="7.5"/><circle cx="97" cy="80" r="6.5"/><circle cx="109" cy="73" r="5"/></g>`+
+  `<polygon points="120,150 150,202 110,202" fill="#4a4556"/>`},
+
+ {name:"Aceh", mood:"golden", far:"hills", ground:"land", draw:
+  `<rect x="56" y="154" width="88" height="44" fill="#f3f0ea"/><rect x="100" y="154" width="44" height="44" fill="#e3ded4"/>`+
+  `<path d="M80 154 q20 -34 40 0Z" fill="#2f5a4a"/><path d="M84 154 q16 -26 32 0Z" fill="#3a6a58"/>`+
+  `<line x1="100" y1="120" x2="100" y2="112" stroke="#e8c84a" stroke-width="2"/><path d="M97 112 a3.5 3.5 0 1 0 5 4" fill="none" stroke="#e8c84a" stroke-width="2"/>`+
+  `<rect x="44" y="120" width="10" height="78" fill="#eee9e0"/><path d="M44 120 q5 -10 10 0Z" fill="#2f5a4a"/><rect x="146" y="132" width="9" height="66" fill="#eee9e0"/>`+
+  `<path d="M66 154 q8 -18 16 0Z" fill="#2f5a4a"/><path d="M118 154 q8 -18 16 0Z" fill="#2f5a4a"/>`},
+
+ {name:"Labuan Bajo", mood:"tropic", far:"none", ground:"sea", draw:
+  `<path d="M0 202 Q36 150 84 200 L0 200Z" fill="#5f7a4a"/><path d="M70 200 Q110 150 156 198 L200 202 L70 202Z" fill="#6f8a52"/><path d="M150 200 Q176 168 200 188 L200 202Z" fill="#7a9460"/>`+
+  `<path d="M40 200 Q60 192 84 200" stroke="#3a6a4a" stroke-width="2" fill="none" opacity=".5"/>`},
+
+ {name:"Bukittinggi", mood:"day", far:"hills", ground:"land", draw:
+  `<rect x="82" y="190" width="36" height="10" fill="#dcd2bf"/><rect x="86" y="124" width="28" height="66" fill="#f1ead8"/><rect x="100" y="124" width="14" height="66" fill="#e0d6bf"/>`+
+  `<circle cx="100" cy="146" r="10" fill="#fff"/><circle cx="100" cy="146" r="10" fill="none" stroke="#7a5a2a" stroke-width="2"/>`+
+  `<line x1="100" y1="146" x2="100" y2="139" stroke="#3a2a1a" stroke-width="1.6"/><line x1="100" y1="146" x2="106" y2="148" stroke="#3a2a1a" stroke-width="1.6"/>`+
+  `<path d="M82 124 Q98 128 100 102 Q102 128 118 124 Z" fill="#7a1f2a"/><path d="M90 104 Q100 88 100 88 Q100 96 100 102Z" fill="#7a1f2a"/>`},
+
+ {name:"Manado", mood:"reef", far:"none", ground:"under", draw:
+  `<path d="M48 200 Q44 174 56 168 Q60 184 54 200Z" fill="#e8649a"/><path d="M58 200 Q60 178 70 174 Q70 190 66 200Z" fill="#ff9bc0"/>`+
+  `<path d="M150 200 Q160 176 166 184 Q160 192 158 200Z" fill="#f0843a"/><path d="M138 200 Q140 182 150 180 Q150 192 146 200Z" fill="#b86bd6"/>`+
+  `<ellipse cx="92" cy="116" rx="17" ry="11" fill="#f08a2a"/><polygon points="75,116 64,107 64,125" fill="#f08a2a"/><circle cx="102" cy="113" r="2.2" fill="#1a1a1a"/><rect x="86" y="105" width="4" height="22" rx="2" fill="#fff"/><rect x="96" y="105" width="4" height="22" rx="2" fill="#fff"/>`+
+  `<ellipse cx="128" cy="150" rx="13" ry="8.5" fill="#2f7ad0"/><polygon points="141,150 150,143 150,157" fill="#ffd24a"/><circle cx="121" cy="147" r="1.8" fill="#10204a"/>`+
+  `<g fill="#cdeef5" opacity=".7"><circle cx="64" cy="70" r="3"/><circle cx="70" cy="58" r="2.2"/><circle cx="150" cy="88" r="2.6"/><circle cx="156" cy="76" r="1.8"/></g>`}
+];
+
+/* assemble a full card scene */
+function scene(c,i){
+  const m=MOOD[c.mood], id='g'+i;
+  let ground;
+  if(c.ground==='sea')
+    ground=`<rect x="0" y="196" width="200" height="64" fill="#2f93bd"/><rect x="0" y="196" width="200" height="10" fill="#5fb6d6"/>`+
+      `<path d="M0 210 Q40 205 80 210 T160 210 T240 210" stroke="#bfe6f2" stroke-width="1.6" fill="none" opacity=".5"/>`;
+  else if(c.ground==='under')
+    ground=`<path d="M0 200 Q100 188 200 200 L200 250 L0 250Z" fill="#e6d3a0"/>`+
+      `<g opacity=".12" fill="#fff"><polygon points="56,0 86,0 70,210 46,210"/><polygon points="124,0 154,0 140,210 116,210"/></g>`;
+  else
+    ground=`<path d="M0 202 Q100 190 200 202 L200 250 L0 250Z" fill="#6fb85f"/>`+
+      `<path d="M0 202 Q100 190 200 202" stroke="#8fd07a" stroke-width="3" fill="none" opacity=".7"/>`;
+  if(c.ground==='sand') ground=`<path d="M0 200 Q100 192 200 200 L200 250 L0 250Z" fill="#cdb98c"/>`;
+
+  const far = c.far==='skyline'?skylineEl(m) : c.far==='hills'?hillsEl(m) : '';
+  return `<svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${c.name}">`+
+    `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${m.sky[0]}"/><stop offset="0.6" stop-color="${m.sky[1]}"/><stop offset="1" stop-color="${m.sky[2]}"/></linearGradient></defs>`+
+    `<rect width="200" height="260" fill="url(#${id})"/>${starsEl(m,i)}${sunEl(m)}${cloudsEl(m)}${far}${ground}<g>${c.draw}</g>${banner(c.name)}</svg>`;
+}
+
+/* girly card back */
+function heart(cx,cy,s,fill,op){ return `<path d="M${cx} ${cy+s*0.9} C ${cx-s} ${cy} ${cx-s} ${cy-s*0.7} ${cx} ${cy-s*0.2} C ${cx+s} ${cy-s*0.7} ${cx+s} ${cy} ${cx} ${cy+s*0.9} Z" fill="${fill}" opacity="${op}"/>`; }
+function backSVG(){
+  let pat='';
+  for(let r=0;r<7;r++) for(let col=0;col<5;col++){
+    const x=18+col*40+(r%2?20:0), y=18+r*38;
+    pat+=heart(x,y,6,'#ffffff',0.28);
+  }
+  return `<svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">`+
+    `<defs><linearGradient id="bk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9ec9"/><stop offset="1" stop-color="#bca6ff"/></linearGradient></defs>`+
+    `<rect width="200" height="260" rx="13" fill="url(#bk)"/>${pat}`+
+    `<circle cx="100" cy="118" r="44" fill="#fff" opacity=".22"/><circle cx="100" cy="118" r="44" fill="none" stroke="#fff" stroke-width="2"/>`+
+    heart(100,112,22,'#fff',0.95)+
+    `<text x="100" y="170" text-anchor="middle" font-family="Pacifico,Fredoka,cursive" font-size="26" fill="#fff">LaVa</text>`+
+    `<g fill="#fff" opacity=".9"><circle cx="64" cy="80" r="2.4"/><circle cx="138" cy="92" r="2"/><circle cx="120" cy="58" r="1.6"/></g></svg>`;
+}
+
+/* ============================================================
+   BACKGROUNDS (selectable scenery)
+   ============================================================ */
+function bgBuildings(c,baseY,arr){ let s=''; arr.forEach(b=>{ s+=`<rect x="${b[0]}" y="${baseY-b[2]}" width="${b[1]}" height="${b[2]}" fill="${c}"/>`; }); return s; }
+const BG=[
+ {id:"senja", name:"Senja Kota", svg:
+  `<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">`+
+  `<defs><linearGradient id="b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a5a"/><stop offset="0.5" stop-color="#ff9eb0"/><stop offset="1" stop-color="#ffd9b6"/></linearGradient></defs>`+
+  `<rect width="1200" height="800" fill="url(#b1)"/>`+
+  `<circle cx="860" cy="250" r="130" fill="#ffd27a" opacity=".5"/><circle cx="860" cy="250" r="80" fill="#fff0c4"/>`+
+  `<g opacity=".45" fill="#9a5a7a">${bgBuildings("#9a5a7a",800,[[60,90,210],[170,70,150],[260,110,250],[390,80,170],[500,130,300],[650,90,200],[760,70,150],[850,120,260],[990,90,200],[1100,80,160]])}</g>`+
+  `<g opacity=".9" fill="#6a3a5a">${bgBuildings("#6a3a5a",800,[[40,120,160],[180,90,120],[300,140,210],[470,100,140],[600,150,250],[780,110,170],[940,140,210],[1110,90,130]])}</g></svg>`},
+ {id:"pantai", name:"Pantai Tropis", svg:
+  `<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">`+
+  `<defs><linearGradient id="b2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#37c6dd"/><stop offset="0.55" stop-color="#9fe8e2"/><stop offset="0.56" stop-color="#2f9ec8"/><stop offset="1" stop-color="#1f6f9a"/></linearGradient></defs>`+
+  `<rect width="1200" height="800" fill="url(#b2)"/>`+
+  `<circle cx="300" cy="200" r="70" fill="#fff6c8"/>`+
+  `<g fill="#1f6f9a" opacity=".4"><path d="M0 470 Q300 440 600 470 T1200 470 V520 H0Z"/></g>`+
+  `<rect x="0" y="640" width="1200" height="160" fill="#f3e0b0"/><path d="M0 640 Q300 610 600 640 T1200 640 V680 H0Z" fill="#ffeec4"/>`+
+  `<g transform="translate(1000,640)"><path d="M0 0 q-10 -120 4 -210" stroke="#7a5a2a" stroke-width="16" fill="none"/><g fill="#2f9e5a"><path d="M4 -210 q-90 -24 -136 24 q80 -8 136 8Z"/><path d="M4 -210 q90 -24 136 24 q-80 -8 -136 8Z"/><path d="M4 -210 q-56 -80 -120 -88 q56 32 112 96Z"/><path d="M4 -210 q56 -80 120 -88 q-56 32 -112 96Z"/></g></g></svg>`},
+ {id:"sawah", name:"Sawah Terasering", svg:
+  `<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">`+
+  `<defs><linearGradient id="b3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fc6ff"/><stop offset="1" stop-color="#dff3ff"/></linearGradient></defs>`+
+  `<rect width="1200" height="800" fill="url(#b3)"/>`+
+  `<circle cx="950" cy="170" r="64" fill="#fff6c8"/>`+
+  `<path d="M0 300 Q300 220 600 300 T1200 300 V360 H0Z" fill="#7fae6a" opacity=".7"/>`+
+  `<path d="M0 380 Q300 320 600 390 T1200 380 V460 H0Z" fill="#6fb85a"/>`+
+  `<path d="M0 470 Q300 420 600 480 T1200 470 V560 H0Z" fill="#5fa84a"/>`+
+  `<path d="M0 560 Q300 520 600 575 T1200 560 V680 H0Z" fill="#4f9a3e"/>`+
+  `<path d="M0 660 Q300 630 600 675 T1200 660 V800 H0Z" fill="#3f8a32"/></svg>`},
+ {id:"gunung", name:"Gunung & Kabut", svg:
+  `<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">`+
+  `<defs><linearGradient id="b4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a5acd"/><stop offset="0.55" stop-color="#ff9aa2"/><stop offset="1" stop-color="#ffd9b4"/></linearGradient></defs>`+
+  `<rect width="1200" height="800" fill="url(#b4)"/>`+
+  `<circle cx="320" cy="220" r="58" fill="#ffe7b0"/>`+
+  `<polygon points="200,520 520,520 360,260" fill="#5a5570" opacity=".7"/>`+
+  `<polygon points="640,540 1080,540 860,240" fill="#4a4560"/><polygon points="800,300 920,300 860,240" fill="#e8e2ee"/>`+
+  `<g fill="#cfcfd8" opacity=".7"><circle cx="850" cy="226" r="26"/><circle cx="876" cy="200" r="20"/><circle cx="844" cy="184" r="16"/></g>`+
+  `<path d="M0 520 Q300 480 600 520 T1200 520 V800 H0Z" fill="#3a3552"/>`+
+  `<g fill="#fff" opacity=".25"><path d="M0 470 Q300 450 600 470 T1200 470 V500 H0Z"/></g></svg>`},
+ {id:"malam", name:"Kota Malam", svg:
+  `<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">`+
+  `<defs><linearGradient id="b5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1d4a"/><stop offset="0.6" stop-color="#3a2f6e"/><stop offset="1" stop-color="#7a4f86"/></linearGradient></defs>`+
+  `<rect width="1200" height="800" fill="url(#b5)"/>`+
+  `<circle cx="940" cy="180" r="50" fill="#fdf6d8"/><circle cx="922" cy="168" r="42" fill="#3a2f6e"/>`+
+  starsBig()+
+  `<g fill="#2a2550">${bgBuildings("#2a2550",800,[[40,120,300],[180,90,220],[300,140,380],[470,100,260],[600,150,420],[780,110,300],[940,140,360],[1110,90,240]])}</g>`+
+  windowLights()+`</svg>`}
+];
+function starsBig(){ let s=''; for(let k=0;k<60;k++){const x=(Math.random()*1200).toFixed(0),y=(Math.random()*420).toFixed(0),r=(Math.random()*1.6+0.5).toFixed(1); s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" opacity="${(Math.random()*.6+.3).toFixed(2)}"/>`;} return s; }
+function windowLights(){ let s=''; const cols=[[60,300],[180,220],[300,380],[470,260],[600,420],[780,300],[940,360],[1110,240]]; cols.forEach(b=>{ const top=800-b[1]; for(let y=top+20;y<780;y+=26) for(let x=b[0]+8;x<b[0]+(b[0]<700?120:140);x+=22){ if(Math.random()>.45) s+=`<rect x="${x}" y="${y}" width="7" height="10" fill="#ffe082" opacity="${(Math.random()*.5+.45).toFixed(2)}"/>`; } }); return s; }
+
+/* ============================================================
+   GAME STATE & LOGIC
+   ============================================================ */
+const PCOL=['#ff7fb6','#b89bff','#ffb38a','#7fd9c4'];
+const LEVELS=[{name:'Mudah',pairs:6,ic:'🌸',d:'12 kartu · 6 kota',st:'★'},
+              {name:'Sedang',pairs:12,ic:'🌷',d:'24 kartu · 12 kota',st:'★★'},
+              {name:'Sulit',pairs:18,ic:'💎',d:'36 kartu · 18 kota',st:'★★★'}];
+
+let setupN=2, setupNames=['','','',''], levelIdx=1, bgIdx=0, step=1;
+let S={ n:2, names:[], scores:[], cur:0, deck:[], first:null, second:null, lock:false, found:0, pairs:12, arts:[], back:'' };
+
+/* ---- step 1 ---- */
+function renderNameRows(){
+  const box=$('nameRows'); box.innerHTML='';
+  for(let i=0;i<setupN;i++){ const row=document.createElement('div'); row.className='row';
+    row.innerHTML=`<span class="dot" style="background:${PCOL[i]}"></span><input type="text" maxlength="14" placeholder="Pemain ${i+1}" value="${esc(setupNames[i]||'')}" data-i="${i}">`;
+    box.appendChild(row); }
+  box.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',e=>setupNames[+e.target.dataset.i]=e.target.value));
+}
+$('seg').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+  $('seg').querySelectorAll('button').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); setupN=+b.dataset.n; renderNameRows();
+}));
+renderNameRows();
+
+/* ---- step 2 ---- */
+function renderLevels(){
+  const box=$('levels'); box.innerHTML='';
+  LEVELS.forEach((L,i)=>{ const el=document.createElement('div'); el.className='lvl'+(i===levelIdx?' sel':'');
+    el.innerHTML=`<span class="ic">${L.ic}</span><div><div class="t">${L.name}</div><div class="d">${L.d}</div></div><span class="stars">${L.st}</span>`;
+    el.addEventListener('click',()=>{ levelIdx=i; renderLevels(); }); box.appendChild(el); });
+}
+
+/* ---- step 3 ---- */
+function renderBgs(){
+  const box=$('bgs'); box.innerHTML='';
+  BG.forEach((b,i)=>{ const el=document.createElement('div'); el.className='bgt'+(i===bgIdx?' sel':'');
+    el.innerHTML=`<div class="thumb">${b.svg}</div><div class="lab">${b.name}</div>`;
+    el.addEventListener('click',()=>{ bgIdx=i; renderBgs(); }); box.appendChild(el); });
+}
+renderLevels(); renderBgs();
+
+/* ---- step nav ---- */
+function showStep(n){ step=n;
+  document.querySelectorAll('#setup .step').forEach(s=>s.classList.toggle('hide',+s.dataset.step!==n));
+  ['d1','d2','d3'].forEach((id,k)=>$(id).classList.toggle('on',k===n-1));
+  $('setup').querySelector('.sheet').scrollTop=0;
+}
+$('toLevel').addEventListener('click',()=>{ initAudio(); showStep(2); });
+$('backP').addEventListener('click',()=>showStep(1));
+$('toBg').addEventListener('click',()=>showStep(3));
+$('backL').addEventListener('click',()=>showStep(2));
+$('start').addEventListener('click',()=>{ initAudio(); beginGame(); });
+$('again').addEventListener('click',()=>{ initAudio(); $('win').classList.remove('show'); newGame(); });
+$('changeWin').addEventListener('click',()=>{ $('win').classList.remove('show'); openSetup(); });
+$('restart').addEventListener('click',newGame);
+$('newPlayers').addEventListener('click',openSetup);
+
+function openSetup(){ $('game').classList.add('hide'); $('setup').classList.add('show'); showStep(1); }
+
+function applyBg(){ $('bgScene').innerHTML=BG[bgIdx].svg; }
+
+function beginGame(){
+  S.n=setupN; S.names=[]; for(let i=0;i<S.n;i++){ const nm=(setupNames[i]||'').trim(); S.names.push(nm||('Pemain '+(i+1))); }
+  S.pairs=LEVELS[levelIdx].pairs;
+  applyBg();
+  $('setup').classList.remove('show'); $('game').classList.remove('hide');
+  newGame();
+}
+
+/* ---- new round ---- */
+function newGame(){
+  S.scores=new Array(S.n).fill(0); S.cur=0; S.first=null; S.second=null; S.lock=false; S.found=0;
+  const pool=[...CITIES]; for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  const chosen=pool.slice(0,S.pairs);
+  S.arts=chosen.map((c,i)=>scene(c,i)); S.back=backSVG();
+  S.deck=[]; let id=0; chosen.forEach((c,ci)=>{ for(let k=0;k<2;k++) S.deck.push({id:id++, city:ci}); });
+  shuffle(S.deck);
+
+  $('found').textContent='0'; $('total').textContent=S.pairs; $('moves').textContent='0';
+  renderHUD();
+
+  const cols=S.pairs<=6?4:6;
+  const board=$('board');
+  board.style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;
+  board.style.maxWidth=(S.pairs<=6?440:S.pairs<=12?760:960)+'px';
+  board.innerHTML=S.deck.map((d,idx)=>
+    `<div class="card" data-i="${idx}"><div class="card-inner"><div class="face back">${S.back}</div><div class="face front">${S.arts[d.city]}</div></div></div>`).join('');
+  board.querySelectorAll('.card').forEach(el=>el.addEventListener('click',()=>flip(+el.dataset.i,el)));
+}
+let mv=0;
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} }
+function renderHUD(){ const hud=$('hud'); hud.innerHTML='';
+  for(let i=0;i<S.n;i++){ const c=document.createElement('div'); c.className='pchip'+(i===S.cur?' active':'');
+    c.innerHTML=`<span class="dot" style="background:${PCOL[i]}"></span><span class="nm">${esc(S.names[i])}</span><span class="sc">${S.scores[i]}</span>`; hud.appendChild(c); } }
+
+/* ---- flip / match ---- */
+function flip(i,el){
+  initAudio();
+  if(S.lock) return;
+  if(el.classList.contains('flipped')||el.classList.contains('matched')) return;
+  if(S.first===i) return;
+  el.classList.add('flipped'); sFlip();
+  if(S.first===null){ S.first=i; return; }
+  S.second=i; mv++; $('moves').textContent=mv; S.lock=true;
+  const a=S.deck[S.first], b=S.deck[S.second];
+  if(a.city===b.city){
+    setTimeout(()=>{ const e1=cardEl(S.first),e2=cardEl(S.second);
+      e1.classList.add('matched'); e2.classList.add('matched'); sparkleAt(e1); sparkleAt(e2); sMatch();
+      S.scores[S.cur]++; S.found++; $('found').textContent=S.found; renderHUD();
+      S.first=S.second=null; S.lock=false; if(S.found===S.pairs) setTimeout(endGame,700); },470);
+  } else {
+    setTimeout(()=>{ cardEl(S.first).classList.remove('flipped'); cardEl(S.second).classList.remove('flipped'); sNo();
+      S.cur=(S.cur+1)%S.n; renderHUD(); S.first=S.second=null; S.lock=false; },850);
+  }
+}
+const cardEl=i=>$('board').querySelector(`.card[data-i="${i}"]`);
+
+/* ---- end ---- */
+function endGame(){
+  const max=Math.max(...S.scores);
+  const winners=S.scores.map((s,i)=>({i,s})).filter(o=>o.s===max);
+  const order=S.scores.map((s,i)=>({i,s})).sort((a,b)=>b.s-a.s);
+  if(S.n===1){ $('winTitle').innerHTML=`<span>Selesai!</span>`; $('winSub').textContent=`Kamu menemukan semua ${S.pairs} kota dalam ${mv} giliran. 💖`; }
+  else if(winners.length>1){ $('winTitle').innerHTML=`<span>Seri!</span>`; $('winSub').textContent=`${winners.map(w=>esc(S.names[w.i])).join(' & ')} sama hebat 🌟`; }
+  else { $('winTitle').innerHTML=`<span>${esc(S.names[winners[0].i])} menang!</span>`; $('winSub').textContent=`Skor tertinggi ${max} pasang 🌸`; }
+  $('rank').innerHTML=order.map((o,idx)=>`<div class="r${o.s===max?' win':''}"><span class="pos">${idx+1}</span><span class="dot" style="background:${PCOL[o.i]}"></span><span class="nm">${esc(S.names[o.i])}</span><span class="sc">${o.s}</span></div>`).join('');
+  $('win').classList.add('show'); sWin(); confettiBurst();
+}
+
+/* ---- sparkle ---- */
+function sparkleAt(el){ const r=el.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
+  const cols=['#ffd166','#ff7fb6','#b89bff','#fff','#ffb38a'];
+  for(let k=0;k<12;k++){ const d=document.createElement('div'); d.className='spark-dot';
+    const ang=Math.random()*6.28, dist=34+Math.random()*64; d.style.left=cx+'px'; d.style.top=cy+'px'; d.style.background=cols[k%cols.length];
+    d.style.setProperty('--dx',Math.cos(ang)*dist+'px'); d.style.setProperty('--dy',Math.sin(ang)*dist+'px');
+    document.body.appendChild(d); setTimeout(()=>d.remove(),720); } }
+
+/* ---- confetti ---- */
+const cv=$('confetti'), ctx=cv.getContext('2d'); let confRAF=null;
+function rsz(){ cv.width=innerWidth; cv.height=innerHeight; } addEventListener('resize',rsz); rsz();
+function confettiBurst(){ rsz(); const cols=['#ffd166','#ff7fb6','#b89bff','#7fd9c4','#ffb38a','#fff'];
+  const ps=[]; for(let i=0;i<170;i++) ps.push({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,vx:(Math.random()-.5)*2.4,vy:2+Math.random()*4,s:6+Math.random()*8,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,c:cols[Math.floor(Math.random()*cols.length)]});
+  const t0=Date.now(); cancelAnimationFrame(confRAF);
+  (function loop(){ ctx.clearRect(0,0,cv.width,cv.height);
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.rot+=p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6); ctx.restore();});
+    if(Date.now()-t0<4400) confRAF=requestAnimationFrame(loop); else ctx.clearRect(0,0,cv.width,cv.height); })(); }
+
+/* ---- sound ---- */
+let actx=null;
+function initAudio(){ if(!actx){ try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(actx&&actx.state==='suspended') actx.resume(); }
+function tone(f,dur,type='sine',vol=.18,delay=0){ if(!actx) return; const t=actx.currentTime+delay,o=actx.createOscillator(),g=actx.createGain();
+  o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+dur+.02); }
+function sFlip(){ tone(640,.08,'triangle',.13); }
+function sMatch(){ tone(660,.16,'sine',.2,0); tone(880,.22,'sine',.2,.09); tone(1175,.28,'sine',.16,.18); }
+function sNo(){ tone(250,.16,'sine',.15); tone(180,.2,'sine',.13,.1); }
+function sWin(){ [523,659,784,1046,1318].forEach((f,i)=>tone(f,.4,'triangle',.2,i*.12)); }
+
+/* ---- default bg + floaty hearts ---- */
+$('bgScene').innerHTML=BG[0].svg;
+(function(){ const box=$('floaty'); const cols=['#ff7fb6','#b89bff','#ffd86b','#ffb3d6'];
+  for(let i=0;i<20;i++){ const e=document.createElement('span');
+    if(Math.random()>.5){ e.className='hrt'; e.textContent='♥'; e.style.color=cols[i%cols.length]; }
+    else{ e.className='dot'; const s=5+Math.random()*5; e.style.width=s+'px'; e.style.height=s+'px'; e.style.background=cols[i%cols.length]; }
+    e.style.left=Math.random()*100+'%'; e.style.animationDuration=(8+Math.random()*9)+'s'; e.style.animationDelay=(-Math.random()*14)+'s';
+    box.appendChild(e); } })();
+</script>
+</body>
+</html>

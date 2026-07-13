@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lava Tic-Tac-Toe — by Laura Vanessa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --board:#0F5E54;--board2:#0B463E;--lava1:#FF6A2C;--lava2:#FFB23E;--gold:#F4C430;--cream:#F7F1E3;--ink:#161310;--paper:#FBF6EA;--line:rgba(0,0,0,.14);
+  --p1:#FF5A1F;--p2:#0E9FB0;
+  --sky1:#5BC2D6;--sky2:#CDEFF6;--hill1:#1C7d72;--hill2:#0C403A;--silh:#0A332E;--sun:#FFD27D;
+  --cell:#FBF6EA;--cellink:#161310;
+  --shadow:0 14px 40px rgba(0,0,0,.35);
+}
+[data-theme="senja"]{
+  --board:#173A5E;--board2:#102A45;--lava1:#FF7A59;--lava2:#FFC15E;--gold:#FFD27D;--cream:#FDEEDD;--paper:#FFF6EC;
+  --p1:#FF4D1F;--p2:#6C4BD6;
+  --sky1:#FF8A5B;--sky2:#FFD98A;--hill1:#5A3A6E;--hill2:#311E45;--silh:#241634;--sun:#FFE7A6;
+  --cell:#FFF6EC;--cellink:#161310;
+}
+[data-theme="malam"]{
+  --board:#10131B;--board2:#0A0C12;--lava1:#FF5277;--lava2:#7B5CFF;--gold:#8AF0E0;--cream:#E7ECF5;--paper:#161A26;--ink:#EAF0FA;--line:rgba(255,255,255,.16);
+  --p1:#FF6A8A;--p2:#52E0EC;
+  --sky1:#0B0E1A;--sky2:#1E2747;--hill1:#0c1326;--hill2:#070b16;--silh:#04060e;--sun:#9DF3E6;
+  --cell:#1B2233;--cellink:#EAF0FA;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
+  background:radial-gradient(1100px 700px at 12% -10%, rgba(255,138,29,.18), transparent 60%),radial-gradient(1000px 800px at 110% 120%, rgba(244,196,48,.12), transparent 60%),linear-gradient(160deg,var(--board),var(--board2));}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:14px;font-weight:700;transition:transform .08s ease,filter .15s ease,background .15s,box-shadow .15s}
+button:active{transform:translateY(1px) scale(.99)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.btn{padding:12px 18px;font-size:14px;background:#fff;color:#161310;box-shadow:0 3px 0 rgba(0,0,0,.16)}
+.btn.primary{background:linear-gradient(135deg,var(--lava1),var(--lava2));color:#231200}
+.btn.ghost{background:rgba(255,255,255,.12);color:var(--cream);box-shadow:none;border:1.5px solid rgba(255,255,255,.28)}
+.btn.gold{background:linear-gradient(135deg,var(--gold),#fff0bf);color:#3a2a00}
+.hide{display:none!important}
+.wordmark{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.02em;line-height:.9}
+.lava-text{background:linear-gradient(180deg,#FFE08A 0%,var(--lava2) 38%,var(--lava1) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(120,30,0,.35))}
+.eyebrow{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase}
+
+/* ---------- SCENE ---------- */
+.scenewrap{position:relative;width:100%;border-radius:20px;overflow:hidden;box-shadow:var(--shadow);background:var(--sky2)}
+.scene{display:block;width:100%;height:100%}
+.scene .moon{display:none}
+.scene .stars{opacity:0;transition:opacity .4s}
+.scene .clouds{opacity:.85}
+.scene .sunglow{animation:sunPulse 4s ease-in-out infinite;transform-origin:center}
+.scene .cloud{animation:drift 26s linear infinite}
+.scene .cloud.c2{animation-duration:38s;animation-delay:-10s}
+.scene .star{animation:twinkle 2.6s ease-in-out infinite}
+@keyframes sunPulse{0%,100%{opacity:.55}50%{opacity:.9}}
+@keyframes drift{from{transform:translateX(-60px)}to{transform:translateX(460px)}}
+@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
+body[data-theme="malam"] .scene .sun{display:none}
+body[data-theme="malam"] .scene .moon{display:block}
+body[data-theme="malam"] .scene .stars{opacity:1}
+body[data-theme="malam"] .scene .clouds{display:none}
+
+/* ---------- SETUP ---------- */
+#setup{max-width:760px;margin:0 auto;padding:20px 16px 90px}
+.hero{position:relative;margin:8px 0 22px}
+.hero .scenewrap{aspect-ratio:20/9}
+.hero-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:18px 20px;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.45));pointer-events:none}
+.hero-overlay h1{font-size:clamp(30px,7vw,52px);margin:0;line-height:.9}
+.hero-overlay .by{font-family:'Space Mono',monospace;color:#fff;opacity:.92;letter-spacing:.16em;text-transform:uppercase;font-size:11px;margin-top:8px;text-shadow:0 1px 4px #0007}
+.hero-overlay .cityname{position:absolute;top:14px;left:18px;background:rgba(0,0,0,.4);color:#fff;font-weight:700;font-size:12.5px;padding:5px 11px;border-radius:20px;backdrop-filter:blur(4px)}
+.step{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.14);border-radius:20px;padding:18px;margin-bottom:16px;backdrop-filter:blur(6px)}
+.step h2{font-family:'Bricolage Grotesque';font-size:17px;margin:0 0 3px;color:var(--cream);display:flex;align-items:center;gap:9px}
+.step .num{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;font-size:13px;background:linear-gradient(135deg,var(--lava1),var(--lava2));color:#231200;flex-shrink:0}
+.step .hint{color:var(--cream);opacity:.7;font-size:12.5px;margin:0 0 14px}
+.themepick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.themecard{border-radius:14px;padding:16px 10px;text-align:center;color:#fff;border:2px solid transparent;font-weight:700;font-size:13px;cursor:pointer;transition:all .18s}
+.themecard small{display:block;font-weight:500;opacity:.85;font-size:11px;margin-top:3px}
+.themecard.on{border-color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.3);transform:translateY(-2px)}
+.th-nusantara{background:linear-gradient(135deg,#0F5E54,#0B463E)}
+.th-senja{background:linear-gradient(135deg,#173A5E,#FF7A59)}
+.th-malam{background:linear-gradient(135deg,#10131B,#7B5CFF)}
+.citygrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.citycard{border-radius:14px;overflow:hidden;cursor:pointer;background:rgba(0,0,0,.22);border:2px solid transparent;transition:all .18s;display:flex;flex-direction:column;align-items:center;padding:8px 6px 9px}
+.citycard svg{width:100%;height:46px}
+.citycard .cn{font-size:11.5px;font-weight:700;color:var(--cream);margin-top:4px;text-align:center;line-height:1.1}
+.citycard.on{border-color:var(--gold);background:rgba(244,196,48,.14);transform:translateY(-2px)}
+.symgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.symcard{border-radius:14px;cursor:pointer;background:rgba(0,0,0,.22);border:2px solid transparent;transition:all .18s;padding:10px 6px 9px;text-align:center}
+.symcard .pair{display:flex;justify-content:center;gap:4px}
+.symcard .pair svg{width:30px;height:30px}
+.symcard .sl{font-size:10.5px;font-weight:700;color:var(--cream);margin-top:5px;line-height:1.1}
+.symcard.on{border-color:var(--gold);background:rgba(244,196,48,.14);transform:translateY(-2px)}
+.seg{display:flex;gap:10px}
+.seg button{flex:1;padding:15px 8px;background:rgba(255,255,255,.08);color:var(--cream);border:1.5px solid transparent;font-size:15px;transition:all .18s;border-radius:13px}
+.seg button.on{background:linear-gradient(135deg,var(--lava1),var(--lava2));color:#231200;border-color:#fff3;transform:translateY(-2px);box-shadow:0 6px 16px rgba(255,106,44,.35)}
+.seg.diff button{flex-direction:column;line-height:1.2}
+.seg.diff button small{display:block;font-weight:500;font-size:10.5px;opacity:.8;margin-top:3px}
+.startbar{position:sticky;bottom:0;padding:14px 0;display:flex;justify-content:center;z-index:5}
+.startbar .btn{font-size:18px;padding:16px 56px;border-radius:16px;box-shadow:0 10px 26px rgba(255,106,44,.42)}
+.footnote{text-align:center;color:var(--cream);opacity:.5;font-size:11px;padding:6px 0 24px;font-family:'Space Mono',monospace}
+
+/* ---------- GAME ---------- */
+#game{display:none;max-width:560px;margin:0 auto;padding:14px 14px 40px}
+.gametop{position:relative;margin-bottom:14px}
+.gametop .scenewrap{aspect-ratio:24/8}
+.gametop .glabel{position:absolute;left:16px;top:12px;background:rgba(0,0,0,.4);color:#fff;font-weight:700;font-size:12.5px;padding:5px 12px;border-radius:20px;backdrop-filter:blur(4px)}
+.gametop .gtitle{position:absolute;right:14px;bottom:10px;font-family:'Bricolage Grotesque';font-weight:800;color:#fff;font-size:18px;text-shadow:0 1px 6px #0008}
+.scoreboard{display:flex;align-items:stretch;gap:10px;margin-bottom:14px}
+.pcard{flex:1;background:rgba(255,255,255,.08);border:2px solid transparent;border-radius:16px;padding:11px;display:flex;align-items:center;gap:10px;transition:all .2s;backdrop-filter:blur(6px)}
+.pcard.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(244,196,48,.18),0 8px 22px rgba(0,0,0,.25)}
+.pcard .psym{width:40px;height:40px;flex-shrink:0;display:grid;place-items:center;border-radius:11px;background:rgba(0,0,0,.18)}
+.pcard .psym svg{width:78%;height:78%}
+.pcard .pmeta{flex:1;min-width:0}
+.pcard .pn{font-weight:700;font-size:13.5px;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard .psc{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--gold);line-height:1}
+.pcard .psc.bump{animation:scoreBump .4s ease}
+@keyframes scoreBump{0%{transform:scale(1)}40%{transform:scale(1.4);color:#fff}100%{transform:scale(1)}}
+.draws{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 4px;color:var(--cream);min-width:48px}
+.draws .dn{font-family:'Space Mono',monospace;font-size:20px;font-weight:700}
+.draws .dl{font-size:9.5px;opacity:.6;letter-spacing:.1em;text-transform:uppercase}
+.status{text-align:center;font-weight:700;color:var(--cream);font-size:16px;min-height:26px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.status svg{width:22px;height:22px}
+.status .think{font-size:13px;opacity:.7;font-weight:500}
+.boardwrap{position:relative;width:min(92vw,440px);margin:0 auto}
+.board{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;aspect-ratio:1/1;
+  background:linear-gradient(135deg,var(--gold),var(--lava2));padding:12px;border-radius:24px;box-shadow:var(--shadow)}
+.cell{position:relative;background:var(--cell);border-radius:16px;display:grid;place-items:center;cursor:pointer;overflow:hidden;transition:transform .12s,box-shadow .15s;box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}
+.cell:hover{transform:translateY(-1px)}
+.cell.dis{cursor:default}
+.cell .mark{width:74%;height:74%;display:grid;place-items:center}
+.cell .mark svg{width:100%;height:100%;filter:drop-shadow(0 3px 5px rgba(0,0,0,.18))}
+.cell .mark.placed{animation:pop .34s cubic-bezier(.2,1.5,.4,1)}
+.cell .ghost{opacity:.22}
+.cell.win{animation:winpulse 1s ease infinite;box-shadow:0 0 0 3px var(--gold),0 0 22px rgba(244,196,48,.55)}
+.cell.shake{animation:cellShake .4s ease}
+@keyframes pop{0%{transform:scale(0) rotate(-32deg);opacity:0}60%{transform:scale(1.18) rotate(7deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes winpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes cellShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.winline{position:absolute;inset:0;pointer-events:none;z-index:6}
+.winline path{stroke:var(--gold);stroke-width:9;stroke-linecap:round;fill:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+.controls{display:flex;gap:10px;margin-top:16px;justify-content:center;flex-wrap:wrap}
+.controls .btn{min-width:130px}
+.iconbtn{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.12);color:var(--cream);border:1.5px solid rgba(255,255,255,.25);font-size:20px;min-width:0!important}
+.endscrim{position:absolute;inset:0;display:grid;place-items:center;z-index:8;border-radius:24px;background:rgba(8,10,14,.55);backdrop-filter:blur(3px);animation:fade .25s}
+@keyframes fade{from{opacity:0}}
+.endcard{background:var(--paper);color:var(--ink);border-radius:20px;padding:22px;text-align:center;max-width:300px;box-shadow:var(--shadow);animation:rise .3s cubic-bezier(.2,1.3,.4,1)}
+@keyframes rise{from{transform:scale(.9) translateY(10px);opacity:0}}
+.endcard .bigsym{width:74px;height:74px;margin:0 auto 4px}
+.endcard .bigsym svg{width:100%;height:100%}
+.endcard h3{font-family:'Bricolage Grotesque';font-weight:800;font-size:26px;margin:6px 0 2px}
+.endcard p{margin:0 0 16px;color:var(--ink);opacity:.7;font-size:13.5px}
+.endcard .btn{width:100%;margin-top:8px}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#161310;color:#fff;padding:11px 18px;border-radius:12px;font-size:13.5px;z-index:80;box-shadow:var(--shadow);opacity:0;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+@media(max-width:520px){
+  .citygrid{grid-template-columns:repeat(3,1fr)}
+  .symgrid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body data-theme="nusantara">
+<canvas id="fx"></canvas>
+
+<!-- ===== SVG DEFS ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <!-- game symbols -->
+  <symbol id="sym-klasik-0" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"><path d="M28 28 L72 72"/><path d="M72 28 L28 72"/></g></symbol>
+  <symbol id="sym-klasik-1" viewBox="0 0 100 100"><circle cx="50" cy="50" r="27" fill="none" stroke="currentColor" stroke-width="15"/></symbol>
+  <symbol id="sym-api-0" viewBox="0 0 100 100"><path d="M50 12 C61 32 75 41 70 61 A22 22 0 1 1 30 61 C30 45 41 41 45 31 C47 39 50 40 50 12 Z" fill="currentColor"/><path d="M50 44 C56 54 60 57 57 67 A8 8 0 1 1 43 67 C42 59 47 54 50 44 Z" fill="rgba(255,255,255,.5)"/></symbol>
+  <symbol id="sym-api-1" viewBox="0 0 100 100"><path d="M50 14 C66 40 76 53 76 67 A26 26 0 1 1 24 67 C24 53 34 40 50 14 Z" fill="currentColor"/><path d="M37 59 A11 15 0 0 0 47 77" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="5" stroke-linecap="round"/></symbol>
+  <symbol id="sym-gunung-0" viewBox="0 0 100 100"><path d="M14 84 L42 36 Q46 28 50 28 Q54 28 58 36 L86 84 Z" fill="currentColor"/><path d="M42 52 L50 36 L58 52 L65 64 L35 64 Z" fill="rgba(255,255,255,.25)"/><circle cx="50" cy="35" r="5" fill="#FFCf4d"/></symbol>
+  <symbol id="sym-gunung-1" viewBox="0 0 100 100"><path d="M14 54 Q30 30 46 45 Q58 55 70 45 Q80 37 86 45 L86 72 Q74 82 60 72 Q46 62 32 72 Q22 80 14 72 Z" fill="currentColor"/><path d="M24 54 Q34 47 44 53" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="4" stroke-linecap="round"/></symbol>
+  <symbol id="sym-mobil-0" viewBox="0 0 100 100"><rect x="13" y="54" width="74" height="20" rx="7" fill="currentColor"/><path d="M30 54 L40 40 L64 40 L74 54 Z" fill="currentColor"/><path d="M41 43 L62 43 L68 53 L34 53 Z" fill="rgba(255,255,255,.38)"/><rect x="49" y="43" width="3" height="10" fill="currentColor"/><rect x="83" y="58" width="6" height="6" rx="2" fill="var(--gold)"/><circle cx="33" cy="76" r="10" fill="currentColor"/><circle cx="33" cy="76" r="4.4" fill="rgba(255,255,255,.55)"/><circle cx="67" cy="76" r="10" fill="currentColor"/><circle cx="67" cy="76" r="4.4" fill="rgba(255,255,255,.55)"/></symbol>
+  <symbol id="sym-mobil-1" viewBox="0 0 100 100"><circle cx="28" cy="70" r="13" fill="none" stroke="currentColor" stroke-width="6"/><circle cx="74" cy="70" r="13" fill="none" stroke="currentColor" stroke-width="6"/><path d="M28 70 L46 54 L66 54 L74 70" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M40 54 L60 54 L56 46 L44 46 Z" fill="currentColor"/><path d="M66 54 L62 40 L73 40" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="68" cy="44" r="3.6" fill="var(--gold)"/></symbol>
+  <symbol id="sym-bintang-0" viewBox="0 0 100 100"><path d="M50 13 L61 39 L89 42 L68 61 L74 88 L50 73 L26 88 L32 61 L11 42 L39 39 Z" fill="currentColor"/></symbol>
+  <symbol id="sym-bintang-1" viewBox="0 0 100 100"><path d="M50 84 C18 60 14 39 27 29 C38 21 49 28 50 37 C51 28 62 21 73 29 C86 39 82 60 50 84 Z" fill="currentColor"/></symbol>
+
+  <!-- landmarks (viewBox 200x150, baseline 150) -->
+  <symbol id="lk-jakarta" viewBox="0 0 200 150">
+    <rect x="34" y="78" width="24" height="72" fill="currentColor"/><rect x="142" y="62" width="28" height="88" fill="currentColor"/>
+    <rect x="95" y="42" width="14" height="108" fill="currentColor"/><rect x="82" y="118" width="40" height="32" fill="currentColor"/>
+    <polygon points="102,16 96,42 108,42" fill="var(--gold)"/>
+    <g fill="rgba(255,255,255,.22)"><rect x="39" y="86" width="5" height="5"/><rect x="48" y="86" width="5" height="5"/><rect x="39" y="98" width="5" height="5"/><rect x="48" y="98" width="5" height="5"/><rect x="148" y="72" width="6" height="6"/><rect x="158" y="72" width="6" height="6"/><rect x="148" y="86" width="6" height="6"/><rect x="158" y="86" width="6" height="6"/><rect x="148" y="100" width="6" height="6"/><rect x="158" y="100" width="6" height="6"/></g>
+  </symbol>
+  <symbol id="lk-bandung" viewBox="0 0 200 150">
+    <rect x="38" y="98" width="22" height="52" fill="currentColor"/><rect x="140" y="98" width="22" height="52" fill="currentColor"/>
+    <rect x="62" y="72" width="76" height="78" fill="currentColor"/><rect x="92" y="50" width="16" height="22" fill="currentColor"/>
+    <circle cx="100" cy="44" r="5" fill="var(--gold)"/><circle cx="100" cy="34" r="4" fill="var(--gold)"/><circle cx="100" cy="26" r="3" fill="var(--gold)"/>
+    <g fill="rgba(255,255,255,.2)"><rect x="72" y="84" width="7" height="9"/><rect x="86" y="84" width="7" height="9"/><rect x="100" y="84" width="7" height="9"/><rect x="114" y="84" width="7" height="9"/><rect x="72" y="104" width="7" height="9"/><rect x="86" y="104" width="7" height="9"/><rect x="100" y="104" width="7" height="9"/><rect x="114" y="104" width="7" height="9"/></g>
+  </symbol>
+  <symbol id="lk-yogyakarta" viewBox="0 0 200 150">
+    <polygon points="112,150 170,52 200,150" fill="currentColor"/><polygon points="156,72 170,52 184,76" fill="rgba(255,255,255,.16)"/>
+    <rect x="58" y="56" width="15" height="94" fill="#F1E8D4"/><rect x="52" y="48" width="27" height="10" fill="#F1E8D4"/>
+    <circle cx="65" cy="41" r="6" fill="var(--gold)"/><rect x="50" y="146" width="31" height="6" fill="currentColor"/>
+  </symbol>
+  <symbol id="lk-surabaya" viewBox="0 0 200 150">
+    <rect x="40" y="84" width="20" height="66" fill="currentColor"/><rect x="138" y="74" width="24" height="76" fill="currentColor"/>
+    <polygon points="100,18 93,150 107,150" fill="#F0E8D8"/><rect x="91" y="146" width="18" height="6" fill="currentColor"/>
+    <g fill="rgba(255,255,255,.2)"><rect x="45" y="92" width="5" height="6"/><rect x="53" y="92" width="5" height="6"/><rect x="144" y="84" width="5" height="6"/><rect x="152" y="84" width="5" height="6"/><rect x="144" y="98" width="5" height="6"/><rect x="152" y="98" width="5" height="6"/></g>
+  </symbol>
+  <symbol id="lk-palembang" viewBox="0 0 200 150">
+    <path d="M14 110 Q56 96 60 96 M140 96 Q144 96 186 110" fill="none" stroke="currentColor" stroke-width="4"/>
+    <rect x="14" y="104" width="172" height="9" fill="currentColor"/>
+    <rect x="58" y="52" width="12" height="58" fill="currentColor"/><rect x="130" y="52" width="12" height="58" fill="currentColor"/>
+    <rect x="54" y="44" width="20" height="10" fill="var(--gold)"/><rect x="126" y="44" width="20" height="10" fill="var(--gold)"/>
+    <path d="M66 56 L100 84 L136 56" fill="none" stroke="currentColor" stroke-width="3"/>
+    <rect x="0" y="124" width="200" height="26" fill="rgba(255,255,255,.07)"/>
+  </symbol>
+  <symbol id="lk-bali" viewBox="0 0 200 150">
+    <polygon points="56,150 66,58 82,58 82,150" fill="currentColor"/><polygon points="144,150 134,58 118,58 118,150" fill="currentColor"/>
+    <polygon points="66,58 74,44 82,58" fill="var(--gold)"/><polygon points="118,58 126,44 134,58" fill="var(--gold)"/>
+    <polygon points="90,150 90,82 110,82 110,150" fill="currentColor"/><polygon points="86,82 100,64 114,82" fill="currentColor"/><polygon points="88,66 100,52 112,66" fill="currentColor"/>
+    <g fill="rgba(255,255,255,.18)"><rect x="70" y="78" width="8" height="3"/><rect x="122" y="78" width="8" height="3"/><rect x="70" y="98" width="8" height="3"/><rect x="122" y="98" width="8" height="3"/></g>
+  </symbol>
+  <symbol id="lk-malang" viewBox="0 0 200 150">
+    <polygon points="0,150 52,72 104,150" fill="currentColor" opacity=".82"/>
+    <polygon points="78,150 150,56 200,150" fill="currentColor"/>
+    <polygon points="134,80 150,56 167,82" fill="rgba(255,255,255,.22)"/>
+    <ellipse cx="100" cy="146" rx="48" ry="7" fill="rgba(255,255,255,.10)"/>
+    <rect x="86" y="120" width="28" height="26" fill="#F1E8D4"/><rect x="90" y="108" width="20" height="14" fill="#F1E8D4"/>
+    <polygon points="100,60 91,108 109,108" fill="#F1E8D4"/><polygon points="100,49 95,62 105,62" fill="var(--gold)"/>
+  </symbol>
+  <symbol id="lk-banyuwangi" viewBox="0 0 200 150">
+    <rect x="76" y="138" width="48" height="12" fill="currentColor"/><rect x="82" y="130" width="36" height="8" fill="currentColor"/>
+    <polygon points="100,86 72,138 128,138" fill="currentColor"/>
+    <rect x="92" y="64" width="16" height="24" fill="currentColor"/>
+    <path d="M94 72 L62 64 L57 77" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M106 72 L138 64 L143 77" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="100" cy="55" r="8" fill="currentColor"/>
+    <polygon points="100,28 95,49 105,49" fill="currentColor"/><polygon points="85,35 91,51 97,47" fill="currentColor"/><polygon points="115,35 109,51 103,47" fill="currentColor"/><polygon points="76,46 86,55 90,50" fill="currentColor"/><polygon points="124,46 114,55 110,50" fill="currentColor"/>
+    <circle cx="100" cy="28" r="3" fill="var(--gold)"/><circle cx="85" cy="35" r="2.5" fill="var(--gold)"/><circle cx="115" cy="35" r="2.5" fill="var(--gold)"/>
+  </symbol>
+</defs></svg>
+
+<!-- ===== SETUP ===== -->
+<div id="setup">
+  <div class="hero">
+    <div class="scenewrap" id="heroScene"></div>
+    <div class="hero-overlay">
+      <div class="cityname" id="heroCity">Jakarta</div>
+      <h1 class="wordmark"><span class="lava-text">LAVA</span> <span style="color:#fff">TIC-TAC-TOE</span></h1>
+      <div class="by">by Laura Vanessa</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">1</span> Tema Papan</h2>
+    <p class="hint">Palet warna & suasana langit.</p>
+    <div class="themepick" id="themepick">
+      <div class="themecard th-nusantara on" data-theme="nusantara">Nusantara<small>siang tropis</small></div>
+      <div class="themecard th-senja" data-theme="senja">Senja<small>jingga hangat</small></div>
+      <div class="themecard th-malam" data-theme="malam">Malam<small>neon gelap</small></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">2</span> Kota</h2>
+    <p class="hint">Grafis latar mengikuti kota pilihan.</p>
+    <div class="citygrid" id="citygrid"></div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">3</span> Simbol</h2>
+    <p class="hint">Ganti X / O dengan pasangan simbol.</p>
+    <div class="symgrid" id="symgrid"></div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">4</span> Jumlah Pemain</h2>
+    <p class="hint">2 pemain, atau 1 pemain melawan AI.</p>
+    <div class="seg" id="playerseg">
+      <button data-p="1" class="on">1 Pemain<br><small style="font-weight:500;font-size:11px;opacity:.8">vs AI</small></button>
+      <button data-p="2">2 Pemain<br><small style="font-weight:500;font-size:11px;opacity:.8">tatap muka</small></button>
+    </div>
+  </div>
+
+  <div class="step" id="diffstep">
+    <h2><span class="num">5</span> Kesulitan AI</h2>
+    <p class="hint">Seberapa pintar lawan komputer.</p>
+    <div class="seg diff" id="diffseg">
+      <button data-d="mudah">Mudah<small>santai</small></button>
+      <button data-d="sedang" class="on">Sedang<small>menantang</small></button>
+      <button data-d="sulit">Sulit<small>tak terkalahkan</small></button>
+    </div>
+  </div>
+
+  <div class="startbar"><button class="btn primary" id="startBtn">MULAI BERMAIN ▶</button></div>
+  <div class="footnote">v1 · dibuat untuk Laura Vanessa</div>
+</div>
+
+<!-- ===== GAME ===== -->
+<div id="game">
+  <div class="gametop">
+    <div class="scenewrap" id="gameScene"></div>
+    <div class="glabel" id="gameCity">Jakarta</div>
+    <div class="gtitle"><span class="lava-text">LAVA</span> TTT</div>
+  </div>
+  <div class="scoreboard" id="scoreboard"></div>
+  <div class="status" id="status"></div>
+  <div class="boardwrap" id="boardwrap">
+    <div class="board" id="board"></div>
+  </div>
+  <div class="controls">
+    <button class="btn gold" id="againBtn">Main Lagi</button>
+    <button class="btn ghost" id="resetBtn">Skor 0</button>
+    <button class="iconbtn" id="muteBtn" title="Suara">🔊</button>
+    <button class="iconbtn" id="backBtn" title="Pengaturan">⚙️</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const CITIES=[['jakarta','Jakarta'],['bandung','Bandung'],['yogyakarta','Yogyakarta'],['surabaya','Surabaya'],['palembang','Palembang'],['bali','Denpasar'],['malang','Malang'],['banyuwangi','Banyuwangi']];
+const SYMSETS=[['klasik','Klasik'],['api','Api & Air'],['gunung','Gunung & Ombak'],['mobil','Mobil & Motor'],['bintang','Bintang & Hati']];
+const CFG={theme:'nusantara',city:'jakarta',symset:'klasik',players:1,diff:'sedang'};
+function cityName(k){const c=CITIES.find(c=>c[0]===k);return c?c[1]:k;}
+function cssVar(n){const v=getComputedStyle(document.body).getPropertyValue(n).trim();return v||'#FF6A2C';}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
+
+/* ----- symbols & scene ----- */
+function symMarkup(set,which,colorVar){return `<svg viewBox="0 0 100 100" style="color:${colorVar}"><use href="#sym-${set}-${which}"/></svg>`;}
+function symFor(player){return symMarkup(CFG.symset, player, player===0?'var(--p1)':'var(--p2)');}
+let STAR_CACHE=null;
+function starsMarkup(){ if(STAR_CACHE)return STAR_CACHE; const rnd=mulberry32(7); let s=''; for(let i=0;i<32;i++){const x=Math.floor(rnd()*400),y=Math.floor(rnd()*118),r=(rnd()*1.2+0.5).toFixed(1),d=(rnd()*2.6).toFixed(2); s+=`<circle class="star" cx="${x}" cy="${y}" r="${r}" fill="#fff" style="animation-delay:${d}s"/>`;} STAR_CACHE=s; return s; }
+function sceneHTML(city){
+  return `<svg class="scene" viewBox="0 0 400 220" preserveAspectRatio="xMidYMax slice">
+    <defs>
+      <linearGradient id="sky_${city}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sky1)"/><stop offset="1" style="stop-color:var(--sky2)"/></linearGradient>
+      <radialGradient id="glow_${city}"><stop offset="0" style="stop-color:var(--sun)" stop-opacity=".85"/><stop offset="1" style="stop-color:var(--sun)" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="400" height="220" fill="url(#sky_${city})"/>
+    <g class="stars">${starsMarkup()}</g>
+    <g class="sun"><circle class="sunglow" cx="324" cy="66" r="52" fill="url(#glow_${city})"/><circle cx="324" cy="66" r="24" fill="var(--sun)"/></g>
+    <path class="moon" d="M332 42 A24 24 0 1 0 332 90 A18 18 0 1 1 332 42 Z" fill="var(--sun)"/>
+    <g class="clouds" fill="#ffffff"><g class="cloud"><ellipse cx="80" cy="58" rx="34" ry="13"/><ellipse cx="112" cy="52" rx="24" ry="14"/></g><g class="cloud c2"><ellipse cx="250" cy="42" rx="28" ry="11"/><ellipse cx="276" cy="38" rx="20" ry="12"/></g></g>
+    <path d="M0 168 Q100 138 200 162 T400 158 V220 H0 Z" fill="var(--hill1)" opacity=".75"/>
+    <path d="M0 186 Q120 162 240 182 T400 178 V220 H0 Z" fill="var(--hill2)"/>
+    <use href="#lk-${city}" x="100" y="70" width="200" height="150" style="color:var(--silh)"/>
+    <rect x="0" y="200" width="400" height="20" fill="var(--hill2)"/>
+  </svg>`;
+}
+function paintScenes(){ $('heroScene').innerHTML=sceneHTML(CFG.city); $('heroCity').textContent=cityName(CFG.city); }
+
+/* ----- setup UI ----- */
+function buildSetup(){
+  document.body.setAttribute('data-theme',CFG.theme);
+  // themes
+  document.querySelectorAll('#themepick .themecard').forEach(c=>{
+    c.classList.toggle('on',c.dataset.theme===CFG.theme);
+    c.onclick=()=>{CFG.theme=c.dataset.theme; document.body.setAttribute('data-theme',CFG.theme); sfxClick(); buildSetup();};
+  });
+  // cities
+  const cg=$('citygrid'); cg.innerHTML='';
+  CITIES.forEach(([k,n])=>{
+    const el=document.createElement('div'); el.className='citycard'+(k===CFG.city?' on':'');
+    el.innerHTML=`<svg viewBox="0 0 200 150" style="color:var(--cream)"><use href="#lk-${k}"/></svg><div class="cn">${n}</div>`;
+    el.onclick=()=>{CFG.city=k; sfxClick(); paintScenes(); document.querySelectorAll('#citygrid .citycard').forEach(x=>x.classList.remove('on')); el.classList.add('on');};
+    cg.appendChild(el);
+  });
+  // symbols
+  const sg=$('symgrid'); sg.innerHTML='';
+  SYMSETS.forEach(([k,n])=>{
+    const el=document.createElement('div'); el.className='symcard'+(k===CFG.symset?' on':'');
+    el.innerHTML=`<div class="pair">${symMarkup(k,0,'var(--p1)')}${symMarkup(k,1,'var(--p2)')}</div><div class="sl">${n}</div>`;
+    el.onclick=()=>{CFG.symset=k; sfxClick(); document.querySelectorAll('#symgrid .symcard').forEach(x=>x.classList.remove('on')); el.classList.add('on');};
+    sg.appendChild(el);
+  });
+  // players
+  document.querySelectorAll('#playerseg button').forEach(b=>{
+    b.classList.toggle('on',+b.dataset.p===CFG.players);
+    b.onclick=()=>{CFG.players=+b.dataset.p; sfxClick(); $('diffstep').style.display=CFG.players===1?'block':'none'; document.querySelectorAll('#playerseg button').forEach(x=>x.classList.toggle('on',x===b));};
+  });
+  $('diffstep').style.display=CFG.players===1?'block':'none';
+  // difficulty
+  document.querySelectorAll('#diffseg button').forEach(b=>{
+    b.classList.toggle('on',b.dataset.d===CFG.diff);
+    b.onclick=()=>{CFG.diff=b.dataset.d; sfxClick(); document.querySelectorAll('#diffseg button').forEach(x=>x.classList.toggle('on',x===b));};
+  });
+  paintScenes();
+}
+$('startBtn').onclick=()=>{ sfxClick(); startGame(); };
+
+/* ----- sound ----- */
+let muted=false, actx=null;
+function audio(){ if(muted)return null; if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; } } return actx; }
+function beep(freq,dur,type,vol,when){ const ac=audio(); if(!ac)return; const t=ac.currentTime+(when||0); const o=ac.createOscillator(),g=ac.createGain(); o.type=type||'sine'; o.frequency.value=freq; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol||0.2,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+(dur||0.15)); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+(dur||0.15)+0.03); }
+function sfxPlace(p){ beep(p===0?440:340,0.12,'triangle',0.18); }
+function sfxWin(){ [523,659,784,1047].forEach((f,i)=>beep(f,0.2,'triangle',0.2,i*0.1)); }
+function sfxDraw(){ beep(300,0.18,'sine',0.16); beep(235,0.22,'sine',0.16,0.1); }
+function sfxClick(){ beep(620,0.05,'square',0.07); }
+
+/* ----- confetti ----- */
+const fx=$('fx'); let fxParts=[], fxRAF=null;
+function resizeFx(){ fx.width=window.innerWidth; fx.height=window.innerHeight; }
+function spawnConfetti(n,spread){
+  const colors=[cssVar('--lava1'),cssVar('--lava2'),cssVar('--gold'),cssVar('--p1'),cssVar('--p2')];
+  for(let i=0;i<n;i++){ fxParts.push({x:window.innerWidth/2+(Math.random()-.5)*spread,y:window.innerHeight*0.4,vx:(Math.random()-.5)*9,vy:Math.random()*-12-4,g:0.32+Math.random()*0.12,s:6+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*0.4,c:colors[i%colors.length],life:1,shape:Math.random()<.5?0:1}); }
+  if(!fxRAF) fxRAF=requestAnimationFrame(stepFx);
+}
+function confetti(){ resizeFx(); spawnConfetti(160,150); setTimeout(()=>spawnConfetti(90,window.innerWidth*0.55),250); }
+function stepFx(){
+  const ctx=fx.getContext('2d'); ctx.clearRect(0,0,fx.width,fx.height);
+  let alive=0;
+  for(const p of fxParts){ if(p.life<=0)continue; alive++; p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr; p.life-=0.008;
+    ctx.save(); ctx.globalAlpha=Math.max(0,p.life); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.c;
+    if(p.shape===0) ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.62); else { ctx.beginPath(); ctx.arc(0,0,p.s/2,0,7); ctx.fill(); }
+    ctx.restore();
+  }
+  if(alive>0){ fxRAF=requestAnimationFrame(stepFx); } else { fxParts=[]; ctx.clearRect(0,0,fx.width,fx.height); fxRAF=null; }
+}
+window.addEventListener('resize',()=>{ if(fxRAF)resizeFx(); if(S&&S.over&&S.line)drawWinLine(); });
+
+/* ===================== GAME ===================== */
+const SVGNS='http://www.w3.org/2000/svg';
+let S=null;
+
+function startGame(){
+  S={ players:CFG.players, diff:CFG.diff, symset:CFG.symset, city:CFG.city,
+      board:Array(9).fill(null), turn:0, over:false, winner:null, line:null,
+      scores:[0,0,0], starter:0, busy:false, ai: CFG.players===1?1:null };
+  $('gameScene').innerHTML=sceneHTML(S.city);
+  $('gameCity').textContent=cityName(S.city);
+  buildBoard(); buildScoreboard();
+  $('setup').style.display='none'; $('game').style.display='block';
+  newRound(0);
+}
+
+function buildBoard(){
+  const b=$('board'); b.innerHTML='';
+  for(let i=0;i<9;i++){
+    const c=document.createElement('div'); c.className='cell'; c.dataset.i=i;
+    c.onclick=()=>onCell(i); c.onmouseenter=()=>ghost(i,true); c.onmouseleave=()=>ghost(i,false);
+    b.appendChild(c);
+  }
+  let wl=$('winline'); if(!wl){ wl=document.createElementNS(SVGNS,'svg'); wl.setAttribute('class','winline'); wl.id='winline'; $('boardwrap').appendChild(wl); } wl.innerHTML='';
+}
+function buildScoreboard(){
+  const name=p=> S.ai!=null ? (p===0?'Kamu':('AI · '+diffLabel())) : ('Pemain '+(p+1));
+  $('scoreboard').innerHTML=`
+    <div class="pcard" id="pc0"><div class="psym">${symFor(0)}</div><div class="pmeta"><div class="pn">${name(0)}</div></div><div class="psc" id="sc0">0</div></div>
+    <div class="draws"><div class="dn" id="scd">0</div><div class="dl">Seri</div></div>
+    <div class="pcard" id="pc1"><div class="psym">${symFor(1)}</div><div class="pmeta"><div class="pn">${name(1)}</div></div><div class="psc" id="sc1">0</div></div>`;
+}
+function diffLabel(){ return {mudah:'Mudah',sedang:'Sedang',sulit:'Sulit'}[S.diff]; }
+
+function newRound(starter){
+  const sc=$('endscrim'); if(sc) sc.remove();
+  S.board=Array(9).fill(null); S.turn=starter; S.over=false; S.winner=null; S.line=null; S.busy=false;
+  const wl=$('winline'); if(wl) wl.innerHTML='';
+  $('board').querySelectorAll('.cell').forEach(c=>{ c.className='cell'; c.innerHTML=''; });
+  updateStatus(); updateActiveCard();
+  if(S.ai!=null && S.turn===S.ai){ S.busy=true; updateStatus(); setTimeout(aiMove,520); }
+}
+function nextRound(){ const sc=$('endscrim'); if(sc) sc.remove(); S.starter=1-S.starter; newRound(S.starter); }
+
+function onCell(i){
+  if(S.over||S.busy||S.board[i]!=null) return;
+  if(S.ai!=null && S.turn===S.ai) return;
+  ghost(i,false); place(i,S.turn);
+}
+function ghost(i,on){
+  const cell=$('board').children[i]; if(!cell) return;
+  const ex=cell.querySelector('.ghost'); if(ex) ex.remove();
+  if(!on||S.over||S.busy||S.board[i]!=null) return;
+  if(S.ai!=null && S.turn===S.ai) return;
+  const g=document.createElement('div'); g.className='mark ghost'; g.innerHTML=symFor(S.turn); cell.appendChild(g);
+}
+function place(i,player){
+  S.board[i]=player;
+  const cell=$('board').children[i];
+  const m=document.createElement('div'); m.className='mark placed'; m.innerHTML=symFor(player); cell.appendChild(m);
+  cell.classList.add('dis');
+  sfxPlace(player);
+  const res=evaluate(S.board);
+  if(res){ endRound(res); return; }
+  S.turn=1-player; updateStatus(); updateActiveCard();
+  if(S.ai!=null && S.turn===S.ai){ S.busy=true; updateStatus(); setTimeout(aiMove, 470+Math.random()*280); }
+}
+function aiMove(){ if(S.over) return; const mv=aiPick(); S.busy=false; place(mv,S.ai); }
+
+function endRound(res){
+  S.over=true; S.busy=false;
+  if(res.type==='win'){
+    S.winner=res.player; S.line=res.line;
+    res.line.forEach(idx=>$('board').children[idx].classList.add('win'));
+    S.scores[res.player]++; bumpScore(res.player);
+    drawWinLine(); confetti(); sfxWin();
+  } else {
+    S.winner=null; S.line=null; S.scores[2]++; bumpDraw();
+    $('board').querySelectorAll('.cell').forEach(c=>{ c.classList.add('shake'); setTimeout(()=>c.classList.remove('shake'),420); });
+    sfxDraw();
+  }
+  updateStatus(); updateActiveCard();
+  setTimeout(showEnd, res.type==='win'?720:520);
+}
+function showEnd(){
+  if(!S.over) return;
+  let title,sub,symHTML='';
+  if(S.winner==null){ title='Seri!'; sub='Papan penuh tanpa pemenang.'; }
+  else {
+    symHTML=`<div class="bigsym">${symFor(S.winner)}</div>`;
+    if(S.ai!=null){ title=S.winner===S.ai?'AI Menang':'Kamu Menang!'; sub=S.winner===S.ai?'Coba lagi — kamu pasti bisa!':'Mantap! Lanjut ronde berikutnya?'; }
+    else { title='Pemain '+(S.winner+1)+' Menang!'; sub='Selamat! Lanjut ronde berikutnya?'; }
+  }
+  const scrim=document.createElement('div'); scrim.className='endscrim'; scrim.id='endscrim';
+  scrim.innerHTML=`<div class="endcard">${symHTML}<h3 class="wordmark">${title}</h3><p>${sub}</p>
+    <button class="btn primary" id="endAgain">Main Lagi</button>
+    <button class="btn ghost" id="endBack" style="color:var(--ink);border-color:var(--ink);background:transparent">Ganti Pengaturan</button></div>`;
+  $('boardwrap').appendChild(scrim);
+  $('endAgain').onclick=()=>{ sfxClick(); nextRound(); };
+  $('endBack').onclick=()=>{ sfxClick(); toSetup(); };
+}
+
+function drawWinLine(){
+  const wl=$('winline'); if(!wl||!S.line) return;
+  const wrap=$('boardwrap').getBoundingClientRect();
+  const a=cellCenter(S.line[0],wrap), c=cellCenter(S.line[2],wrap);
+  const dx=c.x-a.x, dy=c.y-a.y, len=Math.hypot(dx,dy)||1, ux=dx/len, uy=dy/len, ext=wrap.width*0.055;
+  const x1=a.x-ux*ext, y1=a.y-uy*ext, x2=c.x+ux*ext, y2=c.y+uy*ext;
+  wl.setAttribute('width',wrap.width); wl.setAttribute('height',wrap.height); wl.setAttribute('viewBox',`0 0 ${wrap.width} ${wrap.height}`);
+  wl.innerHTML=`<path d="M ${x1} ${y1} L ${x2} ${y2}"/>`;
+  const path=wl.querySelector('path'); const L=path.getTotalLength();
+  path.style.strokeDasharray=L; path.style.strokeDashoffset=L; void path.getBoundingClientRect();
+  path.style.transition='stroke-dashoffset .5s ease'; path.style.strokeDashoffset='0';
+}
+function cellCenter(i,wrap){ const r=$('board').children[i].getBoundingClientRect(); return {x:r.left-wrap.left+r.width/2, y:r.top-wrap.top+r.height/2}; }
+
+function updateActiveCard(){
+  const p0=$('pc0'),p1=$('pc1'); if(!p0)return;
+  p0.classList.toggle('active', !S.over && S.turn===0);
+  p1.classList.toggle('active', !S.over && S.turn===1);
+}
+function updateStatus(){
+  const st=$('status'); const ico=p=>`<span style="width:22px;height:22px;display:inline-grid">${symFor(p)}</span>`;
+  if(S.over){
+    if(S.winner==null){ st.innerHTML='Seri! 🤝'; return; }
+    const who = S.ai!=null ? (S.winner===S.ai?'AI menang':'Kamu menang') : ('Pemain '+(S.winner+1)+' menang');
+    st.innerHTML=`${ico(S.winner)} ${who}!`; return;
+  }
+  if(S.busy && S.ai!=null && S.turn===S.ai){ st.innerHTML=`${ico(S.turn)} <span class="think">AI berpikir…</span>`; return; }
+  const who = S.ai!=null ? (S.turn===0?'Giliranmu':'Giliran AI') : ('Giliran Pemain '+(S.turn+1));
+  st.innerHTML=`${ico(S.turn)} ${who}`;
+}
+function bumpScore(p){ const e=$('sc'+p); e.textContent=S.scores[p]; e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump'); }
+function bumpDraw(){ const e=$('scd'); e.textContent=S.scores[2]; e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump'); }
+
+/* ----- evaluation & AI ----- */
+const LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function winnerOf(b){ for(const L of LINES){ const a=L[0],c=L[1],d=L[2]; if(b[a]!=null&&b[a]===b[c]&&b[a]===b[d]) return {player:b[a],line:L}; } return null; }
+function evaluate(b){ const w=winnerOf(b); if(w) return {type:'win',player:w.player,line:w.line}; if(b.every(x=>x!=null)) return {type:'draw'}; return null; }
+function avail(b){ const r=[]; for(let i=0;i<9;i++) if(b[i]==null) r.push(i); return r; }
+function findWin(b,p){ for(const i of avail(b)){ b[i]=p; const w=winnerOf(b); b[i]=null; if(w&&w.player===p) return i; } return -1; }
+function minimax(b,toMove,ai,depth){
+  const w=winnerOf(b); if(w) return {score:(w.player===ai?10-depth:depth-10)};
+  const a=avail(b); if(a.length===0) return {score:0};
+  let best=null;
+  for(const i of a){ b[i]=toMove; const r=minimax(b,1-toMove,ai,depth+1); b[i]=null;
+    if(best===null || (toMove===ai? r.score>best.score : r.score<best.score)) best={score:r.score,move:i};
+  }
+  return best;
+}
+function aiPick(){
+  const b=S.board, ai=S.ai, opp=1-ai, a=avail(b);
+  if(a.length===0) return 0;
+  if(S.diff==='sulit') return minimax(b.slice(),ai,ai,0).move;
+  const win=findWin(b,ai);
+  if(S.diff==='sedang'){
+    if(win>=0) return win;
+    const block=findWin(b,opp); if(block>=0) return block;
+    if(Math.random()<0.62) return minimax(b.slice(),ai,ai,0).move;
+    const order=[4,0,2,6,8,1,3,5,7].filter(i=>b[i]==null); return order[0];
+  }
+  if(win>=0 && Math.random()<0.5) return win;
+  const block=findWin(b,opp); if(block>=0 && Math.random()<0.3) return block;
+  return a[Math.floor(Math.random()*a.length)];
+}
+
+/* ----- controls ----- */
+$('againBtn').onclick=()=>{ sfxClick(); if(S.over) nextRound(); else newRound(S.starter); };
+$('resetBtn').onclick=()=>{ sfxClick(); S.scores=[0,0,0]; $('sc0').textContent='0'; $('sc1').textContent='0'; $('scd').textContent='0'; toast('Skor direset'); };
+$('muteBtn').onclick=()=>{ muted=!muted; $('muteBtn').textContent=muted?'🔇':'🔊'; if(!muted) sfxClick(); };
+$('backBtn').onclick=()=>{ sfxClick(); toSetup(); };
+function toSetup(){ const sc=$('endscrim'); if(sc) sc.remove(); $('game').style.display='none'; $('setup').style.display='block'; window.scrollTo(0,0); }
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1700); }
+
+/* ----- boot ----- */
+buildSetup();
+</script>
+</body>
+</html>
