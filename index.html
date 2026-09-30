@@ -504,6 +504,7 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
 }
 
 .art-globe{background:radial-gradient(120% 120% at 20% 10%,#8CF5C0,#2f9de0 45%,#0a2a66 100%)}
+.art-simandara{background:linear-gradient(160deg,rgba(6,12,24,0) 40%,rgba(6,12,24,.55) 100%),repeating-linear-gradient(-28deg,rgba(255,255,255,.05) 0 2px,transparent 2px 26px),radial-gradient(90% 70% at 78% 18%,#ffd57a 0%,#f3b53c 18%,#c8402a 42%,transparent 62%),radial-gradient(120% 120% at 15% 100%,#0e2a52 0%,#0b1628 55%,#060c18 100%)}
 .art-jakarta{background:radial-gradient(120% 120% at 22% 8%,#ffe9a8,#f5a53c 30%,#a33f7e 62%,#2b1b47 100%)}
 
 </style>
@@ -536,7 +537,7 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
   <div class="hero-inner">
     <div class="eyebrow"><span class="dot"></span> Dunia Game Ajaib Laura</div>
     <h1>Fun Games<br><span class="grad">by Laura Vanessa</span></h1>
-    <p class="lead">Koleksi game seru buatan Laura — dari petualangan 3D menjelajahi kota Jakarta, kafe roti 3D yang manis, papan Monopoli 3D, menjelajah bumi lewat globe interaktif, hingga uji ingatan yang menantang. Semua bisa dimainkan langsung di sini.</p>
+    <p class="lead">Koleksi game seru buatan Laura — dari misi pesawat tempur 3D menjaga langit Nusantara, petualangan 3D menjelajahi kota Jakarta, kafe roti 3D yang manis, papan Monopoli 3D, menjelajah bumi lewat globe interaktif, hingga uji ingatan yang menantang. Semua bisa dimainkan langsung di sini.</p>
     <div class="hero-cta">
       <button class="btn btn-primary" data-play-hero="">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
@@ -545,7 +546,7 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
       <button class="btn btn-ghost" onclick="document.getElementById('library').scrollIntoView({behavior:'smooth'})">Jelajahi Koleksi</button>
     </div>
     <div class="hero-stats">
-      <div class="s"><div class="v" id="stat-live">6</div><div class="k">Game Siap Main</div></div>
+      <div class="s"><div class="v" id="stat-live">7</div><div class="k">Game Siap Main</div></div>
       <div class="s"><div class="v">5k+</div><div class="k">Total Dimainkan</div></div>
       <div class="s"><div class="v">4.8★</div><div class="k">Rating Rata-rata</div></div>
     </div>
@@ -640,6 +641,24 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
 // LAVA Games — game catalogue
 // `url` points to the real game file. Games still in the works use "#".
 window.LAVA_GAMES = [
+  {
+    id: "simandara",
+    title: "Simandara Strike",
+    tagline: "Shooter pesawat tempur 3D — jaga langit Nusantara!",
+    category: "Aksi",
+    icon: "✈️",
+    art: "art-simandara",
+    accent: "#f3b53c",
+    ready: true,
+    url: "simandara-strike.html",
+    players: "1 pemain",
+    time: "240 menit",
+    plays: "BARU",
+    rating: "5.0",
+    progress: 0,
+    desc: "Game tembak-tembakan arkade 3D ala ding-dong 90-an! Terbangkan jet tempur dan helikopter serang bersama Skuadron Garuda dari Markas Malang. Lewati 26 misi dari Banyuwangi, Lamongan, Surabaya, Jakarta, Sumatra, Kalimantan, Bali sampai Puncak Jaya, kalahkan 9 boss raksasa, kumpulkan dana untuk upgrade senjata, armor, dan pesawat baru, lalu hentikan Jenderal Rispo. Lengkap dengan cerita, cutscene, dan simpan progres.",
+    tags: ["Aksi", "3D", "Pesawat", "Cerita", "Baru"]
+  },
   {
     id: "jakarta",
     title: "Laura di Jakarta",
@@ -962,7 +981,7 @@ window.LAVA_GAMES = [
     if(!g.url||g.url==='#'){toast(`🎮 <b>${g.title}</b> segera hadir!`);return;}
     const p=$('.player');
     const wide = ['jakarta','monopoli','globe','bakery'].includes(g.id);
-    const cinema = ['jakarta'].includes(g.id);   // dunia terbuka 3D: butuh layar seluas mungkin
+    const cinema = ['jakarta','simandara'].includes(g.id);   // game 3D besar: butuh layar seluas mungkin
     p.classList.toggle('wide',wide);
     p.classList.toggle('cinema',cinema);
     $('.player .pinfo').innerHTML=`<div class="pi ${g.art}">${g.icon}</div><div><h4>${g.title}</h4><p>${g.category} · ${g.players}</p></div>`;
