@@ -505,6 +505,28 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
 
 .art-globe{background:radial-gradient(120% 120% at 20% 10%,#8CF5C0,#2f9de0 45%,#0a2a66 100%)}
 .art-simandara{background:linear-gradient(160deg,rgba(6,12,24,0) 40%,rgba(6,12,24,.55) 100%),repeating-linear-gradient(-28deg,rgba(255,255,255,.05) 0 2px,transparent 2px 26px),radial-gradient(90% 70% at 78% 18%,#ffd57a 0%,#f3b53c 18%,#c8402a 42%,transparent 62%),radial-gradient(120% 120% at 15% 100%,#0e2a52 0%,#0b1628 55%,#060c18 100%)}
+.art-delivery{background:linear-gradient(180deg,rgba(6,16,12,0) 35%,rgba(6,16,12,.7) 100%),url("img/simandara-delivery-chaos-thumb.jpg") center/cover no-repeat,linear-gradient(150deg,#19c37d,#0b3d2a 60%,#081a12)}
+.detail .art-delivery,.feat.big .art-delivery,.hero-feature .art-delivery{background:linear-gradient(180deg,rgba(6,16,12,0) 35%,rgba(6,16,12,.75) 100%),url("img/simandara-delivery-chaos.jpg") center/cover no-repeat,linear-gradient(150deg,#19c37d,#0b3d2a 60%,#081a12)}
+/* hero: rilis terbaru di sisi kanan */
+.hero{gap:48px;justify-content:space-between;padding-top:120px;padding-bottom:80px}
+.card[data-game=delivery] .cicon,.feat[data-game=delivery] .ficon,.dvisual .art-delivery~.dicon{display:none}
+.hero-feature{position:relative;z-index:2;flex:0 1 560px;min-width:0;border-radius:28px;overflow:hidden;cursor:pointer;
+  border:1px solid rgba(255,255,255,.22);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 6px rgba(25,195,125,.08);
+  transform:perspective(1200px) rotateY(-7deg) rotateX(2deg);transition:transform .6s var(--ease-back),box-shadow .4s;animation:heroFeatIn 1s var(--ease) .3s both}
+.hero-feature:hover{transform:perspective(1200px) rotateY(0) rotateX(0) translateY(-6px);box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 6px rgba(25,195,125,.18)}
+@keyframes heroFeatIn{from{opacity:0;transform:perspective(1200px) rotateY(-14deg) translateX(40px)}}
+.hero-feature .hf-img{aspect-ratio:16/9;width:100%}
+.hero-feature .hf-new{position:absolute;top:16px;left:16px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:#062016;background:#ffd23f;padding:7px 12px;border-radius:30px;box-shadow:0 6px 18px rgba(255,210,63,.4)}
+.hero-feature .hf-body{padding:18px 22px 22px;background:linear-gradient(180deg,#0b1d16,#07140f)}
+.hero-feature .hf-cat{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#19c37d}
+.hero-feature h3{font-family:var(--font-display);font-size:26px;line-height:1.1;margin-top:6px}
+.hero-feature ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding:0}
+.hero-feature li{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.86);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);padding:6px 10px;border-radius:20px}
+.hero-feature .hf-play{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-family:var(--font-display);font-weight:600;font-size:15px;
+  color:#062016;background:linear-gradient(120deg,#19c37d,#7ee8b4);padding:11px 20px;border-radius:14px}
+@media (max-width:1100px){.hero{flex-direction:column;justify-content:center;align-items:flex-start;padding-top:110px;padding-bottom:90px}.hero-feature{flex:none;width:min(560px,100%);transform:none}.hero-feature:hover{transform:translateY(-4px)}}
+@media (max-width:680px){.hero-feature h3{font-size:21px}.hero-feature .hf-body{padding:14px 16px 16px}}
 .art-jakarta{background:radial-gradient(120% 120% at 22% 8%,#ffe9a8,#f5a53c 30%,#a33f7e 62%,#2b1b47 100%)}
 
 </style>
@@ -535,9 +557,9 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
 <header class="hero" id="home">
   <div class="hero-bg"></div>
   <div class="hero-inner">
-    <div class="eyebrow"><span class="dot"></span> Dunia Game Ajaib Laura</div>
+    <div class="eyebrow"><span class="dot"></span> Baru: Simandara Delivery Chaos</div>
     <h1>Fun Games<br><span class="grad">by Laura Vanessa</span></h1>
-    <p class="lead">Koleksi game seru buatan Laura — dari misi pesawat tempur 3D menjaga langit Nusantara, petualangan 3D menjelajahi kota Jakarta, kafe roti 3D yang manis, papan Monopoli 3D, menjelajah bumi lewat globe interaktif, hingga uji ingatan yang menantang. Semua bisa dimainkan langsung di sini.</p>
+    <p class="lead">Koleksi game seru buatan Laura — dari ngojol 3D bareng Dimas Juve keliling 10 kota Indonesia, misi pesawat tempur 3D menjaga langit Nusantara, petualangan 3D menjelajahi kota Jakarta, kafe roti 3D yang manis, papan Monopoli 3D, menjelajah bumi lewat globe interaktif, hingga uji ingatan yang menantang. Semua bisa dimainkan langsung di sini.</p>
     <div class="hero-cta">
       <button class="btn btn-primary" data-play-hero="">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
@@ -546,9 +568,19 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
       <button class="btn btn-ghost" onclick="document.getElementById('library').scrollIntoView({behavior:'smooth'})">Jelajahi Koleksi</button>
     </div>
     <div class="hero-stats">
-      <div class="s"><div class="v" id="stat-live">7</div><div class="k">Game Siap Main</div></div>
+      <div class="s"><div class="v" id="stat-live">8</div><div class="k">Game Siap Main</div></div>
       <div class="s"><div class="v">5k+</div><div class="k">Total Dimainkan</div></div>
       <div class="s"><div class="v">4.8★</div><div class="k">Rating Rata-rata</div></div>
+    </div>
+  </div>
+  <div class="hero-feature" data-feature="delivery" role="button" tabindex="0" aria-label="Main Simandara Delivery Chaos">
+    <div class="hf-img art-delivery"></div>
+    <div class="hf-new">Rilis Baru</div>
+    <div class="hf-body">
+      <div class="hf-cat">Balap · Ojol 3D</div>
+      <h3>Simandara Delivery Chaos: Pro Rider</h3>
+      <ul><li>🏙️ 10 kota Indonesia</li><li>🏍️ 7 motor + upgrade</li><li>🎥 Kamera dekat di belakang motor</li><li>🌧️ Siang, malam &amp; hujan</li></ul>
+      <div class="hf-play"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg> Main Sekarang</div>
     </div>
   </div>
   <div class="scroll-hint"><div class="mouse"></div><span>Scroll</span></div>
@@ -579,7 +611,7 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
       <div class="t">
         <div class="kicker">Koleksi Lengkap</div>
         <h2>Semua Game</h2>
-        <p>Jelajahi seluruh koleksi — <span id="game-count">7 game</span> dan terus bertambah.</p>
+        <p>Jelajahi seluruh koleksi — <span id="game-count">8 game</span> dan terus bertambah.</p>
       </div>
     </div>
     <div class="chips reveal" id="chips"></div>
@@ -641,6 +673,24 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
 // LAVA Games — game catalogue
 // `url` points to the real game file. Games still in the works use "#".
 window.LAVA_GAMES = [
+  {
+    id: "delivery",
+    title: "Simandara Delivery Chaos",
+    tagline: "Ngojol 3D keliling 10 kota Indonesia!",
+    category: "Balap",
+    icon: "🏍️",
+    art: "art-delivery",
+    accent: "#19c37d",
+    ready: true,
+    url: "simandara-delivery-chaos.html",
+    players: "1 pemain",
+    time: "120 menit",
+    plays: "BARU",
+    rating: "5.0",
+    progress: 0,
+    desc: "Jadi ojol SIMANDARA bersama Dimas Juve! Antar makanan, paket, dan penumpang di 10 kota — dari jalan hutan Banyuwangi, tanjakan Malang, pantai Denpasar, sampai macetnya Jakarta. Kamera dekat di belakang motor bikin seru, ada siang-malam, hujan, kabut, lalu lintas yang hidup, misi cerita melawan Bos Iman dan Nadira dari GAGAK Express, plus Bengkel Jagoan untuk upgrade dan ganti motor dari skutik sampai prototipe MotoGP emas.",
+    tags: ["Balap", "3D", "Ojol", "Cerita", "Baru"]
+  },
   {
     id: "simandara",
     title: "Simandara Strike",
@@ -981,14 +1031,14 @@ window.LAVA_GAMES = [
     if(!g.url||g.url==='#'){toast(`🎮 <b>${g.title}</b> segera hadir!`);return;}
     const p=$('.player');
     const wide = ['jakarta','monopoli','globe','bakery'].includes(g.id);
-    const cinema = ['jakarta','simandara'].includes(g.id);   // game 3D besar: butuh layar seluas mungkin
+    const cinema = ['jakarta','simandara','delivery'].includes(g.id);   // game 3D besar: butuh layar seluas mungkin
     p.classList.toggle('wide',wide);
     p.classList.toggle('cinema',cinema);
     $('.player .pinfo').innerHTML=`<div class="pi ${g.art}">${g.icon}</div><div><h4>${g.title}</h4><p>${g.category} · ${g.players}</p></div>`;
     const wrap=$('.pframe-wrap'); wrap.classList.remove('loaded');
     const frame=$('.pframe-wrap iframe');
     frame.src=g.url;
-    frame.onload=()=>{if(frame.src&&!frame.src.endsWith('about:blank'))wrap.classList.add('loaded');};
+    frame.onload=()=>{if(frame.src&&!frame.src.endsWith('about:blank')){wrap.classList.add('loaded');try{frame.focus();frame.contentWindow.focus();}catch(e){}}};
     $('.pll b').textContent=g.title;
     p.classList.add('open'); document.body.style.overflow='hidden';
   }
@@ -1044,6 +1094,7 @@ window.LAVA_GAMES = [
     $('.player .close').addEventListener('click',closePlayer);
     $('.player .restart').addEventListener('click',()=>{const f=$('.pframe-wrap iframe');const s=f.src;f.src='about:blank';setTimeout(()=>f.src=s,60);$('.pframe-wrap').classList.remove('loaded');});
     addEventListener('keydown',e=>{if(e.key==='Escape'){if($('.player').classList.contains('open'))closePlayer();else if($('.detail').classList.contains('open'))closeDetail();}});
+    $$('[data-feature]').forEach(b=>{const go=()=>{const g=GAMES.find(x=>x.id===b.dataset.feature);if(g)openDetail(g);};b.addEventListener('click',go);b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});
     $$('[data-play-hero]').forEach(b=>b.addEventListener('click',()=>{const g=GAMES.find(x=>x.ready);if(g)openDetail(g);}));
     setTimeout(()=>$('.splash').classList.add('gone'),3400);
   }
