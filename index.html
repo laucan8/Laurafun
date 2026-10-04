@@ -528,6 +528,15 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
 @media (max-width:1100px){.hero{flex-direction:column;justify-content:center;align-items:flex-start;padding-top:110px;padding-bottom:90px}.hero-feature{flex:none;width:min(560px,100%);transform:none}.hero-feature:hover{transform:translateY(-4px)}}
 @media (max-width:680px){.hero-feature h3{font-size:21px}.hero-feature .hf-body{padding:14px 16px 16px}}
 .art-jakarta{background:radial-gradient(120% 120% at 22% 8%,#ffe9a8,#f5a53c 30%,#a33f7e 62%,#2b1b47 100%)}
+/* LaVa Salon & Resto: gambar promo (5 sahabat) + tema pink untuk kartu sorotan beranda */
+.art-salonresto{background:linear-gradient(180deg,rgba(42,10,32,0) 45%,rgba(42,10,32,.55) 100%),url("img/lava-salon-resto-thumb.jpg") center 30%/cover no-repeat,linear-gradient(150deg,#ffb3d6,#ff5fa2 55%,#9a6bff)}
+.detail .art-salonresto,.feat.big .art-salonresto,.hero-feature .art-salonresto{background:linear-gradient(180deg,rgba(42,10,32,0) 45%,rgba(42,10,32,.6) 100%),url("img/lava-salon-resto.jpg") center/cover no-repeat,linear-gradient(150deg,#ffb3d6,#ff5fa2 55%,#9a6bff)}
+.card[data-game=salonresto] .cicon,.feat[data-game=salonresto] .ficon,.dvisual .art-salonresto~.dicon{display:none}
+.hero-feature[data-feature=salonresto]{box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 6px rgba(255,95,162,.12)}
+.hero-feature[data-feature=salonresto]:hover{box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 6px rgba(255,95,162,.26)}
+.hero-feature[data-feature=salonresto] .hf-body{background:linear-gradient(180deg,#2c0f26,#1b0818)}
+.hero-feature[data-feature=salonresto] .hf-cat{color:#ff8cc0}
+.hero-feature[data-feature=salonresto] .hf-play{color:#3a0a26;background:linear-gradient(120deg,#ff5fa2,#ffb3d6)}
 
 </style>
 </head>
@@ -557,9 +566,9 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
 <header class="hero" id="home">
   <div class="hero-bg"></div>
   <div class="hero-inner">
-    <div class="eyebrow"><span class="dot"></span> Baru: Simandara Delivery Chaos</div>
+    <div class="eyebrow"><span class="dot"></span> Baru: LaVa Salon &amp; Resto</div>
     <h1>Fun Games<br><span class="grad">by Laura Vanessa</span></h1>
-    <p class="lead">Koleksi game seru buatan Laura — dari ngojol 3D bareng Dimas Juve keliling 10 kota Indonesia, misi pesawat tempur 3D menjaga langit Nusantara, petualangan 3D menjelajahi kota Jakarta, kafe roti 3D yang manis, papan Monopoli 3D, menjelajah bumi lewat globe interaktif, hingga uji ingatan yang menantang. Semua bisa dimainkan langsung di sini.</p>
+    <p class="lead">Koleksi game seru buatan Laura — dari dandan cantik lalu buka restoran bareng 5 sahabat, ngojol 3D bareng Dimas Juve keliling 10 kota Indonesia, misi pesawat tempur 3D menjaga langit Nusantara, petualangan 3D menjelajahi kota Jakarta, kafe roti 3D yang manis, papan Monopoli 3D, menjelajah bumi lewat globe interaktif, hingga uji ingatan yang menantang. Semua bisa dimainkan langsung di sini.</p>
     <div class="hero-cta">
       <button class="btn btn-primary" data-play-hero="">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
@@ -573,13 +582,13 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
       <div class="s"><div class="v">4.8★</div><div class="k">Rating Rata-rata</div></div>
     </div>
   </div>
-  <div class="hero-feature" data-feature="delivery" role="button" tabindex="0" aria-label="Main Simandara Delivery Chaos">
-    <div class="hf-img art-delivery"></div>
+  <div class="hero-feature" data-feature="salonresto" role="button" tabindex="0" aria-label="Main LaVa Salon &amp; Resto">
+    <div class="hf-img art-salonresto"></div>
     <div class="hf-new">Rilis Baru</div>
     <div class="hf-body">
-      <div class="hf-cat">Balap · Ojol 3D</div>
-      <h3>Simandara Delivery Chaos: Pro Rider</h3>
-      <ul><li>🏙️ 10 kota Indonesia</li><li>🏍️ 7 motor + upgrade</li><li>🎥 Kamera dekat di belakang motor</li><li>🌧️ Siang, malam &amp; hujan</li></ul>
+      <div class="hf-cat">Kreatif · Salon &amp; Restoran</div>
+      <h3>LaVa Salon &amp; Resto</h3>
+      <ul><li>💇‍♀️ Salon, make up &amp; spa</li><li>👗 Ratusan pilihan baju</li><li>🍰 20 menu masak &amp; minuman</li><li>👭 5 toko sahabat berdampingan</li></ul>
       <div class="hf-play"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg> Main Sekarang</div>
     </div>
   </div>
@@ -646,7 +655,7 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
   </div>
   <div class="pframe-wrap">
     <div class="pload"><div class="ring"></div><div class="pll">Memuat <b></b>…</div></div>
-    <iframe title="game" allow="autoplay; fullscreen; gamepad; accelerometer; gyroscope"></iframe>
+    <iframe title="game" allow="autoplay; fullscreen; gamepad; accelerometer; gyroscope; clipboard-write; web-share"></iframe>
   </div>
 </div>
 
@@ -673,6 +682,24 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
 // LAVA Games — game catalogue
 // `url` points to the real game file. Games still in the works use "#".
 window.LAVA_GAMES = [
+  {
+    id: "salonresto",
+    title: "LaVa Salon & Resto",
+    tagline: "Dandan cantik, lalu buka restoran bareng sahabat!",
+    category: "Kreatif",
+    icon: "🎀",
+    art: "art-salonresto",
+    accent: "#ff5fa2",
+    ready: true,
+    url: "lava-salon-resto.html",
+    players: "1–5 pemain",
+    time: "30 menit",
+    plays: "BARU",
+    rating: "5.0",
+    progress: 0,
+    desc: "Pilih jadi Laura, Gracelyn, Ailia, Nikola, atau Zi En. Main salon (gaya rambut, warna, spa rambut, kuku), make up, ganti baju dan aksesoris dengan ratusan kombinasi, lalu buka restoranmu sendiri: masak pizza, nasi goreng, sate, bikin kue, donat, es krim, boba, dan banyak lagi untuk pengunjung hewan lucu yang selalu ceria — tanpa batas waktu, tanpa kalah. Ada Foto Studio, hewan peliharaan, dekor toko, album stiker, dan hadiah harian. Progres tersimpan otomatis untuk 5 sahabat, dan toko bisa saling dilihat di Jalan Sahabat lewat link yang dikirim ke WhatsApp.",
+    tags: ["Kreatif", "Salon", "Masak", "Sahabat", "Baru"]
+  },
   {
     id: "delivery",
     title: "Simandara Delivery Chaos",
@@ -1031,7 +1058,7 @@ window.LAVA_GAMES = [
     if(!g.url||g.url==='#'){toast(`🎮 <b>${g.title}</b> segera hadir!`);return;}
     const p=$('.player');
     const wide = ['jakarta','monopoli','globe','bakery'].includes(g.id);
-    const cinema = ['jakarta','simandara','delivery'].includes(g.id);   // game 3D besar: butuh layar seluas mungkin
+    const cinema = ['jakarta','simandara','delivery','salonresto'].includes(g.id);   // game besar: butuh layar seluas mungkin
     p.classList.toggle('wide',wide);
     p.classList.toggle('cinema',cinema);
     $('.player .pinfo').innerHTML=`<div class="pi ${g.art}">${g.icon}</div><div><h4>${g.title}</h4><p>${g.category} · ${g.players}</p></div>`;
