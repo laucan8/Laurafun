@@ -537,6 +537,18 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
 .hero-feature[data-feature=salonresto] .hf-body{background:linear-gradient(180deg,#2c0f26,#1b0818)}
 .hero-feature[data-feature=salonresto] .hf-cat{color:#ff8cc0}
 .hero-feature[data-feature=salonresto] .hf-play{color:#3a0a26;background:linear-gradient(120deg,#ff5fa2,#ffb3d6)}
+/* Juragan Sudirman: gambar promo dirender dari game (kanal Dukuh Atas) + tema emas–toska untuk kartu sorotan beranda */
+.art-juragan{background:linear-gradient(180deg,rgba(10,26,30,0) 50%,rgba(10,26,30,.5) 100%),url("img/juragan-sudirman-thumb.jpg") center 12%/cover no-repeat,linear-gradient(150deg,#7fd3e0,#0fa3a3 55%,#1d2b38)}
+.detail .art-juragan,.feat.big .art-juragan,.hero-feature .art-juragan{background:linear-gradient(180deg,rgba(10,26,30,0) 45%,rgba(10,26,30,.6) 100%),url("img/juragan-sudirman.jpg") center/cover no-repeat,linear-gradient(150deg,#7fd3e0,#0fa3a3 55%,#1d2b38)}
+.card[data-game=juragan] .cicon,.feat[data-game=juragan] .ficon,.dvisual .art-juragan~.dicon{display:none}
+.hero-feature[data-feature=juragan]{box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 6px rgba(255,209,102,.14)}
+.hero-feature[data-feature=juragan]:hover{box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 6px rgba(255,209,102,.28)}
+.hero-feature[data-feature=juragan] .hf-body{background:linear-gradient(180deg,#0f2a33,#0a1b22)}
+.hero-feature[data-feature=juragan] .hf-cat{color:#7fd3e0}
+.hero-feature[data-feature=juragan] .hf-play{color:#2a1d00;background:linear-gradient(120deg,#ffd166,#ffe7a3)}
+/* HP: pemutar layar penuh membuat bilah judul menimpa HUD atas game (uang, jam). Game dengan HUD di tepi atas
+   memakai kelas .below-bar: iframe dimulai tepat di bawah bilah judul (tinggi bilah 66px di ≤680px). */
+@media (max-width:680px){.player.below-bar .pframe-wrap{height:calc(100vh - 66px);height:calc(100dvh - 66px);margin-top:66px}}
 
 </style>
 </head>
@@ -566,9 +578,9 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
 <header class="hero" id="home">
   <div class="hero-bg"></div>
   <div class="hero-inner">
-    <div class="eyebrow"><span class="dot"></span> Baru: LaVa Salon &amp; Resto</div>
+    <div class="eyebrow"><span class="dot"></span> Baru: Juragan Sudirman</div>
     <h1>Fun Games<br><span class="grad">by Laura Vanessa</span></h1>
-    <p class="lead">Koleksi game seru buatan Laura — dari dandan cantik lalu buka restoran bareng 5 sahabat, ngojol 3D bareng Dimas Juve keliling 10 kota Indonesia, misi pesawat tempur 3D menjaga langit Nusantara, petualangan 3D menjelajahi kota Jakarta, kafe roti 3D yang manis, papan Monopoli 3D, menjelajah bumi lewat globe interaktif, hingga uji ingatan yang menantang. Semua bisa dimainkan langsung di sini.</p>
+    <p class="lead">Koleksi game seru buatan Laura — dari jadi juragan bisnis di koridor Sudirman 3D, dandan cantik lalu buka restoran bareng 5 sahabat, ngojol 3D bareng Dimas Juve keliling 10 kota Indonesia, misi pesawat tempur 3D menjaga langit Nusantara, petualangan 3D menjelajahi kota Jakarta, kafe roti 3D yang manis, papan Monopoli 3D, menjelajah bumi lewat globe interaktif, hingga uji ingatan yang menantang. Semua bisa dimainkan langsung di sini.</p>
     <div class="hero-cta">
       <button class="btn btn-primary" data-play-hero="">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
@@ -582,13 +594,13 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
       <div class="s"><div class="v">4.8★</div><div class="k">Rating Rata-rata</div></div>
     </div>
   </div>
-  <div class="hero-feature" data-feature="salonresto" role="button" tabindex="0" aria-label="Main LaVa Salon &amp; Resto">
-    <div class="hf-img art-salonresto"></div>
+  <div class="hero-feature" data-feature="juragan" role="button" tabindex="0" aria-label="Main Juragan Sudirman">
+    <div class="hf-img art-juragan"></div>
     <div class="hf-new">Rilis Baru</div>
     <div class="hf-body">
-      <div class="hf-cat">Kreatif · Salon &amp; Restoran</div>
-      <h3>LaVa Salon &amp; Resto</h3>
-      <ul><li>💇‍♀️ Salon, make up &amp; spa</li><li>👗 Ratusan pilihan baju</li><li>🍰 20 menu masak &amp; minuman</li><li>👭 5 toko sahabat berdampingan</li></ul>
+      <div class="hf-cat">Simulasi · Bisnis &amp; Kota 3D</div>
+      <h3>Juragan Sudirman</h3>
+      <ul><li>☕ Dari gerobak kopi ke menara</li><li>🚇 MRT, TransJakarta &amp; KRL</li><li>🏠 Homebase Sudirman Park &amp; KPR</li><li>🎾 Padel, golf &amp; tenis</li></ul>
       <div class="hf-play"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg> Main Sekarang</div>
     </div>
   </div>
@@ -682,6 +694,24 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,transparent,v
 // LAVA Games — game catalogue
 // `url` points to the real game file. Games still in the works use "#".
 window.LAVA_GAMES = [
+  {
+    id: "juragan",
+    title: "Juragan Sudirman",
+    tagline: "Dari gerobak kopi sampai menara di Sudirman 3D!",
+    category: "Simulasi",
+    icon: "🏢",
+    art: "art-juragan",
+    accent: "#ffd166",
+    ready: true,
+    url: "juragan-sudirman.html",
+    players: "1 pemain",
+    time: "60 menit",
+    plays: "BARU",
+    rating: "5.0",
+    progress: 0,
+    desc: "Game tycoon 3D santai di koridor Thamrin–Sudirman yang dibuat mirip aslinya: Bundaran HI, Monas, Wisma BNI 46, GBK, kanal yang jernih, MRT, TransJakarta, dan KRL. Mulai dari gerobak kopi di Dukuh Atas, tagih kas, rekrut manajer, ambil kredit, beli saham, sampai IPO di bursa. Pulang ke homebase di Sudirman Park, beli apartemen sungguhan (tunai atau KPR), main padel di rooftop Agora Mall, golf simulator, dan tenis di Anandamaya & Shangri-La, lalu ganti gaya di Lemari.",
+    tags: ["Simulasi", "3D", "Bisnis", "Jakarta", "Baru"]
+  },
   {
     id: "salonresto",
     title: "LaVa Salon & Resto",
@@ -1058,9 +1088,10 @@ window.LAVA_GAMES = [
     if(!g.url||g.url==='#'){toast(`🎮 <b>${g.title}</b> segera hadir!`);return;}
     const p=$('.player');
     const wide = ['jakarta','monopoli','globe','bakery'].includes(g.id);
-    const cinema = ['jakarta','simandara','delivery','salonresto'].includes(g.id);   // game besar: butuh layar seluas mungkin
+    const cinema = ['jakarta','simandara','delivery','salonresto','juragan'].includes(g.id);   // game besar: butuh layar seluas mungkin
     p.classList.toggle('wide',wide);
     p.classList.toggle('cinema',cinema);
+    p.classList.toggle('below-bar',['juragan'].includes(g.id));   // HUD game di tepi atas: jangan ditimpa bilah judul di HP
     $('.player .pinfo').innerHTML=`<div class="pi ${g.art}">${g.icon}</div><div><h4>${g.title}</h4><p>${g.category} · ${g.players}</p></div>`;
     const wrap=$('.pframe-wrap'); wrap.classList.remove('loaded');
     const frame=$('.pframe-wrap iframe');
