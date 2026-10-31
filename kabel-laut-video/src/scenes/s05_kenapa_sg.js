@@ -65,7 +65,7 @@ export default {
     // ships
     const m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), v = new THREE.Vector3(), tan = new THREE.Vector3();
     const sv = win(lt, 0.5, L(1) + 0.5, 0.6) + win(lt, L(2) + 0.5, L(5), 0.5) * 0.6;
-    for (let i = 0; i < 28; i++) { const u = ((i / 28) + lt * 0.006) % 1; st.lane.getPointAt(u, v); st.lane.getTangentAt(u, tan); q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.atan2(-tan.z, tan.x)); s.setScalar(clamp(sv)); m.compose(v, q, s); st.ships.setMatrixAt(i, m); }
+    for (let i = 0; i < 28; i++) { const u = (((i / 28) + lt * 0.006) % 1 + 1) % 1; st.lane.getPointAt(u, v); st.lane.getTangentAt(u, tan); q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.atan2(-tan.z, tan.x)); s.setScalar(clamp(sv)); m.compose(v, q, s); st.ships.setMatrixAt(i, m); }
     st.ships.instanceMatrix.needsUpdate = true; st.ships.visible = sv > 0.01; setCable(st.laneLine, lt, { op: clamp(sv) * 0.8 });
     // planes
     const pa = win(lt, L(6) + 0.3, L(7) + 0.2, 0.6);

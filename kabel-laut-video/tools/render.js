@@ -4,9 +4,10 @@ const fs = require('fs'), path = require('path'), { spawn } = require('child_pro
 const B = path.join(__dirname, '..', 'build'); const CH = path.join(B, 'chunks');
 const TL = JSON.parse(fs.readFileSync(path.join(B, 'timeline.json')));
 const FPS = 30, N = Math.ceil(TL.duration * FPS), CF = +(process.argv[3] || 600), NW = +(process.argv[2] || 4);
-const chunks = []; for (let s = 0, i = 0; s < N; s += CF, i++) chunks.push({ i, s, e: Math.min(N, s + CF) });
+let chunks = []; for (let s = 0, i = 0; s < N; s += CF, i++) chunks.push({ i, s, e: Math.min(N, s + CF) });
+const ONLY = process.env.ONLY ? process.env.ONLY.split(',').map(Number) : null;
 const log = (...a) => { const l = new Date().toISOString().slice(11, 19) + ' ' + a.join(' '); console.log(l); fs.appendFileSync(path.join(B, 'render.log'), l + '\n'); };
-function claim() { for (const c of chunks) { const f = path.join(CH, `c_${String(c.i).padStart(4, '0')}.mp4`); if (fs.existsSync(f)) continue; try { fs.mkdirSync(f + '.lock'); return { ...c, f }; } catch (e) { } } return null; }
+function claim() { for (const c of chunks) { if (ONLY && !ONLY.includes(c.i)) continue; const f = path.join(CH, `c_${String(c.i).padStart(4, '0')}.mp4`); if (fs.existsSync(f)) continue; try { fs.mkdirSync(f + '.lock'); return { ...c, f }; } catch (e) { } } return null; }
 async function worker(w, port) {
   const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: 1920, height: 1080 } });
   pg.on('pageerror', e => log('W' + w, 'PAGEERR', e.message));
@@ -29,8 +30,8 @@ async function worker(w, port) {
   await b.close();
 }
 (async () => {
-  for (const f of fs.readdirSync(CH)) if (f.endsWith('.lock')) fs.rmdirSync(path.join(CH, f));
-  const port = 9300; await start(port);
+  if (!process.env.NOCLEAN) for (const f of fs.readdirSync(CH)) if (f.endsWith('.lock')) fs.rmdirSync(path.join(CH, f));
+  const port = +(process.env.PORT || 9300); await start(port);
   log(`START frames=${N} chunks=${chunks.length} workers=${NW}`);
   await Promise.all(Array.from({ length: NW }, (_, w) => worker(w, port).catch(e => log('W' + w, 'CRASH', e.stack))));
   const doneN = fs.readdirSync(CH).filter(x => /^c_\d+\.mp4$/.test(x)).length;
