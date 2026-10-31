@@ -502,7 +502,7 @@ export class Director {
     // ---------- S05 cycle
     const ks = K.siklus;
     ov.callout('ct', { p: pv(P.anchors.cooling), parts: [{ t: 'MENARA PENDINGIN', c: 'white' }], a: fa(ks.menara - 0.1, ks.itu + 0.1, 0.5, 0.3), len: 150 });
-    ov.callout('uap', { p: pv(V(70, 40, -52)), parts: [{ t: 'UAP AIR', c: 'navy' }, { t: 'BUKAN ASAP', c: 'cyan' }], a: fa(ks.itu, ks.airnya, 0.5, 0.3), len: 110 });
+    ov.callout('uap', { p: pv(V(66, 26, -50)), parts: [{ t: 'UAP AIR', c: 'navy' }, { t: 'BUKAN ASAP', c: 'cyan' }], a: fa(ks.itu, ks.airnya, 0.5, 0.3), len: 90 });
     ov.callout('inj', { p: pv(V(72, -60, 3)), parts: [{ t: 'SUMUR INJEKSI', c: 'white' }], a: fa(ks.disuntik, ks.siklusnya + 0.3, 0.5, 0.3), len: 110, dx: -110 });
     ov.tag('siklus', { x: 540, y: 600, parts: [{ t: 'SIKLUS', c: 'navy' }, { t: 'BERKELANJUTAN', c: 'cyan' }], a: env(t, ks.siklusnya, ks.bonus - 0.1, 0.4, 0.3), size: 'lg' });
     ov.card('dry', { html: CARDS.drysteam.html, a: env(t, ks.bonus - 0.1, ks.en + 0.1, 0.45, 0.35), k: ramp(t, ks.bonus, 2.6), update: CARDS.drysteam.update });

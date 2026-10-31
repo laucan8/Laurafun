@@ -32,7 +32,7 @@ window.renderFrame = (t) => {
   return true;
 };
 function applyCover() {
-  for (const id of ['cap', 'src', 'layer', 'wipe']) { const e = document.getElementById(id); if (e) e.style.display = 'none'; }
+  for (const id of ['cap', 'src', 'layer', 'wipe', 'hud', 'ill']) { const e = document.getElementById(id); if (e) e.style.display = 'none'; }
   if (document.getElementById('cover')) return;
   const d = document.createElement('div'); d.id = 'cover';
   d.innerHTML = `<div class="cv-top"><span class="p navy lg">100 TAHUN</span><span class="p cyan lg">UAP KAMOJANG</span></div>
