@@ -1,0 +1,4 @@
+build/mix/
+build/*.wav
+output/*.tmp
+node_modules/

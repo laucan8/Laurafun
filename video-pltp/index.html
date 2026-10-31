@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PANAS BUMI — Harta Karun di Bawah Kaki Kita (video 3D)</title>
+<style>
+@font-face{font-family:PJS;src:url(engine/lib/fonts/plus-jakarta-sans-latin-800-normal.woff2) format("woff2");font-weight:800}
+@font-face{font-family:PJS;src:url(engine/lib/fonts/plus-jakarta-sans-latin-600-normal.woff2) format("woff2");font-weight:600}
+@font-face{font-family:Inter;src:url(engine/lib/fonts/inter-latin-400-normal.woff2) format("woff2")}
+body{margin:0;background:linear-gradient(#F8FAFD,#E3E9F1);font-family:Inter,sans-serif;color:#14213D}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px}
+h1{font:800 34px PJS;margin:0 0 4px;letter-spacing:-.5px}h1 span{color:#FF6B35}
+.sub{color:#5B6B82;margin-bottom:18px}
+video{width:100%;border-radius:18px;box-shadow:0 20px 60px rgba(20,33,61,.18);background:#fff}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-top:18px}
+.card{background:#fff;border-radius:18px;padding:18px 20px;box-shadow:0 10px 30px rgba(20,33,61,.08)}
+.card h3{font:800 16px PJS;letter-spacing:2px;color:#FF6B35;margin:0 0 10px}
+.ch{display:flex;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer}.ch:hover,.ch.on{background:#FFF1EA}
+.ch b{font:800 14px PJS;min-width:52px;color:#14213D}
+a{color:#2E86DE}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="wrap">
+<h1>PANAS BUMI: <span>Harta Karun di Bawah Kaki Kita</span></h1>
+<div class="sub">Motion graphic 3D tema terang · ±26 menit · narasi Bahasa Indonesia · sumber di setiap adegan</div>
+<video id="v" controls playsinline preload="metadata"></video>
+<div class="grid">
+  <div class="card"><h3>BAB</h3><div id="chs"></div></div>
+  <div class="card"><h3>DOKUMEN</h3>
+    <p><a href="docs/SCRIPT.md">Script narasi</a><br><a href="docs/STORYBOARD.md">Storyboard</a><br><a href="docs/SUMBER.md">Daftar sumber & metodologi</a><br><a href="docs/YOUTUBE_DESKRIPSI.md">Judul & deskripsi YouTube</a><br><a href="docs/subtitle_id.srt">Subtitle .srt (Indonesia)</a></p>
+    <p style="color:#5B6B82;font-size:14px">Video dipecah menjadi beberapa bagian (&lt; 95 MB) agar muat di GitHub; pemutar ini memainkannya berurutan tanpa jeda. Gabungkan jadi satu file dengan perintah di README.</p>
+  </div>
+</div>
+</div>
+<script>
+(async () => {
+  const P = await (await fetch('output/playlist.json')).json();
+  const v = document.getElementById('v'); let idx = 0;
+  const fmt = (t) => `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+  const load = (i, offset = 0, play = false) => { idx = i; v.src = 'output/' + P.parts[i].file; v.addEventListener('loadedmetadata', function f() { v.removeEventListener('loadedmetadata', f); v.currentTime = offset; if (play) v.play(); }); };
+  v.addEventListener('ended', () => { if (idx + 1 < P.parts.length) load(idx + 1, 0, true); });
+  const seek = (t) => { const i = P.parts.findIndex((p) => t >= p.start && t < p.end); if (i >= 0) load(i, t - P.parts[i].start, true); };
+  const box = document.getElementById('chs');
+  for (const c of P.chapters) { const d = document.createElement('div'); d.className = 'ch'; d.innerHTML = `<b>${fmt(c.t)}</b><span>${c.label} — ${c.title}</span>`; d.onclick = () => seek(c.t + 0.05); box.appendChild(d); }
+  load(0);
+})();
+</script>
+</body></html>

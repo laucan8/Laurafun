@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>PLTP — engine motion graphic 3D</title>
+<style>
+@font-face{font-family:"PJS";src:url(lib/fonts/plus-jakarta-sans-latin-500-normal.woff2) format("woff2");font-weight:500}
+@font-face{font-family:"PJS";src:url(lib/fonts/plus-jakarta-sans-latin-600-normal.woff2) format("woff2");font-weight:600}
+@font-face{font-family:"PJS";src:url(lib/fonts/plus-jakarta-sans-latin-700-normal.woff2) format("woff2");font-weight:700}
+@font-face{font-family:"PJS";src:url(lib/fonts/plus-jakarta-sans-latin-800-normal.woff2) format("woff2");font-weight:800}
+@font-face{font-family:"Inter";src:url(lib/fonts/inter-latin-400-normal.woff2) format("woff2");font-weight:400}
+@font-face{font-family:"Inter";src:url(lib/fonts/inter-latin-600-normal.woff2) format("woff2");font-weight:600}
+@font-face{font-family:"JBM";src:url(lib/fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2");font-weight:400}
+@font-face{font-family:"JBM";src:url(lib/fonts/jetbrains-mono-latin-700-normal.woff2) format("woff2");font-weight:700}
+:root{--navy:#14213D;--ink:#24324A;--sub:#5B6B82;--hot:#FF6B35;--line:#dfe6ef}
+html,body{margin:0;padding:0;background:#eef2f7;overflow:hidden}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:Inter,sans-serif;color:var(--navy)}
+#gl{position:absolute;inset:0;width:1920px;height:1080px;display:block}
+#ui{position:absolute;inset:0;pointer-events:none}
+.layer{position:absolute;inset:0}
+svg.lines{position:absolute;inset:0;width:1920px;height:1080px;overflow:visible}
+svg.lines .cl{fill:none;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.card{position:absolute;background:rgba(255,255,255,.94);border-radius:22px;box-shadow:0 18px 50px rgba(20,33,61,.13),0 2px 6px rgba(20,33,61,.06);border:1px solid rgba(255,255,255,.9)}
+/* statistik */
+.stat{--tone:#FF6B35;padding:20px 28px 20px 34px;min-width:300px;max-width:470px}
+.stat:before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:7px;border-radius:0 6px 6px 0;background:var(--tone)}
+.stat .num{font-family:"PJS";font-weight:800;font-size:64px;letter-spacing:-1.5px;line-height:1;color:var(--navy);white-space:nowrap}
+.stat .num .suf,.stat .num .pre{font-size:40px;color:var(--tone);margin-left:4px;letter-spacing:-.5px}
+.stat .num .pre{margin:0 4px 0 0}
+.stat .lab{font-size:24px;color:var(--sub);margin-top:8px;font-weight:600;line-height:1.25}
+.pos-left{left:80px;top:250px}.pos-left2{left:80px;top:430px}.pos-left3{left:80px;top:610px}
+.pos-right{right:80px;top:200px}.pos-right2{right:80px;top:380px}.pos-right3{right:80px;top:560px}
+/* chips */
+.chips{position:absolute;left:0;right:0;bottom:120px;display:flex;justify-content:center;gap:22px}
+.chip{background:#fff;border-radius:999px;padding:16px 30px;font:700 30px "PJS";color:var(--navy);box-shadow:0 12px 30px rgba(20,33,61,.12)}
+.chip .tick{display:inline-block;width:38px;height:38px;border-radius:50%;background:#2A9D8F;color:#fff;font-size:24px;line-height:38px;text-align:center;margin-right:14px;vertical-align:2px}
+/* bullets */
+.bullets{right:80px;top:210px;width:600px;padding:30px 34px}
+.bullets .ttl{font:800 22px "PJS";letter-spacing:3px;color:var(--hot);margin-bottom:16px}
+.bul{display:flex;gap:18px;align-items:flex-start;font:600 30px/1.3 "PJS";color:var(--navy);margin:14px 0}
+.bn{flex:0 0 46px;height:46px;border-radius:14px;background:#14213D;color:#fff;font:800 24px/46px "PJS";text-align:center}
+/* judul besar */
+.bigtitle{position:absolute;left:0;right:0;top:330px;text-align:center;perspective:900px}
+.bigtitle .t{font:800 150px/1 "PJS";letter-spacing:-3px;color:var(--navy);text-shadow:0 14px 40px rgba(20,33,61,.18)}
+.bigtitle .t span{display:inline-block;transform-origin:50% 100%}
+.bigtitle .s{font:600 52px "PJS";color:var(--hot);margin-top:18px;letter-spacing:-.5px}
+.bigtitle .bar{width:520px;height:8px;border-radius:8px;margin:26px auto 0;background:linear-gradient(90deg,#FF6B35,#FFD166);transform-origin:50% 50%}
+/* callout */
+.callout{--tone:#14213D;position:absolute;background:#fff;border-radius:16px;padding:12px 20px 13px;box-shadow:0 12px 30px rgba(20,33,61,.14);border-left:6px solid var(--tone);white-space:nowrap}
+.callout .ct{font:800 28px "PJS";color:var(--navy);letter-spacing:-.3px}
+.callout .cs{font:600 21px Inter;color:var(--sub);margin-top:3px}
+/* steps */
+.steps{left:70px;top:200px;width:430px;padding:20px 22px}
+.stp{display:flex;gap:16px;align-items:center;padding:12px 10px;border-radius:14px}
+.stp.on{background:#FFF1EA}
+.sn{flex:0 0 52px;height:52px;border-radius:50%;background:#e9eef5;color:var(--navy);font:800 26px/52px "PJS";text-align:center}
+.stp.on .sn{background:var(--hot);color:#fff}
+.st{font:800 28px "PJS"}.ss{font:600 20px Inter;color:var(--sub)}
+/* badge, legend */
+.badge{position:absolute;left:50%;bottom:118px;transform-origin:50% 50%;margin-left:-0px;translate:-50% 0;background:#14213D;color:#fff;border-radius:999px;padding:16px 34px;font:700 30px "PJS";box-shadow:0 16px 40px rgba(20,33,61,.25);white-space:nowrap}
+.badge .spark{color:#FFD166;margin-right:12px}
+.legend{position:absolute;right:80px;top:66px;background:rgba(255,255,255,.9);border-radius:12px;padding:10px 18px;font:600 20px Inter;color:var(--sub)}
+/* quote */
+.quote{position:absolute;left:50%;translate:-50% 0;bottom:150px;background:#fff;border-radius:26px;padding:26px 54px 28px 90px;box-shadow:0 20px 60px rgba(20,33,61,.16);max-width:1300px;white-space:nowrap}
+.quote .qm{position:absolute;left:26px;top:-6px;font:800 120px "PJS";color:var(--hot)}
+.quote .qt{font:800 50px "PJS";letter-spacing:-1px;color:var(--navy)}
+.quote .qs{font:600 26px Inter;color:var(--sub);margin-top:6px}
+.quote.q2{bottom:60px;padding:22px 54px;background:#14213D}.quote.q2 .qt{color:#fff}
+/* step badge */
+.stepbadge{position:absolute;right:80px;top:70px;background:#fff;border-radius:22px;padding:16px 28px 18px;box-shadow:0 16px 40px rgba(20,33,61,.14);text-align:left;min-width:300px}
+.stepbadge .sl{font:800 18px "PJS";letter-spacing:4px;color:var(--hot)}
+.stepbadge .sn2{position:absolute;right:26px;top:12px;font:800 56px "PJS";color:var(--navy)}.stepbadge .sn2 span{font-size:26px;color:#9aa8bb}
+.stepbadge .stx{font:800 34px "PJS";margin-top:4px;padding-right:90px}
+.stepbadge .dots{margin-top:10px;display:flex;gap:8px}.stepbadge .dots i{width:34px;height:7px;border-radius:5px;background:#e3e9f1}.stepbadge .dots i.done{background:#FFB899}.stepbadge .dots i.cur{background:var(--hot)}
+/* calc */
+.calc{right:80px;bottom:120px;padding:22px 30px;font:400 28px/1.55 "JBM";color:var(--ink);min-width:520px}
+.calc .cl.res{font-weight:700;color:var(--hot);border-top:2px dashed #d5dde8;margin-top:6px;padding-top:6px}
+/* cards3 */
+.c3{bottom:110px;width:400px;padding:20px 26px;text-align:left}
+.c3.on{box-shadow:0 0 0 4px #FF6B35,0 18px 50px rgba(20,33,61,.18)}
+.c3n{position:absolute;right:20px;top:14px;font:800 44px "PJS";color:#e3e9f1}
+.c3t{font:800 36px "PJS"}.c3s{font:600 22px Inter;color:var(--sub);margin-top:4px}
+/* timeline */
+.tline{position:absolute;left:180px;right:180px;bottom:150px;height:150px}
+.tbar{position:absolute;left:0;right:0;top:20px;height:8px;border-radius:6px;background:#dfe6ef}
+.tfill{position:absolute;left:0;top:20px;height:8px;border-radius:6px;background:linear-gradient(90deg,#FF6B35,#FFD166);transition:none}
+.tnode{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:330px}
+.tdot{width:30px;height:30px;border-radius:50%;background:#fff;border:6px solid #cfd8e3;margin:4px auto 0;box-sizing:border-box}
+.tnode.on .tdot{border-color:#FF6B35;background:#FFD166}
+.tyr{font:800 46px "PJS";color:var(--navy);margin-top:8px}.ttx{font:600 22px Inter;color:var(--sub)}
+/* capital stack */
+.stack{right:80px;top:150px;width:640px;padding:26px 30px}
+.stack .ttl{font:800 26px "PJS";margin-bottom:14px}
+.scol{display:flex;flex-direction:column;gap:5px}
+.srow{background:var(--c);border-radius:10px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:#fff;min-height:34px;transform-origin:0 50%}
+.srow .sv{font:800 26px "PJS"}.srow .sn3{font:600 20px Inter;opacity:.95}
+.stot{margin-top:14px;font:600 28px "PJS";color:var(--ink)}.stot b{color:var(--hot)}
+/* formula */
+.formula{position:absolute;left:50%;translate:-50% 0;top:150px;background:#14213D;color:#fff;border-radius:16px;padding:16px 34px;font:700 32px "JBM";white-space:nowrap;box-shadow:0 14px 40px rgba(20,33,61,.25)}
+/* procon */
+.pc{bottom:110px;width:330px;padding:18px 22px;transition:none}
+.pc.on{box-shadow:0 0 0 4px #FF6B35,0 18px 50px rgba(20,33,61,.18)}
+.pc.dim{opacity:.55!important}
+.pcn{font:800 34px "PJS";margin-bottom:8px}.pro{font:600 21px/1.3 Inter;color:#1f8a5b;margin:6px 0}.con{font:600 21px/1.3 Inter;color:#c43d33}
+/* teori konspirasi */
+.theory{position:absolute;left:0;right:0;top:0;bottom:0}
+.tstamp{position:absolute;left:110px;top:120px;border:6px solid #E63946;color:#E63946;font:800 44px "PJS";letter-spacing:2px;padding:10px 26px;border-radius:12px;background:rgba(255,255,255,.85);transform-origin:50% 50%}
+.tstamp b{font-size:56px}
+.tpaper{position:absolute;left:110px;top:240px;width:760px;background:#fffdf6;padding:34px 40px 30px;border-radius:6px;box-shadow:0 20px 50px rgba(60,40,10,.22)}
+.tq{font:700 46px/1.25 "PJS";color:#2b2d42}.tl{font:600 22px Inter;color:#8a7c64;margin-top:16px}
+.facts{left:80px;top:150px;width:860px;padding:28px 34px}
+.fhead{font:800 30px "PJS";letter-spacing:3px;color:#2A9D8F;margin-bottom:12px}
+.fico{display:inline-block;width:44px;height:44px;border-radius:12px;background:#2A9D8F;color:#fff;text-align:center;line-height:44px;margin-right:14px}
+.fit{display:flex;gap:16px;align-items:flex-start;font:600 29px/1.32 "PJS";color:var(--navy);margin:16px 0}
+.fdot{flex:0 0 16px;height:16px;border-radius:50%;background:#FF6B35;margin-top:12px}
+.verdict{--tone:#F4A100;position:absolute;right:150px;bottom:150px;border:8px solid var(--tone);border-radius:22px;padding:16px 36px 18px;background:rgba(255,255,255,.92);text-align:center;transform-origin:50% 50%;box-shadow:0 20px 60px rgba(20,33,61,.18)}
+.verdict .vl{font:800 22px "PJS";letter-spacing:6px;color:var(--tone)}
+.verdict .vt{font:800 70px "PJS";color:var(--tone);letter-spacing:-1px;line-height:1.05}
+.verdict .vs{font:700 26px "PJS";color:var(--ink);margin-top:4px}
+/* end card */
+.endback{position:absolute;inset:0;background:rgba(248,250,253,.9)}
+.endcard{position:absolute;left:110px;top:300px;width:820px}
+.eh{font:800 64px/1.1 "PJS";letter-spacing:-1.5px}.es{font:600 30px Inter;color:var(--sub);margin:16px 0 34px}
+.ebtn{display:inline-block;background:#E63946;color:#fff;font:800 36px "PJS";padding:20px 44px;border-radius:16px;box-shadow:0 14px 40px rgba(230,57,70,.35)}
+.rollwrap{position:absolute;right:90px;top:120px;width:820px;height:840px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent,#000 8%,#000 90%,transparent)}
+.roll{position:absolute;left:0;top:40px;width:820px;font:400 17px/1.5 Inter;color:#3c4a60}
+.roll .rh{font:800 22px "PJS";letter-spacing:4px;color:#FF6B35;margin-bottom:10px}.roll .ri{margin:4px 0}
+/* global */
+.chpill{position:absolute;left:70px;top:58px;background:#fff;border-radius:999px;padding:12px 26px 12px 14px;box-shadow:0 10px 30px rgba(20,33,61,.12);font:600 24px "PJS";color:var(--ink);white-space:nowrap}
+.chpill b{display:inline-block;background:#14213D;color:#fff;border-radius:999px;padding:5px 16px;margin-right:14px;font-weight:800;font-size:20px;letter-spacing:2px;vertical-align:1px}
+.srcline{position:absolute;left:70px;bottom:44px;max-width:1700px;font:400 19px "JBM";color:#56657c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(255,255,255,.78);padding:8px 16px;border-radius:10px}
+.srcline .sl{font-weight:700;color:#FF6B35;margin-right:12px;letter-spacing:1px}
+.progress{position:absolute;left:0;right:0;top:0;height:6px;background:rgba(20,33,61,.06)}
+.pfill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#FF6B35,#FFD166)}
+.ptick{position:absolute;top:0;width:3px;height:6px;background:#fff}
+.fadewhite{position:absolute;inset:0;background:#fff;pointer-events:none}
+/* bumper bab */
+.bump{position:absolute;inset:0}
+.bump .bl{position:absolute;left:0;right:0;top:120px;text-align:center;font:800 30px "PJS";letter-spacing:12px;color:#FF6B35}
+.bump .bt{position:absolute;left:0;right:0;top:820px;text-align:center;font:800 92px "PJS";letter-spacing:-2px;color:#14213D}
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="gl" width="1920" height="1080"></canvas><div id="ui"></div></div>
+<script type="importmap">{"imports":{"three":"./lib/three.module.min.js"}}</script>
+<script type="module" src="core/main.js"></script>
+</body>
+</html>

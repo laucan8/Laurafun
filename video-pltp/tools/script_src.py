@@ -1,0 +1,466 @@
+# -*- coding: utf-8 -*-
+"""
+SUMBER TUNGGAL (single source of truth) untuk video:
+  "PANAS BUMI: Harta Karun di Bawah Kaki Kita"
+Dipakai oleh: tts.py (voice-over), build_timeline.py (engine 3D), make_docs.py (script & storyboard).
+
+Konvensi:
+  vo    : narasi untuk TTS. Angka ditulis dengan kata agar dibaca benar.
+          Penanda [[cue]] = titik sinkron visual (dipasang sebelum kata yang menjadi pemicu).
+  voice : ardi (narator), ardi_dark (segmen teori konspirasi), gadis (Fakta Cek)
+  type  : modul adegan 3D di engine/scenes
+  ui    : overlay layar (judul, statistik, poin, callout 3D, stempel)
+  src   : kunci referensi -> REFS (ditampilkan di layar + deskripsi)
+  tr    : transisi 3D menuju adegan berikutnya
+"""
+
+REFS = {
+ "ESRF": ("ESRF/Anzellini dkk. (2013), Science 340 — suhu inti Bumi ±6.000°C", "https://www.esrf.fr/news/general/earth-centre-hotter"),
+ "VOLC127": ("Badan Geologi ESDM via VnExpress (2025) — 127 gunung api aktif", "https://e.vnexpress.net/news/news/environment/in-southeast-asia-s-largest-economy-15-million-live-in-risk-zones-of-127-active-volcanoes-4997090.html"),
+ "ESDM25": ("Kementerian ESDM, IIGCE 2025 — potensi 23.742 MW, terpasang 2.744 MW", "https://www.esdm.go.id/id/media-center/arsip-berita/indonesia-siap-jadi-negara-produsen-listrik-panas-bumi-terbesar-dunia"),
+ "CNBC25": ("CNBC Indonesia (17 Sep 2025) — RI punya PLTP 2,7 GW", "https://www.cnbcindonesia.com/news/20250917170020-4-667864/ri-sudah-punya-pembangkit-listrik-panas-bumi-271-giga-watt"),
+ "CAP107": ("Bisnis.com (13 Nov 2025) — kapasitas listrik nasional 107 GW", "https://ekonomi.bisnis.com/read/20251113/44/1928607/kapasitas-listrik-nasional-tembus-107-gw-porsi-ebt-baru-144"),
+ "COAL68": ("ESDM via Investortrust (2025) — porsi batu bara 2024: 68,18%", "https://investortrust.id/business/85441/produksi-listrik-nasional-tembus-290-twh-batu-bara-masih-dominan-66"),
+ "EBT25": ("Listrik Indonesia (2026) — bauran EBT 2025: 15,75%", "https://listrikindonesia.com/detail/18918/bauran-ebt-nasional-meningkat-11-persen-sepanjang-2025-ini-rinciannya"),
+ "PLTP257": ("Databoks Katadata (Sep 2026) — PLTP = 2,57% kapasitas nasional 2025", "https://databoks.katadata.co.id/datapublish/2026/09/11/sebaran-kapasitas-terpasang-pembangkit-panas-bumi-indonesia-pada-2025"),
+ "TGE10": ("ThinkGeoEnergy (2026) — Top 10 negara panas bumi akhir 2025", "https://www.thinkgeoenergy.com/global-top-10-geothermal-power-countries-at-year-end-2025/"),
+ "C40": ("CNBC Indonesia (Nov 2024) — klaim '40% cadangan dunia'", "https://www.cnbcindonesia.com/news/20241111094257-4-587177/top-ri-simpan-40-cadangan-panas-bumi-di-dunia"),
+ "KOREKSI": ("Okezone/ESDM (Mar 2020) — koreksi potensi 27 GW → 23,9 GW", "https://economy.okezone.com/read/2020/03/17/320/2184792/16-8-listrik-indonesia-dihasilkan-dari-panas-bumi-pada-2025"),
+ "DIPIPPO": ("DiPippo, R. (2016) Geothermal Power Plants, ed. ke-4, Elsevier", ""),
+ "USGS_SUB": ("USGS — Tektonik busur Sunda & subduksi", "https://www.usgs.gov/programs/earthquake-hazards"),
+ "IFC13": ("IFC (2013) Success of Geothermal Wells: A Global Study", "https://www.thinkgeoenergy.com/global-study-on-success-of-drilling-geothermal-wells-by-ifc/"),
+ "IRENA24": ("IRENA (2025) Renewable Power Generation Costs in 2024", "https://www.irena.org/Publications/2025/Jun/Renewable-Power-Generation-Costs-in-2024"),
+ "IRENA24TGE": ("ThinkGeoEnergy — ringkasan IRENA 2024 (LCOE, faktor kapasitas 88%)", "https://www.thinkgeoenergy.com/irena-report-highlights-16-decrease-in-geothermal-power-lcoe-in-2024/"),
+ "KWH": ("Kontan (Feb 2025) — konsumsi listrik 2024: 1.411 kWh/kapita", "https://industri.kontan.co.id/news/masih-jauh-dari-target-konsumsi-listrik-per-kapita-sepanjang-2024-baru-1411-kwh"),
+ "VAPOR": ("American Journal of Science — reservoir dominasi uap Darajat & Kamojang", "https://ajsonline.org/article/60889.pdf"),
+ "KAMOJANG": ("Kementerian ESDM — Lapangan Kamojang, PLTP pertama di Indonesia", "https://www.esdm.go.id/id/media-center/arsip-berita/lapangan-kamojang-pltp-pertama-di-indonesia"),
+ "POHANG": ("Phys.org/AFP (Mar 2019) — panel pemerintah Korea: gempa Pohang dipicu PLTP eksperimental", "https://phys.org/news/2019-03-geothermal-triggered-earthquake-korea.html"),
+ "MAJER": ("Majer dkk. (2007) Induced seismicity associated with EGS, Geothermics 36(3)", ""),
+ "STAR": ("ThinkGeoEnergy (2024–2026) — ekspansi Star Energy Geothermal", "https://www.thinkgeoenergy.com/star-energy-to-expand-installed-geothermal-power-capacity-in-indonesia-by-102-mw/"),
+ "GDATA": ("GlobalData — 4 dari 10 PLTP terbesar dunia ada di Indonesia", "https://www.globaldata.com/indonesia-owns-four-of-top-ten-highest-active-capacity-geothermal-plants-globally/"),
+ "SARULLA": ("ThinkGeoEnergy (2014) — Sarulla raih pembiayaan US$1,17 miliar", "https://www.thinkgeoenergy.com/sarulla-project-secures-1-7-billion-project-financing/"),
+ "IJG": ("IJGlobal — struktur utang Sarulla (JBIC, ADB, CTF, bank komersial)", "https://ijglobal.com/articles/91557/sarulla-geothermal-indonesia"),
+ "ORMAT": ("Ormat/SEC Exhibit 99.1 (2014) — desain siklus kombinasi Sarulla", "https://www.sec.gov/Archives/edgar/data/1296445/000143774914006110/ex99-1.htm"),
+ "PGE727": ("PGE (2025) — Lumut Balai Unit 2 beroperasi, kapasitas 727 MW", "https://www.pge.pertamina.com/en/siaran-pers/pltp-lumut-balai-unit-2-beroperasi-penuh-pge-tambah-kapasitas-terpasang-55-mw-menuju-target-1-gw"),
+ "BOTTOM": ("PGE (Des 2025) — tarif PLTP Ulubelu Bottoming Unit 30 MW", "https://pge.pertamina.com/en/press-release/the-pge-pln-ip-consortium-agrees-on-tariffs-with-pln-for-the-ulubelu-bottoming-unit-geothermal-power-plant-strengthening-the-national-energy-transition"),
+ "LAHENDONG": ("ThinkGeoEnergy (2026) — tarif Lahendong Bottoming Unit 15 MW", "https://www.thinkgeoenergy.com/pertamina-pln-sign-geothermal-power-tariff-agreement-for-lahendong-bottoming-unit-indonesia/"),
+ "COGEN": ("Bisnis.com (Agu 2025) — proyek ko-generasi PGE 230 MW", "https://market.bisnis.com/read/20250820/192/1904144/ini-sederet-proyek-ebt-pertamina-geothermal-pgeo-topang-target-pemerintah"),
+ "H2": ("ThinkGeoEnergy (2024) — PLTP Kamojang mulai produksi hidrogen hijau", "https://www.thinkgeoenergy.com/kamojang-geothermal-power-plant-in-indonesia-starts-green-hydrogen-production/"),
+ "LITHIUM": ("ThinkGeoEnergy (2026) — Geo Dipa terima hibah USTDA untuk studi lithium Dieng", "https://www.thinkgeoenergy.com/geo-dipa-receives-ustda-grant-for-geothermal-lithium-study-in-dieng-indonesia/"),
+ "RRI": ("RRI (Mar 2026) — USTDA dukung teknologi lithium AS untuk panas bumi RI", "https://rri.co.id/en/business/2270500/ustda-backs-us-lithium-technology-for-indonesias-geothermal-sector"),
+ "FERVO": ("Energy Global (Okt 2026) — Fervo umumkan operasi komersial Cape Station", "https://www.energyglobal.com/other-renewables/05102026/fervo-energy-declares-commercial-operation-at-cape-station-ahead-of-schedule/"),
+ "EAVOR": ("POWER Magazine (2026) — proyek closed-loop Eavor alirkan listrik di Jerman", "https://www.powermag.com/eavors-first-of-its-kind-closed-loop-geothermal-project-produces-grid-power-in-germany/"),
+ "RUPTL": ("Kontan (2025) — RUPTL 2025–2034: tambahan 69,5 GW", "https://industri.kontan.co.id/news/pemerintah-tambah-kapasitas-695-gw-di-ruptl-2025-2034-pltu-batubara-jadi-sorotan"),
+ "RUPTLFAQ": ("Ditjen Gatrik ESDM — FAQ RUPTL PLN 2025–2034", "https://gatrik.esdm.go.id/assets/uploads/download_index/files/daa0b-faq-ruptl-pln-2025-2034.pdf"),
+ "DMO": ("Kontan (Nov 2025) — harga batu bara DMO tetap US$70/ton; konsumsi PLN 140–160 juta ton", "https://industri.kontan.co.id/news/menteri-bahlil-pastikan-harga-batubara-dmo-tetap-us70-per-ton"),
+ "CREA": ("CREA & IESR (2023) Health Benefits of Just Energy Transition and Coal Phase-out in Indonesia", "https://energyandcleanair.org/publication/health-benefits-of-just-energy-transition-and-coal-phase-out-in-indonesia/"),
+ "PERPRES": ("Perpres 112/2022; Kontan — tarif PLTP belum menunjang keekonomian", "https://industri.kontan.co.id/news/tarif-listrik-pltp-dalam-perpres-1122022-belum-cukup-menunjang-keekonomian-proyek"),
+ "IPCC": ("IPCC (2014) AR5 WGIII Annex III — emisi siklus hidup (median)", "https://www.ipcc.ch/site/assets/uploads/2018/02/ipcc_wg3_ar5_annex-iii.pdf"),
+ "DEA24": ("Ditjen Gatrik ESDM & Danish Energy Agency (Mei 2024) Technology Cost Perspectives in the Indonesian Power Sector", "https://ens.dk/media/5064/download"),
+ "CALC": ("Perhitungan kanal: metode anuitas, data DEA24, umur 30 th, USD 2022", ""),
+ "ESMAP": ("ESMAP/World Bank (2012) Geothermal Handbook, TR002/12", "https://www.esmap.org/sites/esmap.org/files/DocumentLibrary/FINAL_Geothermal%20Handbook_TR002-12_Reduced.pdf"),
+ "GREM": ("PT SMI — Geothermal Resource Risk Mitigation (GREM)", "https://www.ptsmi.co.id/geothermal-resource-risk-mitigation-grem"),
+ "WB": ("World Bank — Indonesia GREM Project (P166071)", "https://projects.worldbank.org/en/projects-operations/project-detail/P166071"),
+ "GOVDRILL": ("Bisnis.com (2020) — program pengeboran eksplorasi oleh pemerintah", "https://ekonomi.bisnis.com/read/20201130/44/1324283/2021-esdm-mulai-pengeboran-eksplorasi-panas-bumi-di-tiga-lokasi"),
+ "SINILA": ("Wikipedia — Letusan Kawah Sinila 1979; BPBD Jateng (2020) Gas Beracun", "https://en.wikipedia.org/wiki/1979_eruption_of_Sinila_crater"),
+ "BPBD": ("BPBD Jawa Tengah (2020) — Kajian gas beracun Dieng", "https://ppid.bpbd.jatengprov.go.id/wp-content/uploads/2023/01/GAS-BERACUN-FULL-EDIT-2020.pdf"),
+ "SORIK": ("Kementerian ESDM (2021) — investigasi paparan gas H2S PLTP Sorik Marapi", "https://www.esdm.go.id/en/media-center/news-archives/investigasi-paparan-gas-h2s-kementerian-esdm-hentikan-sementara-aktivitas-pltp-sorik-marapi-"),
+ "SORIK2": ("Kontan (2021) — kronologi kebocoran gas PLTP Sorik Marapi", "https://industri.kontan.co.id/news/esdm-beberkan-kronologi-kebocoran-gas-pltp-sorik-marapi-yang-telan-korban-jiwa"),
+ "JAPAN": ("ThinkGeoEnergy — pemilik onsen Jepang terus menentang panas bumi", "https://www.thinkgeoenergy.com/japanese-bathers-continue-to-oppose-geothermal-development/"),
+ "MAP": ("Peta: Natural Earth via world-atlas; lokasi gunung api: Smithsonian GVP (ilustratif)", "https://volcano.si.edu"),
+}
+
+# ---------------------------------------------------------------------------
+CHAPTERS = [
+ (0, "PEMBUKA", "Harta karun di bawah kaki kita"),
+ (1, "BAB 1", "Kenapa Indonesia?"),
+ (2, "BAB 2", "Cara Kerja PLTP"),
+ (3, "BAB 3", "PLTP Ikonik Indonesia"),
+ (4, "BAB 4", "Teknologi Canggih & Masa Depan"),
+ (5, "BAB 5", "Duel: PLTP vs PLTU"),
+ (6, "BAB 6", "Hitung-hitungan: CAPEX per MW"),
+ (7, "BAB 7", "Plus–Minus vs Energi Terbarukan Lain"),
+ (8, "BAB 8", "Teori Terakhir & Penutup"),
+]
+
+S = []
+def sc(**k):
+    S.append(k)
+
+# =========================== PEMBUKA =======================================
+sc(id="s01", ch=0, type="earth", params={"mode": "core"}, voice="ardi", tr="zoom",
+   visual="Ruang putih bersih. Titik oranye kecil berdenyut, kamera mundur: ternyata inti Bumi dalam globe yang terbelah (lapisan kerak–mantel–inti, warna pastel). Teks suhu menghitung naik.",
+   vo="[[t6000]]Enam ribu derajat Celsius. Kurang lebih sepanas permukaan Matahari. Itulah perkiraan suhu inti Bumi, [[below]]jauh di bawah kaki kita. Dan kompor raksasa ini sudah menyala tanpa henti selama miliaran tahun. [[nofuel]]Tanpa bahan bakar. [[nosmoke]]Tanpa asap. [[noimport]]Tanpa tagihan impor.",
+   ui=[{"k":"stat","at":"t6000","value":6000,"suffix":"°C","label":"Perkiraan suhu inti Bumi","pos":"left"},
+       {"k":"chips","items":[["nofuel","Tanpa bahan bakar"],["nosmoke","Tanpa asap"],["noimport","Tanpa impor"]]}],
+   src=["ESRF"])
+
+sc(id="s02", ch=0, type="earth", params={"mode": "indonesia"}, voice="ardi", tr="shatter",
+   visual="Globe berputar ke Asia Tenggara; busur Cincin Api menyala titik demi titik; titik-titik gunung api Indonesia muncul. Dua kolom 3D: potensi vs terpakai. Lalu ikon PLTU berasap muncul membesar.",
+   vo="Dan ada satu negara yang duduk tepat di atas [[ring]]Cincin Api dunia: Indonesia. Kita punya [[volc]]seratus dua puluh tujuh gunung api aktif, dan [[pot]]potensi listrik panas bumi sekitar dua puluh tiga ribu tujuh ratus megawatt. Itu setara lebih dari seperlima kapasitas seluruh pembangkit listrik Indonesia hari ini. Tapi sampai sekarang, [[used]]baru sekitar sebelas persen yang kita manfaatkan. Sementara [[coal]]dua per tiga listrik nasional masih dihasilkan dengan cara lama: membakar batu bara.",
+   ui=[{"k":"stat","at":"volc","value":127,"label":"gunung api aktif","pos":"right"},
+       {"k":"stat","at":"pot","value":23742,"suffix":" MW","label":"potensi panas bumi","pos":"right2"},
+       {"k":"stat","at":"used","value":11.6,"dec":1,"suffix":"%","label":"yang sudah dimanfaatkan","pos":"right3"},
+       {"k":"stat","at":"coal","value":68,"suffix":"%","label":"listrik dari batu bara (2024)","pos":"left","tone":"coal"}],
+   src=["VOLC127","ESDM25","CAP107","COAL68"])
+
+sc(id="s03", ch=0, type="conspiracy", params={"mode":"intro"}, voice="ardi_dark", tr="flip",
+   visual="Papan investigasi 3D (gabus, foto polaroid PLTP & PLTU, benang merah). Lampu sorot bergerak. Kata 'GEOLOGI?', 'UANG?', 'DISENGAJA?' tertempel satu per satu. Lalu daftar isi video muncul sebagai kartu.",
+   vo="Kenapa bisa begitu? Ada yang bilang [[geo]]ini soal geologi. Ada yang bilang [[money]]ini soal uang. Dan ada juga yang berbisik, [[whisper]]bahwa ini memang disengaja. Di video ini, kita bedah semuanya. [[l1]]Cara kerja PLTP sampai ke detail mesinnya. [[l2]]Proyek paling ikonik dan paling canggih di Indonesia. [[l3]]Duel biaya melawan PLTU. [[l4]]Dan teori-teori konspirasi yang beredar di baliknya. Kita uji satu per satu: [[fact]]mana fakta, mana fiksi.",
+   ui=[{"k":"bullets","title":"DI VIDEO INI","items":[["l1","Cara kerja PLTP (3D)"],["l2","PLTP ikonik & teknologi baru"],["l3","Duel biaya vs PLTU"],["l4","4 teori konspirasi — dicek fakta"]]}],
+   src=[])
+
+sc(id="s04", ch=0, type="title", params={}, voice="ardi", tr="cube",
+   visual="Judul utama melayang di atas balok tanah 3D yang terbelah, inti magma berpendar oranye dari bawah, uap putih naik. Judul: PANAS BUMI — Harta Karun di Bawah Kaki Kita.",
+   vo="[[title]]Ini adalah kisah tentang harta karun yang selama ini bersembunyi, tepat di bawah kaki kita.",
+   ui=[{"k":"title","at":"title","text":"PANAS BUMI","sub":"Harta Karun di Bawah Kaki Kita"}],
+   src=[])
+
+# =========================== BAB 1 =========================================
+sc(id="s05", ch=1, type="tectonic", params={}, voice="ardi", tr="heat",
+   visual="Blok penampang 3D: lempeng samudra Indo-Australia (biru) menunjam di bawah lempeng Eurasia (krem). Panah gerak, tetesan magma oranye naik membentuk deret gunung api. Peta mini menunjukkan busur Sumatra–Jawa–Nusa Tenggara.",
+   vo="Mari mulai dari pertanyaan paling dasar: kenapa Indonesia begitu panas? Jawabannya ada sekitar seratus kilometer di bawah tanah. [[plate]]Lempeng Indo-Australia terus bergerak ke utara, beberapa sentimeter per tahun, lalu menyusup ke bawah lempeng Eurasia. Proses ini disebut [[sub]]subduksi. Saat lempeng samudra tenggelam ke dalam mantel yang panas, air yang terbawa di dalamnya menurunkan titik leleh batuan. [[melt]]Batuan pun meleleh menjadi magma, naik ke atas, dan [[arc]]membentuk deretan gunung api yang membentang dari Sumatra, Jawa, Bali, Nusa Tenggara, sampai Sulawesi dan Maluku.",
+   ui=[{"k":"callout","at":"plate","anchor":"oplate","text":"Lempeng Indo-Australia","sub":"bergerak ±6–7 cm/tahun"},
+       {"k":"callout","at":"plate","anchor":"cplate","text":"Lempeng Eurasia"},
+       {"k":"callout","at":"sub","anchor":"trench","text":"Zona subduksi","sub":"palung Sunda"},
+       {"k":"callout","at":"melt","anchor":"magma","text":"Magma naik","tone":"hot"},
+       {"k":"callout","at":"arc","anchor":"volcano","text":"Busur gunung api"}],
+   src=["USGS_SUB","VOLC127"])
+
+sc(id="s06", ch=1, type="geosystem", params={}, voice="ardi", tr="slide",
+   visual="Penampang sistem panas bumi: gunung api, mata air panas, patahan; empat 'bahan rahasia' menyala bergantian: sumber panas (merah), air hujan meresap (biru), reservoir retak (oranye), batuan penudung lempung (ungu muda) berbentuk kubah seperti tutup panci presto.",
+   vo="Tapi gunung api saja tidak cukup untuk membuat pembangkit listrik. Alam butuh empat bahan rahasia. Pertama, [[heat]]sumber panas: tubuh magma atau batuan panas di kedalaman beberapa kilometer. Kedua, [[water]]air: air hujan yang meresap melalui rekahan dan patahan, turun ribuan meter. Ketiga, [[res]]batuan reservoir yang berpori dan retak-retak, tempat air itu terpanaskan hingga dua ratus sampai tiga ratus derajat lebih. Dan keempat, yang sering dilupakan: [[cap]]batuan penudung. Lapisan lempung kedap air yang mengunci panas dan tekanan di bawahnya, persis seperti tutup panci presto. [[all]]Kalau keempatnya ada, kita punya sistem panas bumi.",
+   ui=[{"k":"steps","items":[["heat","1","Sumber panas","magma / batuan panas"],["water","2","Fluida","air hujan meresap"],["res","3","Reservoir","200–300+ °C, berpori"],["cap","4","Batuan penudung","lempung kedap"]]},
+       {"k":"callout","at":"heat","anchor":"heat","text":"Sumber panas","tone":"hot"},
+       {"k":"callout","at":"water","anchor":"rain","text":"Air meteorik"},
+       {"k":"callout","at":"res","anchor":"res","text":"Reservoir","sub":"200–300+ °C"},
+       {"k":"callout","at":"cap","anchor":"cap","text":"Batuan penudung (clay cap)"}],
+   src=["DIPIPPO"])
+
+sc(id="s07", ch=1, type="bars", params={"set":"countries"}, voice="ardi", tr="cube",
+   visual="Dua menara 3D raksasa: potensi 23.742 MW vs terpasang 2.744 MW (11,6%). Lalu transisi ke grafik batang 3D 5 besar dunia; bendera/label; Indonesia menyala oranye.",
+   vo="Berapa besar harta karun ini? Menurut Kementerian ESDM, [[pot]]sumber daya panas bumi Indonesia mencapai sekitar dua puluh tiga ribu tujuh ratus empat puluh dua megawatt. Kapasitas yang [[inst]]sudah terpasang: sekitar dua ribu tujuh ratus empat puluh megawatt. Dengan angka itu, [[rank]]Indonesia adalah produsen listrik panas bumi terbesar kedua di dunia, hanya kalah dari Amerika Serikat, dan di atas Filipina, Turki, dan Selandia Baru. Pada tahun dua ribu dua puluh lima, [[add]]Indonesia bahkan mencatat penambahan kapasitas terbesar di dunia.",
+   ui=[{"k":"stat","at":"pot","value":23742,"suffix":" MW","label":"Sumber daya panas bumi RI","pos":"left","until":"rank"},
+       {"k":"stat","at":"inst","value":2744,"suffix":" MW","label":"Terpasang (2025)","pos":"left2","tone":"hot","until":"rank"},
+       {"k":"legend","text":"Kapasitas terpasang PLTP akhir 2025 (MW)"},
+       {"k":"badge","at":"add","text":"Penambahan kapasitas terbesar dunia 2025"}],
+   src=["ESDM25","TGE10"])
+
+sc(id="s08", ch=1, type="conspiracy", params={"mode":"t1","n":1}, voice="ardi_dark", tr="flip",
+   visual="Kembali ke papan investigasi. Kliping koran 3D bertuliskan '40% PANAS BUMI DUNIA ADA DI INDONESIA' disorot lampu; label 'TEORI #1'.",
+   vo="[[claim]]Tapi tunggu. Mungkin Anda pernah dengar klaim ini: Indonesia menyimpan empat puluh persen cadangan panas bumi dunia. Klaim ini diulang-ulang di media, bahkan oleh pejabat. [[q]]Benarkah?",
+   ui=[{"k":"theory","n":1,"text":"“Indonesia menyimpan 40% panas bumi dunia.”"}],
+   src=["C40"])
+
+sc(id="s09", ch=1, type="factcheck", params={"n":1,"verdict":"SEBAGIAN BENAR","tone":"amber"}, voice="gadis", tr="zoom",
+   visual="Panel 'FAKTA CEK' bersih: grafik garis potensi 29 → 27 → 23,9 → 23,7 GW; kaca pembesar 3D; stempel kuning 'SEBAGIAN BENAR' menghentak.",
+   vo="[[fc]]Fakta cek. Angka empat puluh persen itu berasal dari perkiraan lama, saat potensi Indonesia masih disebut [[old]]dua puluh tujuh hingga dua puluh sembilan gigawatt. Badan Geologi kemudian [[corr]]mengoreksinya menjadi sekitar dua puluh empat gigawatt, dan estimasi potensi dunia pun berbeda-beda tergantung metodenya. Jadi, Indonesia jelas termasuk [[top2]]dua besar dunia. Tapi empat puluh persen adalah angka kasar, bukan data presisi. [[verdict]]Status: sebagian benar.",
+   ui=[{"k":"facts","items":[["old","Klaim lama: potensi 27–29 GW"],["corr","Koreksi Badan Geologi: ±23,9 GW (2019) → 23,7 GW (2025)"],["top2","Fakta kuat: Indonesia 2 besar dunia (potensi & kapasitas)"]]},
+       {"k":"verdict","at":"verdict"}],
+   src=["C40","KOREKSI","ESDM25"])
+
+# =========================== BAB 2 =========================================
+sc(id="s10", ch=2, type="plant", params={"mode":"overview"}, voice="ardi", tr="none",
+   visual="DIORAMA UTAMA: balok tanah isometrik terbelah — sumur produksi menembus 2 km ke reservoir, kepala sumur, pipa dua fase berliku, separator, rumah turbin (atap transparan), menara pendingin dengan uap, pipa brine ke sumur injeksi. Kamera mengorbit perlahan. Siluet PLTU 'hantu' memudar menjadi PLTP.",
+   vo="Sekarang, bagian yang paling ditunggu: bagaimana sebenarnya PLTP mengubah panas di perut bumi menjadi listrik di rumah Anda? [[pltu]]Bayangkan sebuah PLTU. Ada boiler yang membakar batu bara untuk mendidihkan air, uapnya memutar turbin, turbin memutar generator. Nah, PLTP pada dasarnya adalah [[nofire]]PLTU tanpa api. Boilernya bukan tungku pembakaran, melainkan bumi itu sendiri. [[drop]]Mari kita ikuti perjalanan satu tetes air, dari kedalaman dua kilometer sampai menjadi listrik.",
+   ui=[{"k":"quote","at":"nofire","text":"PLTP = “PLTU tanpa api”","sub":"boilernya adalah bumi itu sendiri"}],
+   src=["DIPIPPO"])
+
+sc(id="s11", ch=2, type="plant", params={"mode":"explore"}, voice="ardi", tr="none",
+   visual="Kamera turun ke permukaan: fumarol & mata air panas berpendar; sensor magnetotelurik (MT) ditancapkan; di bawah tanah muncul 'kubah' resistivitas rendah (biru-ungu transparan). Rig bor berdiri, mata bor berputar turun 1,5–3 km. Meter keberhasilan 60%.",
+   vo="[[step]]Langkah pertama: eksplorasi. Sebelum mengebor, ahli geologi membaca tanda-tanda di permukaan: [[signs]]mata air panas, fumarol, tanah yang berubah warna. Ahli geofisika memasang [[mt]]sensor magnetotelurik untuk memotret lapisan bawah tanah. [[clay]]Lapisan lempung penudung biasanya terlihat sebagai zona bertahanan listrik rendah, seperti kubah yang menandai lokasi reservoir di bawahnya. Lalu datang momen paling mahal dan paling menegangkan: [[drill]]pengeboran sumur eksplorasi, sedalam satu setengah hingga tiga kilometer. Secara global, [[sixty]]rata-rata hanya sekitar enam puluh persen sumur pada tahap eksplorasi yang berhasil.",
+   ui=[{"k":"stepbadge","n":1,"text":"Eksplorasi"},
+       {"k":"callout","at":"signs","anchor":"fumarole","text":"Manifestasi permukaan","sub":"fumarol, mata air panas"},
+       {"k":"callout","at":"mt","anchor":"mt","text":"Survei magnetotelurik (MT)"},
+       {"k":"callout","at":"clay","anchor":"clay","text":"Zona konduktif = clay cap"},
+       {"k":"callout","at":"drill","anchor":"rig","text":"Sumur eksplorasi","sub":"1,5–3 km"},
+       {"k":"stat","at":"sixty","value":60,"suffix":"%","label":"rata-rata sukses sumur eksplorasi (global)","pos":"left"}],
+   src=["IFC13","DIPIPPO"])
+
+sc(id="s12", ch=2, type="plant", params={"mode":"production"}, voice="ardi", tr="zoom",
+   visual="Penampang sumur produksi: partikel cairan oranye naik, makin ke atas sebagian berubah jadi gelembung uap putih (flashing). Indikator tekanan turun & suhu. Kamera naik mengikuti fluida ke kepala sumur dan pipa dengan 'expansion loop'.",
+   vo="[[step]]Langkah kedua: sumur produksi. Di dalam reservoir, [[liquid]]air bersuhu di atas dua ratus lima puluh derajat tetap berbentuk cair karena tekanannya sangat tinggi. [[open]]Begitu sumur dibuka, fluida naik dengan sendirinya. Semakin ke atas, tekanannya turun, dan sebagian air mendadak berubah menjadi uap. [[flash]]Proses inilah yang disebut flashing. Ketika sampai di [[head]]kepala sumur, yang keluar adalah campuran uap dan air panas bertekanan, siap dialirkan lewat [[pipe]]pipa-pipa besar yang berkelok-kelok, dirancang untuk menyerap pemuaian akibat panas.",
+   ui=[{"k":"stepbadge","n":2,"text":"Sumur produksi"},
+       {"k":"callout","at":"liquid","anchor":"reservoir","text":"Fluida cair >250 °C","sub":"tekanan tinggi","tone":"hot"},
+       {"k":"callout","at":"flash","anchor":"flashzone","text":"Zona flashing","sub":"air → uap"},
+       {"k":"callout","at":"head","anchor":"wellhead","text":"Kepala sumur"},
+       {"k":"callout","at":"pipe","anchor":"loop","text":"Expansion loop","sub":"menyerap pemuaian pipa"}],
+   src=["DIPIPPO"])
+
+sc(id="s13", ch=2, type="separator", params={}, voice="ardi", tr="slide",
+   visual="Close-up separator siklon dalam potongan (cutaway): aliran dua fase masuk tangensial, berputar spiral; butir air biru terlempar ke dinding dan turun; uap putih naik ke atas melalui pipa tengah. Label: uap → turbin, brine → injeksi.",
+   vo="[[step]]Langkah ketiga: separator. Campuran uap dan air masuk ke bejana silinder raksasa dengan [[spin]]aliran berputar seperti puting beliung. Gaya sentrifugal [[water]]melempar air yang lebih berat ke dinding dan jatuh ke bawah, sementara [[steam]]uap yang ringan naik ke atas. Hasilnya, uap kering yang bersih dikirim ke pembangkit, dan [[brine]]air panasnya, yang disebut brine, dialirkan ke sumur injeksi.",
+   ui=[{"k":"stepbadge","n":3,"text":"Separator"},
+       {"k":"callout","at":"spin","anchor":"inlet","text":"Masuk tangensial","sub":"aliran siklon"},
+       {"k":"callout","at":"steam","anchor":"steamout","text":"Uap kering → turbin"},
+       {"k":"callout","at":"brine","anchor":"brineout","text":"Brine → sumur injeksi","tone":"water"}],
+   src=["DIPIPPO"])
+
+sc(id="s14", ch=2, type="turbine", params={}, voice="ardi", tr="cube",
+   visual="Turbin uap dalam potongan: rotor dengan baris-baris sudu berputar; partikel uap menembus; poros menyambung ke generator; di generator, kumparan berputar dalam medan magnet (garis medan biru). Penunjuk 3.000 rpm & gelombang sinus 50 Hz. Kartu hitung: 55 MW → ±400 GWh/th → ±280.000 orang.",
+   vo="[[step]]Langkah keempat: turbin dan generator. Uap menghantam [[blades]]ratusan sudu turbin, memutar poros pada [[rpm]]tiga ribu putaran per menit. Poros itu terhubung ke [[gen]]generator, di mana kumparan berputar di dalam medan magnet dan menghasilkan listrik bolak-balik [[hz]]lima puluh hertz, frekuensi standar jaringan PLN. [[calc]]Satu unit berkapasitas lima puluh lima megawatt yang beroperasi hampir sepanjang tahun bisa menghasilkan sekitar empat ratus gigawatt jam per tahun. [[people]]Setara konsumsi listrik hampir tiga ratus ribu orang Indonesia.",
+   ui=[{"k":"stepbadge","n":4,"text":"Turbin & generator"},
+       {"k":"callout","at":"blades","anchor":"rotor","text":"Rotor & sudu turbin"},
+       {"k":"callout","at":"gen","anchor":"gen","text":"Generator","sub":"kumparan × medan magnet"},
+       {"k":"stat","at":"rpm","value":3000,"suffix":" rpm","label":"putaran poros","pos":"left"},
+       {"k":"stat","at":"hz","value":50,"suffix":" Hz","label":"frekuensi jaringan PLN","pos":"left2"},
+       {"k":"calc","at":"calc","lines":["55 MW × 8.760 jam × ±83%","≈ 400 GWh per tahun","÷ 1.411 kWh/kapita (2024)","≈ 280.000 orang"]}],
+   src=["DIPIPPO","KWH","IRENA24TGE","CALC"])
+
+sc(id="s15", ch=2, type="plant", params={"mode":"cooling"}, voice="ardi", tr="none",
+   visual="Kembali ke diorama: kamera ke kondensor (pipa uap → kotak kondensor, partikel uap jadi tetesan air), pompa, menara pendingin dengan kipas berputar dan kepulan uap putih. Ikon 'tanpa air sungai'. Gas NCG (CO₂, H₂S) disedot ke unit ekstraksi gas, sensor hijau.",
+   vo="[[step]]Langkah kelima: kondensor dan menara pendingin. Setelah melewati turbin, [[cond]]uap didinginkan di kondensor hingga kembali menjadi air. Proses ini [[vacuum]]menciptakan ruang hampa yang menyedot uap, sehingga turbin bekerja lebih efisien. Air pendinginnya didinginkan lagi di [[tower]]menara pendingin, dan menariknya, [[noriver]]PLTP jenis ini umumnya tidak perlu menyedot sungai, karena air kondensat dari uap panas bumi itu sendiri dipakai sebagai air pendingin. [[plume]]Kepulan putih yang Anda lihat dari menara? Itu uap air, bukan asap. Gas yang ikut terbawa, seperti [[ncg]]karbon dioksida dan hidrogen sulfida, dikeluarkan oleh sistem ekstraksi gas dan dipantau ketat.",
+   ui=[{"k":"stepbadge","n":5,"text":"Kondensor & menara pendingin"},
+       {"k":"callout","at":"cond","anchor":"condenser","text":"Kondensor","sub":"uap → air, vakum"},
+       {"k":"callout","at":"tower","anchor":"tower","text":"Menara pendingin"},
+       {"k":"badge","at":"noriver","text":"Air pendingin dari kondensat sendiri"},
+       {"k":"callout","at":"plume","anchor":"plume","text":"Uap air, bukan asap"},
+       {"k":"callout","at":"ncg","anchor":"gasx","text":"Ekstraksi gas NCG","sub":"CO₂, H₂S dipantau"}],
+   src=["DIPIPPO"])
+
+sc(id="s16", ch=2, type="plant", params={"mode":"reinject"}, voice="ardi", tr="shatter",
+   visual="Brine biru mengalir ke sumur injeksi, turun ke reservoir; di bawah tanah partikel biru perlahan berubah oranye (terpanaskan) dan bergerak kembali ke sumur produksi — siklus tertutup bercahaya. Teks 'Kamojang: berproduksi sejak 1980-an'.",
+   vo="[[step]]Langkah keenam, dan ini kunci keberlanjutannya: [[inject]]injeksi ulang. Brine dari separator dan kelebihan kondensat dipompa kembali ke dalam reservoir melalui sumur injeksi. Air itu akan [[reheat]]terpanaskan lagi oleh batuan, lalu suatu saat kembali naik melalui sumur produksi. [[loop]]Siklus tertutup ini menjaga tekanan reservoir dan mencegah amblesan tanah. Selama laju pengambilan panas dikelola dengan baik, sistem ini bisa bertahan puluhan tahun. Buktinya, [[kamojang]]lapangan Kamojang sudah berproduksi sejak awal tahun delapan puluhan, dan masih beroperasi sampai hari ini.",
+   ui=[{"k":"stepbadge","n":6,"text":"Injeksi ulang"},
+       {"k":"callout","at":"inject","anchor":"injwell","text":"Sumur injeksi","tone":"water"},
+       {"k":"callout","at":"reheat","anchor":"reservoir","text":"Dipanaskan ulang oleh batuan","tone":"hot"},
+       {"k":"badge","at":"kamojang","text":"Kamojang: berproduksi sejak 1982–83"}],
+   src=["DIPIPPO","KAMOJANG"])
+
+sc(id="s17", ch=2, type="types3", params={}, voice="ardi", tr="cube",
+   visual="Tiga diorama mini berdampingan di atas panggung putih: (1) Uap kering — uap langsung ke turbin; (2) Flash — separator; (3) Biner — penukar panas + loop isopentana (hijau) tertutup. Masing-masing menyala saat disebut.",
+   vo="Tidak semua PLTP sama. Ada tiga tipe utama. Pertama, [[dry]]uap kering: uap langsung dari sumur masuk ke turbin. Sistem ini langka di dunia, dan Indonesia punya dua contohnya: [[kd]]Kamojang dan Darajat, sekelas The Geysers di Amerika dan Larderello di Italia. Kedua, [[flash]]flash: tipe paling umum, termasuk sebagian besar PLTP di Indonesia, seperti yang baru saja kita lihat. Ketiga, [[binary]]siklus biner: untuk fluida yang lebih hangat, di bawah seratus delapan puluh derajat. Panasnya dipindahkan lewat penukar panas ke [[orc]]fluida kerja organik, seperti isopentana, yang mendidih pada suhu jauh lebih rendah dari air. Fluida panas bumi tidak pernah menyentuh turbin, dan semuanya kembali ke bumi.",
+   ui=[{"k":"cards3","items":[["dry","Uap kering","Kamojang, Darajat","dry"],["flash","Flash","mayoritas PLTP RI","flash"],["binary","Biner (ORC)","< 180 °C, loop tertutup","binary"]]}],
+   src=["DIPIPPO","VAPOR"])
+
+sc(id="s18", ch=2, type="conspiracy", params={"mode":"t2","n":2}, voice="ardi_dark", tr="flip",
+   visual="Papan investigasi: grafik seismograf berkedut, foto gunung api, judul 'PLTP PICU GEMPA & LETUSAN?'. Benang merah menghubungkan sumur bor dengan gunung.",
+   vo="[[claim]]Teori konspirasi nomor dua. PLTP itu berbahaya. Pengeboran panas bumi bisa memicu gempa, bahkan membangunkan gunung api. Video seperti ini sering viral setiap kali ada proyek baru. [[q]]Apakah ada dasarnya?",
+   ui=[{"k":"theory","n":2,"text":"“Pengeboran panas bumi memicu gempa & letusan gunung.”"}],
+   src=[])
+
+sc(id="s19", ch=2, type="factcheck", params={"n":2,"verdict":"SEBAGIAN BENAR","verdict2":"(hanya untuk EGS bertekanan tinggi)","tone":"amber","scene3d":"pohang"}, voice="gadis", tr="heat",
+   visual="Panel Fakta Cek dengan penampang: sumur EGS menyuntik air bertekanan tinggi (garis retak merah menjalar) vs sumur konvensional (injeksi tenang). Skala kedalaman: sumur 1–3 km vs dapur magma jauh lebih dalam. Stempel kuning.",
+   vo="[[fc]]Fakta cek. Ada satu kasus terkenal: [[pohang]]gempa Pohang di Korea Selatan, tahun dua ribu tujuh belas, magnitudo lima koma lima. Panel investigasi pemerintah Korea menyimpulkan gempa itu dipicu oleh proyek panas bumi eksperimental yang [[egs]]menyuntikkan air bertekanan sangat tinggi untuk meretakkan batuan, teknologi yang disebut EGS. Proyek itu lalu dihentikan dan dibongkar. Namun [[conv]]PLTP konvensional di Indonesia bekerja berbeda: memanfaatkan reservoir alami, dan injeksi ulang dilakukan tanpa memaksa batuan pecah. Gempa mikro tetap bisa terjadi, karena itu dipantau dengan jaringan seismometer. Soal membangunkan gunung api: [[depth]]sumur PLTP umumnya berkedalaman satu hingga tiga kilometer, sedangkan dapur magma umumnya jauh lebih dalam. [[verdict]]Status: sebagian benar untuk EGS bertekanan tinggi. Belum ada bukti ilmiah PLTP memicu letusan.",
+   ui=[{"k":"facts","items":[["pohang","Pohang 2017 (M 5,5): dipicu proyek EGS eksperimental"],["egs","EGS = injeksi bertekanan tinggi untuk meretakkan batuan"],["conv","PLTP konvensional: reservoir alami + pemantauan seismik"],["depth","Sumur 1–3 km ≪ kedalaman dapur magma"]]},
+       {"k":"verdict","at":"verdict"}],
+   src=["POHANG","MAJER"])
+
+# =========================== BAB 3 =========================================
+sc(id="s20", ch=3, type="indomap", params={"mode":"overview"}, voice="ardi", tr="none",
+   visual="Peta Indonesia 3D (pulau diekstrusi, laut gradasi biru muda). Titik-titik gunung api berdenyut. Pin PLTP naik sebagai kolom bercahaya, tinggi sebanding MW. Kamera terbang rendah di atas Sumatra & Jawa.",
+   vo="[[fly]]Sekarang mari kita terbang mengelilingi Indonesia, melihat PLTP-PLTP paling ikonik. [[pins]]Sebagian besar berada di Jawa Barat dan Sumatra, mengikuti jalur gunung api yang tadi kita lihat.",
+   ui=[{"k":"legend","text":"Tinggi kolom ∝ kapasitas terpasang (MW)"}],
+   src=["MAP","ESDM25"])
+
+sc(id="s21", ch=3, type="kamojang", params={}, voice="ardi", tr="slide",
+   visual="Close-up 3D sumur bersejarah KMJ-3: pipa tua berkarat, semburan uap putih. Garis waktu 3D melengkung: 1926 (sumur uji Belanda) → 1983 (Unit 1, 30 MW) → 2015 (235 MW) → 2024 (hidrogen hijau).",
+   vo="Kita mulai dari sang legenda: [[kmj]]Kamojang, di Garut, Jawa Barat. Kisahnya dimulai tahun [[y1926]]seribu sembilan ratus dua puluh enam, ketika peneliti Belanda mengebor lima sumur uji. Sumur ketiga, [[kmj3]]KMJ tiga, menyemburkan uap kering dari kedalaman hanya enam puluh enam meter, dan konon sumur tua itu masih mengepulkan uap sampai hari ini. Tahun [[y1983]]seribu sembilan ratus delapan puluh tiga, Presiden Soeharto meresmikan unit pertama berkapasitas tiga puluh megawatt, PLTP pertama di Indonesia. Kini [[y2015]]kapasitasnya dua ratus tiga puluh lima megawatt. Dan pada tahun [[y2024]]dua ribu dua puluh empat, Kamojang mencetak sejarah baru sebagai lokasi produksi hidrogen hijau berbasis panas bumi pertama di Asia Tenggara.",
+   ui=[{"k":"timeline","items":[["y1926","1926","5 sumur uji era Belanda"],["y1983","1983","Unit 1 — 30 MW, PLTP pertama RI"],["y2015","2015","Unit 5 — total 235 MW"],["y2024","2024","Hidrogen hijau pertama ASEAN"]]},
+       {"k":"callout","at":"kmj3","anchor":"kmj3","text":"Sumur KMJ-3","sub":"uap kering dari 66 m"}],
+   src=["KAMOJANG","H2"])
+
+sc(id="s22", ch=3, type="indomap", params={"mode":"westjava"}, voice="ardi", tr="cube",
+   visual="Kamera turun ke Jawa Barat: tiga kolom tinggi Salak, Darajat, Wayang Windu dengan label MW; segitiga emas digambar garis bercahaya; penghitung total 926 MW → target 1 GW.",
+   vo="Tak jauh dari sana, Jawa Barat punya [[tri]]segitiga emas panas bumi: Gunung Salak, Darajat, dan Wayang Windu, yang kini dioperasikan Star Energy Geothermal. [[sum]]Gabungan ketiganya sudah lebih dari sembilan ratus megawatt, dan ditargetkan menembus satu gigawatt. [[salak]]Salak sendiri, dengan kapasitas sekitar tiga ratus delapan puluh megawatt, adalah salah satu lapangan panas bumi terbesar di dunia.",
+   ui=[{"k":"stat","at":"sum","value":926,"suffix":" MW","label":"Salak + Darajat + Wayang Windu","pos":"left"},
+       {"k":"badge","at":"salak","text":"Salak ±381 MW — salah satu terbesar dunia"}],
+   src=["STAR","GDATA"])
+
+sc(id="s23", ch=3, type="sarulla", params={}, voice="ardi", tr="shatter",
+   visual="Diagram 3D siklus kombinasi Sarulla: turbin tekanan balik → unit biner Ormat (loop hijau). Lalu 'capital stack' 3D: balok bertumpuk JBIC US$492 jt, ADB US$250 jt, CTF US$80 jt, CCF US$20 jt, 6 bank komersial US$328 jt = US$1,17 miliar.",
+   vo="Lalu [[sar]]Sarulla, di Tapanuli Utara, Sumatra Utara. Tiga unit, total sekitar tiga ratus tiga puluh megawatt, salah satu kontrak PLTP tunggal terbesar di dunia. Sarulla memakai teknologi [[cc]]siklus kombinasi: uap memutar turbin tekanan balik, lalu sisa panasnya dimanfaatkan lagi oleh unit biner. Dari sisi pendanaan, proyek ini adalah contoh klasik [[pf]]project finance: pinjaman satu koma satu tujuh miliar dolar, dipimpin JBIC dan Bank Pembangunan Asia, ditambah dana iklim konsesional dan enam bank komersial. [[why]]Tanpa skema pembiayaan seperti ini, proyek padat modal seperti PLTP sulit berjalan.",
+   ui=[{"k":"stat","at":"sar","value":330,"suffix":" MW","label":"Sarulla, Sumatra Utara (3 × 110 MW)","pos":"left"},
+       {"k":"stack","at":"pf","title":"Struktur utang Sarulla — US$1,17 miliar","items":[["JBIC",492],["ADB",250],["CTF (mezzanine)",80],["Canadian Climate Fund",20],["6 bank komersial (dijamin JBIC)",328]]}],
+   src=["SARULLA","IJG","ORMAT"])
+
+sc(id="s24", ch=3, type="indomap", params={"mode":"outer"}, voice="ardi", tr="heat",
+   visual="Kamera menyapu Sumatra & Sulawesi: pin Ulubelu, Lahendong, Lumut Balai, Rantau Dedap, Muara Laboh menyala. Terakhir kamera melayang ke Dieng; cahaya meredup, kabut tipis — teaser misteri.",
+   vo="Di luar Jawa Barat, ada [[ulu]]Ulubelu di Lampung dengan dua ratus dua puluh megawatt, [[lah]]Lahendong di Sulawesi Utara, [[lum]]Lumut Balai dan Rantau Dedap di Sumatra Selatan, [[mua]]Muara Laboh di Sumatra Barat, dan [[die]]Dieng di Jawa Tengah. Dieng adalah dataran tinggi yang indah, [[dark]]tapi juga menyimpan kisah paling kelam dalam sejarah gas vulkanik Indonesia. Kita akan kembali ke sana nanti.",
+   ui=[],
+   src=["PGE727","MAP"])
+
+# =========================== BAB 4 =========================================
+sc(id="s25", ch=4, type="bottoming", params={}, voice="ardi", tr="cube",
+   visual="Pipa brine panas (oranye) dari separator masuk ke unit biner 'bottoming': penukar panas, loop fluida organik hijau, turbin kecil berputar, listrik tambahan (+MW) mengalir. Brine keluar lebih dingin (biru) ke injeksi. Label proyek Ulubelu 30 MW & Lahendong 15 MW.",
+   vo="Lalu, apa yang sedang dibangun sekarang? Inovasi pertama terdengar sederhana, tapi cerdas: [[squeeze]]memeras panas sisa. Brine yang keluar dari separator masih sangat panas, seringkali di atas seratus lima puluh derajat. Selama ini panas itu langsung diinjeksikan kembali. Dengan [[unit]]unit biner tambahan, yang disebut bottoming unit, panas sisa itu bisa menghasilkan listrik ekstra, [[nowell]]tanpa mengebor sumur baru. Pertamina Geothermal Energy dan PLN Indonesia Power sudah menyepakati tarif untuk unit bottoming [[ulu]]tiga puluh megawatt di Ulubelu dan [[lah]]lima belas megawatt di Lahendong. [[total]]Total rencana proyek ko-generasi PGE mencapai dua ratus tiga puluh megawatt.",
+   ui=[{"k":"badge","at":"nowell","text":"Listrik ekstra tanpa sumur baru"},
+       {"k":"bullets","title":"PROYEK BOTTOMING","items":[["ulu","Ulubelu — 30 MW (tarif disepakati Des 2025)"],["lah","Lahendong — 15 MW (tarif disepakati 2026)"],["total","Total rencana ko-generasi PGE: 230 MW"]]}],
+   src=["BOTTOM","LAHENDONG","COGEN"])
+
+sc(id="s26", ch=4, type="hydrogen", params={}, voice="ardi", tr="slide",
+   visual="Elektroliser 3D di samping PLTP: listrik (garis kuning) & air kondensat (biru) masuk; gelembung H₂ (putih) dan O₂ (merah muda) naik di dua sisi membran; tabung H₂ terisi. Label 4,3 ton/tahun (percontohan).",
+   vo="Inovasi kedua: [[h2]]hidrogen hijau. Di Kamojang, PLN memanfaatkan [[inputs]]listrik dan air kondensat dari PLTP untuk memecah air menjadi hidrogen dan oksigen lewat [[ely]]elektrolisis. Produksinya memang masih skala percontohan, [[ton]]sekitar empat koma tiga ton per tahun, tapi ini membuka jalan: [[stable]]panas bumi yang stabil dua puluh empat jam adalah sumber listrik ideal untuk pabrik hidrogen, yang butuh pasokan listrik tanpa putus.",
+   ui=[{"k":"callout","at":"ely","anchor":"stack","text":"Elektroliser","sub":"2H₂O → 2H₂ + O₂"},
+       {"k":"stat","at":"ton","value":4.3,"dec":1,"suffix":" ton/th","label":"H₂ hijau Kamojang (percontohan)","pos":"left"}],
+   src=["H2"])
+
+sc(id="s27", ch=4, type="lithium", params={}, voice="ardi", tr="zoom",
+   visual="Kolom penukar ion transparan: brine mengalir, ion Li⁺ (ungu bercahaya) tertangkap manik-manik, ion lain lewat. Lalu ion terkumpul membentuk sel baterai 3D. Teks: 'Satu sumur, dua produk'.",
+   vo="Inovasi ketiga, dan ini yang bisa mengubah peta industri: [[li]]lithium dari brine panas bumi. Di Dieng, Geo Dipa Energi bekerja sama dengan Lilac Solutions dari Amerika, didukung [[grant]]hibah USTDA sebesar tiga koma sembilan juta dolar, untuk menguji ekstraksi lithium langsung dari air panas bumi menggunakan [[beads]]manik-manik penukar ion. Geo Dipa memperkirakan potensinya [[pot]]hingga dua ribu dua ratus ton lithium per tahun. Lithium adalah [[bat]]bahan utama baterai kendaraan listrik. Bayangkan: [[two]]satu sumur, dua produk. Listrik dan bahan baterai.",
+   ui=[{"k":"stat","at":"grant","value":3.9,"dec":1,"prefix":"US$","suffix":" jt","label":"hibah USTDA (2026)","pos":"left"},
+       {"k":"stat","at":"pot","value":2200,"suffix":" t/th","label":"potensi lithium Dieng (estimasi perusahaan)","pos":"left2"},
+       {"k":"quote","at":"two","text":"Satu sumur, dua produk","sub":"listrik + bahan baterai"}],
+   src=["LITHIUM","RRI"])
+
+sc(id="s28", ch=4, type="nextgen", params={}, voice="ardi", tr="cube",
+   visual="Penampang dalam: kiri — EGS Fervo: dua sumur horizontal sejajar, jaringan rekahan buatan berkilau, air disirkulasi. Kanan — Eavor-Loop: pipa radiator multilateral tertutup di 4,5 km, fluida berputar tanpa kontak batuan.",
+   vo="Dan di luar negeri, teknologi generasi berikutnya sudah mulai menyala. Di Utah, Amerika Serikat, [[fervo]]Fervo Energy memakai teknik pengeboran horizontal dan rekahan dari industri migas untuk menciptakan reservoir buatan. Unit pertama Cape Station, [[mw33]]tiga puluh tiga megawatt, mulai beroperasi komersial pada akhir September dua ribu dua puluh enam. Di Jerman, [[eavor]]Eavor membangun sistem lingkaran tertutup: pipa raksasa di kedalaman empat setengah kilometer yang bekerja seperti radiator, tanpa perlu reservoir alami, dan sudah mengalirkan listrik ke jaringan sejak Desember dua ribu dua puluh lima. [[dry]]Jika teknologi ini semakin murah, wilayah yang dulu dianggap kering pun bisa menjadi sumber energi.",
+   ui=[{"k":"callout","at":"fervo","anchor":"fervo","text":"EGS — Fervo (Utah)","sub":"sumur horizontal + rekahan buatan"},
+       {"k":"callout","at":"eavor","anchor":"eavor","text":"Closed-loop — Eavor (Jerman)","sub":"radiator bawah tanah, ±4,5 km"},
+       {"k":"stat","at":"mw33","value":33,"suffix":" MW","label":"Cape Station blok 1 — COD 2026","pos":"left"}],
+   src=["FERVO","EAVOR"])
+
+sc(id="s29", ch=4, type="bars", params={"set":"ruptl"}, voice="ardi", tr="flip",
+   visual="Grafik batang 3D RUPTL 2025–2034 (69,5 GW): PLTS 17,1; PLTA 11,7; Penyimpanan 10,3; Gas 10,3; PLTB 7,2; Batu bara 6,3; PLTP 5,2 (oranye menyala); Bio 0,9; Nuklir 0,5. Bayangan '2,7 GW dalam 40 tahun' sebagai pembanding.",
+   vo="Bagaimana dengan rencana Indonesia? Dalam [[ruptl]]RUPTL dua ribu dua puluh lima sampai dua ribu tiga puluh empat, pemerintah menargetkan [[pltp]]tambahan lima koma dua gigawatt PLTP dalam sepuluh tahun. [[double]]Hampir dua kali lipat kapasitas yang kita bangun selama empat puluh tahun terakhir. Proyek-proyek seperti [[proj]]Hululais, Lumut Balai unit tiga, ekspansi Dieng dan Patuha, hingga perluasan Salak dan Wayang Windu sedang dikejar. Tapi di dokumen yang sama, [[coal]]masih ada tambahan enam koma tiga gigawatt PLTU batu bara. [[next]]Dan di sinilah teori konspirasi berikutnya muncul.",
+   ui=[{"k":"legend","text":"Tambahan kapasitas RUPTL 2025–2034, GW (total 69,5 GW)"},{"k":"stat","at":"pltp","value":5.2,"dec":1,"suffix":" GW","label":"target tambahan PLTP 2025–2034","pos":"left","tone":"hot"},
+       {"k":"stat","at":"coal","value":6.3,"dec":1,"suffix":" GW","label":"tambahan PLTU batu bara","pos":"left2","tone":"coal"}],
+   src=["RUPTL","RUPTLFAQ"])
+
+sc(id="s30", ch=4, type="conspiracy", params={"mode":"t3","n":3}, voice="ardi_dark", tr="flip",
+   visual="Papan investigasi paling penuh: bongkah batu bara 3D, tumpukan uang, foto pipa PLTP dengan tanda silang, benang merah ke label 'MAFIA?'. Lampu sorot berkedip.",
+   vo="[[claim]]Teori konspirasi nomor tiga, dan ini yang paling panas. Ada mafia batu bara yang sengaja menjegal panas bumi, supaya PLTU tetap berjaya. Di media sosial, teori ini punya banyak penggemar. [[money]]Mari kita ikuti uangnya.",
+   ui=[{"k":"theory","n":3,"text":"“Mafia batu bara sengaja menjegal panas bumi.”"}],
+   src=[])
+
+sc(id="s31", ch=4, type="factcheck", params={"n":3,"verdict":"TIDAK TERBUKTI","verdict2":"tapi ketimpangan insentifnya nyata","tone":"blue","scene3d":"scale"}, voice="gadis", tr="cube",
+   visual="Timbangan 3D: di satu sisi bongkah batu bara dengan label 'US$70/ton dipatok', 'biaya kesehatan tak ditagih'; sisi lain menara PLTP 'risiko eksplorasi', 'tarif plafon'. Timbangan miring ke batu bara. Stempel biru 'TIDAK TERBUKTI'.",
+   vo="[[fc]]Fakta cek. Pertama, [[dmo]]sejak dua ribu delapan belas, harga batu bara untuk pembangkit PLN dipatok maksimal tujuh puluh dolar per ton, jauh di bawah harga pasar saat krisis energi dua ribu dua puluh dua. Akibatnya, listrik PLTU terlihat sangat murah di atas kertas. Kedua, [[health]]biaya kesehatan dan iklim dari batu bara tidak masuk ke tagihan. Studi CREA memperkirakan polusi PLTU di Indonesia terkait dengan sekitar sepuluh ribu lima ratus kematian dan biaya kesehatan tujuh koma empat miliar dolar pada tahun dua ribu dua puluh dua. Ketiga, [[tariff]]harga patokan tertinggi listrik panas bumi dalam Perpres seratus dua belas tahun dua ribu dua puluh dua dinilai banyak investor belum cukup menutup risiko eksplorasi. Jadi kesimpulannya? Tidak ada bukti mafia rahasia. Yang ada adalah [[rules]]aturan main yang terang-terangan menguntungkan batu bara. [[verdict]]Status: konspirasinya tidak terbukti, tapi ketimpangan insentifnya nyata.",
+   ui=[{"k":"facts","items":[["dmo","Harga batu bara PLN dipatok maks. US$70/ton (DMO, sejak 2018)"],["health","CREA: ±10.500 kematian & US$7,4 miliar biaya kesehatan (2022)"],["tariff","Plafon tarif PLTP Perpres 112/2022: 7,65–9,76 sen/kWh × faktor lokasi"],["rules","Insentif terbuka berpihak ke batu bara"]]},
+       {"k":"verdict","at":"verdict"}],
+   src=["DMO","CREA","PERPRES"])
+
+# =========================== BAB 5 =========================================
+sc(id="s32", ch=5, type="duel", params={}, voice="ardi", tr="none",
+   visual="Dua pembangkit berdampingan di panggung putih: kiri PLTU (stok batu bara, conveyor, boiler dengan api, cerobong berasap abu-abu), kanan PLTP (sumur, separator). Blok tengah — turbin, generator, kondensor, menara pendingin — menyala sama di keduanya (garis putus 'IDENTIK'). Truk/kereta batu bara terus berdatangan di sisi PLTU.",
+   vo="Sekarang, duel utamanya: PLTP melawan PLTU. Lihat dua pembangkit ini berdampingan. Di sebelah kiri, [[pltu]]PLTU: tumpukan batu bara, ban berjalan, boiler raksasa dengan api menyala, dan cerobong asap. Di sebelah kanan, [[pltp]]PLTP: sumur, pipa, dan separator. Sekarang perhatikan bagian tengahnya: [[mid]]turbin, generator, kondensor, menara pendingin. Hampir identik! Perbedaannya hanya satu: [[src]]dari mana panas itu berasal. PLTU harus membeli, mengangkut, dan membakar bahan bakar setiap detik. [[ton]]PLN sendiri bisa mengonsumsi seratus empat puluh hingga seratus enam puluh juta ton batu bara per tahun. [[free]]PLTP? Bahan bakarnya sudah ada di bawah kaki, gratis, dan tidak bisa diembargo.",
+   ui=[{"k":"callout","at":"pltu","anchor":"boiler","text":"PLTU: boiler + pembakaran","tone":"coal"},
+       {"k":"callout","at":"pltp","anchor":"wells","text":"PLTP: sumur + separator","tone":"hot"},
+       {"k":"badge","at":"mid","text":"Turbin–generator–kondensor: hampir identik"},
+       {"k":"stat","at":"ton","value":160,"prefix":"140–","suffix":" juta ton","label":"konsumsi batu bara PLN per tahun","pos":"left","tone":"coal"}],
+   src=["DMO","DIPIPPO"])
+
+sc(id="s33", ch=5, type="mix", params={}, voice="ardi", tr="cube",
+   visual="Donat 3D bauran produksi listrik 2024: batu bara 68% (abu tua) menjulang; sisanya gas & EBT. Lalu batang kecil 'EBT 15,75% (2025)' dan 'PLTP 2,57% kapasitas'. Ikon kereta batu bara & tambang.",
+   vo="Lalu kenapa PLTU masih mendominasi? Pada tahun dua ribu dua puluh empat, [[c68]]sekitar enam puluh delapan persen listrik Indonesia berasal dari batu bara. [[ebt]]Bauran energi terbarukan baru sekitar lima belas persen di tahun dua ribu dua puluh lima, dan [[pltp]]panas bumi hanya menyumbang sekitar dua setengah persen dari kapasitas pembangkit nasional. Alasannya historis: [[why]]PLTU cepat dibangun, modal awalnya relatif murah, dan Indonesia adalah salah satu produsen batu bara terbesar di dunia.",
+   ui=[{"k":"stat","at":"c68","value":68.2,"dec":1,"suffix":"%","label":"produksi listrik dari batu bara (2024)","pos":"left","tone":"coal"},
+       {"k":"stat","at":"ebt","value":15.75,"dec":2,"suffix":"%","label":"bauran EBT (2025)","pos":"left2","tone":"green"},
+       {"k":"stat","at":"pltp","value":2.57,"dec":2,"suffix":"%","label":"PLTP dari kapasitas nasional","pos":"left3","tone":"hot"}],
+   src=["COAL68","EBT25","PLTP257"])
+
+sc(id="s34", ch=5, type="bars", params={"set":"emissions"}, voice="ardi", tr="slide",
+   visual="Batang 3D emisi siklus hidup (gCO₂e/kWh, median IPCC): Batu bara 820 (abu-abu, menjulang dengan asap), Gas 490, Surya 48, Panas bumi 38 (oranye), Air 24, Angin 11. Kamera menyorot jarak 820 vs 38.",
+   vo="Tapi bandingkan jejak karbonnya. Menurut IPCC, emisi siklus hidup [[coal]]PLTU batu bara rata-rata sekitar delapan ratus dua puluh gram karbon dioksida ekuivalen per kilowatt jam. [[gas]]Pembangkit gas sekitar empat ratus sembilan puluh. [[geo]]Panas bumi? Sekitar tiga puluh delapan gram. [[x20]]Lebih dari dua puluh kali lebih bersih dari batu bara, setara dengan tenaga surya, dan sedikit di atas angin dan air.",
+   ui=[{"k":"legend","text":"Emisi siklus hidup, gCO₂e/kWh (median IPCC AR5)"},{"k":"badge","at":"x20","text":"Batu bara ≈ 21× panas bumi (gCO₂e/kWh)"}],
+   src=["IPCC"])
+
+sc(id="s35", ch=5, type="finance", params={}, voice="ardi", tr="cube",
+   visual="Dua garis biaya kumulatif 30 tahun dalam ruang 3D: PLTU mulai rendah lalu naik curam (balok bahan bakar ditumpuk tiap tahun, berkedip saat harga melonjak); PLTP mulai tinggi (balok capex besar) lalu landai. Kalimat: 'Murah di depan vs murah di belakang'.",
+   vo="Dari kacamata keuangan, keduanya punya DNA yang berlawanan. [[pltu]]PLTU itu murah di depan, mahal di belakang: modal awal relatif rendah, tapi selama tiga puluh tahun harus terus membeli bahan bakar yang harganya naik turun. [[pltp]]PLTP kebalikannya: sangat mahal di depan, karena eksplorasi dan pengeboran, tapi biaya operasinya stabil dan bebas risiko harga bahan bakar. Bagi pemodal, artinya satu hal: [[bet]]PLTP adalah taruhan pada biaya modal. Semakin murah pendanaannya, semakin kompetitif listriknya.",
+   ui=[{"k":"quote","at":"bet","text":"PLTP = taruhan pada biaya modal (WACC)","sub":"capex berat, opex ringan, bebas risiko harga BBM"}],
+   src=["DEA24"])
+
+# =========================== BAB 6 =========================================
+sc(id="s36", ch=6, type="bars", params={"set":"capex"}, voice="ardi", tr="none",
+   visual="Grafik batang 3D CAPEX (juta US$/MW, USD 2022, Katalog Teknologi Indonesia 2024) tumbuh satu per satu sesuai narasi: PLTS 1,0 · PLTGU 1,1 · PLTU SC 1,6 · PLTU USC 1,7 · PLTB 1,7 · PLTA 2,2 · PLTP besar 4,4 · PLTP kecil 5,5. PLTP menyala oranye; panah '≈2,75× PLTU'.",
+   vo="Sekarang, angka yang ditunggu para analis. [[q]]Berapa biaya membangun satu megawatt? Kita pakai data resmi Katalog Teknologi Ketenagalistrikan Indonesia tahun dua ribu dua puluh empat, yang disusun Direktorat Jenderal Ketenagalistrikan bersama Badan Energi Denmark. [[pv]]PLTS darat: sekitar satu juta dolar per megawatt. [[ccgt]]PLTGU gas: satu koma satu juta. [[sc]]PLTU superkritis: satu koma enam juta. [[usc]]PLTU ultra-superkritis dan PLTB darat: satu koma tujuh juta. [[hydro]]PLTA besar: dua koma dua juta. Dan [[geo]]PLTP skala besar: empat koma empat juta dolar per megawatt, [[geos]]bahkan lima koma lima juta untuk skala kecil. [[x3]]Artinya, per megawatt, PLTP hampir tiga kali lebih mahal dari PLTU.",
+   ui=[{"k":"legend","text":"CAPEX, juta US$ per MW (USD 2022) — Katalog Teknologi RI 2024"},{"k":"badge","at":"x3","text":"PLTP besar ≈ 2,75× PLTU superkritis per MW"}],
+   src=["DEA24"])
+
+sc(id="s37", ch=6, type="bars", params={"set":"capexcf"}, voice="ardi", tr="none",
+   visual="Batang yang sama berubah: muncul cincin faktor kapasitas (PLTS 20%, PLTB 27%, PLTA 51%, PLTU 80%, PLTP 80%). Batang 'memanjang' menjadi CAPEX per MW rata-rata dihasilkan: PLTU 2,0 · PLTA 4,3 · PLTS 4,9 · PLTP 5,5 · PLTB 6,3. Ikon baterai muncul di atas PLTS.",
+   vo="Tapi tunggu. [[mwh]]Megawatt bukanlah megawatt-jam. [[pv]]Panel surya di Indonesia rata-rata hanya bekerja setara penuh sekitar seribu delapan ratus jam per tahun, atau sekitar dua puluh persen waktu. [[wind]]PLTB sekitar dua puluh tujuh persen. [[geo]]PLTP? Sekitar delapan puluh persen menurut katalog, dan secara global rata-rata delapan puluh delapan persen menurut IRENA. [[morph]]Jadi kalau kita hitung modal per megawatt listrik rata-rata yang benar-benar dihasilkan, ceritanya berubah. PLTS naik menjadi sekitar lima juta dolar, PLTB sekitar enam koma tiga juta, dan PLTP sekitar lima koma lima juta dolar. [[twist]]Tiba-tiba, PLTP tidak semahal kelihatannya. [[battery]]Dan itu sebelum kita menghitung biaya baterai agar PLTS bisa menyala di malam hari.",
+   ui=[{"k":"legend","text":"CAPEX ÷ faktor kapasitas = juta US$ per MW rata-rata dihasilkan"},{"k":"calc","at":"morph","lines":["CAPEX ÷ faktor kapasitas","PLTU 1,6 ÷ 0,80 = 2,0","PLTS 1,0 ÷ 0,20 = 4,9","PLTP 4,4 ÷ 0,80 = 5,5","PLTB 1,7 ÷ 0,27 = 6,3"]}],
+   src=["DEA24","IRENA24TGE","CALC"])
+
+sc(id="s38", ch=6, type="bars", params={"set":"lcoe"}, voice="ardi", tr="slide",
+   visual="Batang 3D LCOE (US$/MWh, WACC 10%): PLTA 60 · PLTS 62 · PLTU SC 69 · PLTP 87 · PLTB 92 · PLTGU 102. Penanda IRENA: PLTP Indonesia 90 vs rata-rata dunia 60.",
+   vo="Ukuran paling adil adalah biaya listrik terlevelisasi, atau [[lcoe]]LCOE: total biaya seumur hidup dibagi total listrik yang dihasilkan. Menurut analisis yang sama, dengan biaya modal sepuluh persen, LCOE [[hydro]]PLTA besar sekitar enam puluh dolar per megawatt jam, [[pv]]PLTS enam puluh dua, [[sc]]PLTU superkritis enam puluh sembilan, [[geo]]PLTP delapan puluh tujuh, [[wind]]PLTB darat sembilan puluh dua, dan [[ccgt]]PLTGU seratus dua. Data IRENA juga mencatat [[irena]]LCOE panas bumi Indonesia sekitar sembilan sen dolar per kilowatt jam di tahun dua ribu dua puluh empat, lebih tinggi dari rata-rata dunia enam sen, karena biaya pengeboran yang besar.",
+   ui=[{"k":"legend","text":"LCOE, US$/MWh (WACC 10%, USD 2022) — Gatrik ESDM & DEA 2024"},{"k":"formula","at":"lcoe","text":"LCOE = (CAPEX × CRF + O&M + BBM) ÷ MWh"},
+       {"k":"badge","at":"irena","text":"IRENA 2024: PLTP Indonesia US$0,090/kWh vs dunia US$0,060/kWh"}],
+   src=["DEA24","IRENA24TGE"])
+
+sc(id="s39", ch=6, type="sens", params={}, voice="ardi", tr="cube",
+   visual="Grafik garis 3D-ish: sumbu X harga karbon (US$/tCO₂), garis PLTU naik, garis PLTP datar — berpotongan di ±US$21. Panel kecil sensitivitas WACC 7–10–12%: PLTP 70/87/99, PLTU 63/69/73. Penanda batu bara US$130/t → PLTU ±99.",
+   vo="Tapi LCOE PLTU enam puluh sembilan dolar itu punya dua asumsi besar: [[assume]]harga batu bara tujuh puluh dolar per ton, dan polusi karbon yang gratis. Mari kita uji. Jika [[wacc]]biaya modal turun dari sepuluh menjadi tujuh persen, misalnya lewat pinjaman konsesional seperti di Sarulla, LCOE PLTP turun menjadi sekitar tujuh puluh dolar. Sementara PLTU hanya turun ke sekitar enam puluh tiga. Lalu, jika [[carbon]]emisi karbon diberi harga sekitar dua puluh dolar per ton, PLTP sudah sama murahnya dengan PLTU baru. Pada [[coal130]]harga batu bara seratus tiga puluh dolar per ton, seperti saat lonjakan harga, LCOE PLTU melonjak mendekati seratus dolar. [[sum]]Kesimpulannya: PLTP kalah di harga stiker, tapi menang di stabilitas.",
+   ui=[{"k":"quote","at":"sum","text":"Kalah di harga stiker, menang di stabilitas","sub":"ilustrasi perhitungan — bukan rekomendasi investasi"}],
+   src=["DEA24","CALC"])
+
+sc(id="s40", ch=6, type="risk", params={}, voice="ardi", tr="shatter",
+   visual="Tiga rig bor 3D: dua sumur menemukan uap (kolom uap putih + centang hijau), satu kering (tanda silang merah, koin berjatuhan). Lalu perisai 'GREM — PT SMI × Bank Dunia' menutupi rig; label 'pengeboran oleh pemerintah'.",
+   vo="Lalu kenapa investor masih ragu? Karena [[risk]]risiko terbesar PLTP ada di awal, di bawah tanah. [[share]]Pengeboran bisa menyedot hingga empat puluh persen total investasi, dan sebagian besar dikeluarkan sebelum ada kepastian uap. Ini mirip dengan sektor hulu migas: [[dry]]Anda bisa mengebor puluhan juta dolar dan pulang dengan tangan kosong. Untuk itu, pemerintah dan Bank Dunia membentuk [[grem]]fasilitas GREM melalui PT SMI, yang membiayai dan berbagi risiko pengeboran eksplorasi, ditambah [[gov]]program pengeboran oleh pemerintah sendiri sebelum wilayah kerja dilelang. [[cheap]]Risiko yang dibagi berarti biaya modal yang lebih rendah, dan listrik yang lebih murah.",
+   ui=[{"k":"stat","at":"share","value":40,"prefix":"≤","suffix":"%","label":"porsi pengembangan lapangan/pengeboran dari investasi","pos":"left"},
+       {"k":"bullets","title":"MITIGASI RISIKO","items":[["grem","GREM (PT SMI × Bank Dunia): pembiayaan & berbagi risiko eksplorasi"],["gov","Government drilling sebelum lelang WKP"],["cheap","Risiko turun → WACC turun → tarif lebih murah"]]}],
+   src=["ESMAP","GREM","WB","GOVDRILL"])
+
+# =========================== BAB 7 =========================================
+sc(id="s41", ch=7, type="compare", params={}, voice="ardi", tr="cube",
+   visual="Lima kartu 3D melayang berputar: PLTS (panel surya), PLTB (turbin angin), PLTA (bendungan), Bioenergi (daun/tungku), PLTP (menara pendingin). Tiap kartu membalik menampilkan plus (hijau) & minus (merah) dan radar chart kecil.",
+   vo="Bagaimana dengan energi terbarukan lain? Mari kita adu secara jujur. [[pv]]PLTS: paling murah dan paling cepat dibangun, tapi hanya bekerja saat matahari bersinar, dan butuh lahan luas. [[wind]]PLTB: bagus di lokasi berangin, tapi kecepatan angin di sebagian besar Indonesia relatif rendah. [[hydro]]PLTA: stabil dan bisa menyimpan energi di bendungan, tapi bergantung musim dan bisa menenggelamkan lahan luas. [[bio]]Bioenergi: bisa dikendalikan, tapi butuh pasokan bahan baku terus-menerus. Dan [[geo]]PLTP: menyala dua puluh empat jam, tidak bergantung cuaca, lahannya kecil, dan emisinya sangat rendah. [[cons]]Kelemahannya: modal besar, risiko eksplorasi, lokasinya sering di hutan lindung atau kawasan konservasi, potensi gas beracun, dan tantangan penerimaan masyarakat.",
+   ui=[{"k":"procon","items":[
+        ["pv","PLTS","Termurah & tercepat dibangun","Intermiten (±20%), butuh lahan & baterai"],
+        ["wind","PLTB","Murah di lokasi berangin","Angin RI relatif rendah (±27%)"],
+        ["hydro","PLTA","Stabil, bisa menyimpan energi","Musiman, genangan lahan luas"],
+        ["bio","Bioenergi","Dapat dikendalikan","Butuh pasokan bahan baku terus"],
+        ["geo","PLTP","24/7, ±80–88%, lahan kecil, emisi rendah","Capex & risiko eksplorasi, hutan lindung, H₂S, sosial"]]}],
+   src=["DEA24","IRENA24TGE"])
+
+sc(id="s42", ch=7, type="team", params={}, voice="ardi", tr="heat",
+   visual="Lapangan sepak bola 3D bergaya maket putih-hijau pastel: token-token pemain berbentuk ikon pembangkit. Penyerang: PLTS & PLTB (lincah, kadang menghilang). Gelandang: PLTA & baterai. Bek tengah: PLTP (selalu menyala). Kamera orbit.",
+   vo="Jadi, ini bukan soal memilih satu juara. [[pitch]]Bayangkan sistem listrik sebagai tim sepak bola. [[fw]]PLTS dan PLTB adalah penyerang yang murah dan lincah, tapi tidak selalu ada di lapangan. [[mf]]PLTA dan baterai adalah gelandang yang mengatur ritme. Dan [[df]]PLTP adalah bek tengah: tidak selalu mencolok, tapi selalu ada, dua puluh empat jam, tujuh hari seminggu. [[islands]]Untuk negara kepulauan yang jaringannya terpisah-pisah dan permintaannya tumbuh cepat, pemain seperti ini sangat berharga.",
+   ui=[{"k":"callout","at":"fw","anchor":"fw","text":"Penyerang: PLTS & PLTB"},
+       {"k":"callout","at":"mf","anchor":"mf","text":"Gelandang: PLTA & baterai"},
+       {"k":"callout","at":"df","anchor":"df","text":"Bek tengah: PLTP (24/7)","tone":"hot"}],
+   src=[])
+
+# =========================== BAB 8 =========================================
+sc(id="s43", ch=8, type="dieng", params={}, voice="ardi_dark", tr="flip",
+   visual="Lembah Dieng 3D senja pastel: rumah-rumah kecil, kawah. Tanggal '20 Februari 1979' muncul. Gas CO₂ (kabut abu-kebiruan transparan) merayap turun menuruni lereng mengisi lembah. Lalu label besar: '1979 — belum ada PLTP di Dieng'.",
+   vo="[[claim]]Teori konspirasi terakhir, dan ini yang paling menyeramkan. PLTP adalah bom waktu gas beracun, dan pemerintah menutupinya. Untuk menjawabnya, kita kembali ke Dieng. [[date]]Dua puluh Februari seribu sembilan ratus tujuh puluh sembilan. Kawah Sinila meletus, dan [[gas]]gas karbon dioksida dalam jumlah besar mengalir turun, tak terlihat, tak berbau, menuruni lereng. [[toll]]Seratus empat puluh sembilan warga di dekat kawah tewas. Tapi perhatikan tahunnya. [[noplant]]Saat itu, belum ada PLTP di Dieng. Itu murni bencana gas vulkanik alami.",
+   ui=[{"k":"theory","n":4,"text":"“PLTP adalah bom waktu gas beracun.”"},
+       {"k":"stat","at":"toll","value":149,"label":"korban jiwa — gas CO₂ Kawah Sinila, 1979","pos":"left","tone":"coal"},
+       {"k":"badge","at":"noplant","text":"PLTP Dieng baru beroperasi tahun 2002"}],
+   src=["SINILA","BPBD","LITHIUM"])
+
+sc(id="s44", ch=8, type="factcheck", params={"n":4,"verdict":"RISIKO NYATA","verdict2":"tapi bisa dikendalikan","tone":"red","scene3d":"sorik"}, voice="gadis", tr="cube",
+   visual="Diorama tapak sumur dengan awan H₂S kuning-hijau; sensor gas berkedip; zona aman berbentuk cincin; ikon SOP. Stempel merah 'RISIKO NYATA — BISA DIKENDALIKAN'.",
+   vo="[[fc]]Fakta cek. Namun risiko dari PLTP juga nyata. Pada [[sorik]]dua puluh lima Januari dua ribu dua puluh satu, saat uji alir sumur di PLTP Sorik Marapi, Sumatra Utara, gas hidrogen sulfida terlepas dan menewaskan lima warga, termasuk anak-anak. [[esdm]]Kementerian ESDM menghentikan sementara kegiatan perusahaan, dan menyimpulkan kecelakaan terjadi karena kelalaian prosedur operasi. Insiden paparan gas di lokasi yang sama kembali terjadi pada tahun-tahun berikutnya. Jadi, tidak ada yang ditutupi: kasus-kasus ini tercatat dan diselidiki secara terbuka. Pelajarannya jelas: [[lesson]]sensor gas, zona aman, prosedur ketat, dan keterlibatan warga bukan pilihan, melainkan syarat mutlak. [[verdict]]Status: risikonya nyata, tapi bisa dikendalikan.",
+   ui=[{"k":"facts","items":[["sorik","Sorik Marapi, 25 Jan 2021: H₂S saat uji sumur, 5 warga meninggal"],["esdm","ESDM hentikan sementara; penyebab: kelalaian SOP"],["lesson","Wajib: sensor H₂S, zona aman, SOP ketat, libatkan warga"]]},
+       {"k":"verdict","at":"verdict"}],
+   src=["SORIK","SORIK2"])
+
+sc(id="s45", ch=8, type="japan", params={}, voice="ardi", tr="zoom",
+   visual="Globe berputar ke Jepang; label 607 MW kecil. Kolam onsen 3D dengan uap, ember kayu, plang 'Tolak PLTP' bergaya maket. Pesan: kepercayaan masyarakat.",
+   vo="Sebagai perbandingan, [[jp]]Jepang, negara gunung api lain, kapasitas PLTP-nya hanya sekitar enam ratus megawatt. Kenapa? Sebagian besar potensinya berada di [[park]]taman nasional, dan [[onsen]]pemilik pemandian air panas atau onsen menentang keras, karena khawatir sumber air mereka terganggu. [[trust]]Pelajarannya: tanpa kepercayaan masyarakat, harta karun sebesar apa pun akan tetap terkubur.",
+   ui=[{"k":"stat","at":"jp","value":607,"suffix":" MW","label":"kapasitas PLTP Jepang (akhir 2025)","pos":"left"},
+       {"k":"quote","at":"trust","text":"Tanpa kepercayaan warga, harta karun tetap terkubur"}],
+   src=["TGE10","JAPAN"])
+
+sc(id="s46", ch=8, type="outro", params={"mode":"summary"}, voice="ardi", tr="heat",
+   visual="Peta Indonesia 3D menyala dengan pin PLTP; empat kartu tantangan melayang: Risiko eksplorasi · Tarif adil · Izin kawasan hutan · Kepercayaan warga. Kartu tercentang satu per satu, kolom target 5,2 GW naik.",
+   vo="Jadi, apakah panas bumi adalah jawaban untuk masalah energi Indonesia? [[not1]]Bukan satu-satunya jawaban, tapi salah satu yang paling strategis. Ia menyala dua puluh empat jam tanpa bahan bakar impor, emisinya sangat rendah, dan sumbernya tersebar di sepanjang kepulauan kita. Tantangannya juga jelas: [[c1]]risiko eksplorasi, [[c2]]tarif yang adil, [[c3]]izin di kawasan hutan, dan [[c4]]kepercayaan warga. [[goal]]Kalau keempatnya bisa diselesaikan, target lima koma dua gigawatt bukan mimpi.",
+   ui=[{"k":"bullets","title":"4 PEKERJAAN RUMAH","items":[["c1","Risiko eksplorasi → berbagi risiko"],["c2","Tarif yang adil & bankable"],["c3","Izin di kawasan hutan"],["c4","Kepercayaan & manfaat bagi warga"]]},
+       {"k":"stat","at":"goal","value":5.2,"dec":1,"suffix":" GW","label":"target tambahan PLTP hingga 2034","pos":"left","tone":"hot"}],
+   src=["RUPTL"])
+
+sc(id="s47", ch=8, type="outro", params={"mode":"end"}, voice="ardi", tr="end",
+   visual="Kembali ke globe dengan inti oranye berdenyut; kamera mundur perlahan; teks penutup; end card: 'Sumber lengkap di deskripsi', tombol subscribe bergaya flat.",
+   vo="[[heat]]Panas itu sudah ada di bawah kaki kita selama jutaan tahun, dan akan tetap ada jutaan tahun lagi. Pertanyaannya bukan lagi, [[q1]]bisakah kita memakainya, melainkan, [[q2]]seberapa cepat kita mau. [[cta]]Kalau menurut Anda ada teori lain yang perlu kita bongkar, tulis di kolom komentar. Semua sumber data di video ini kami cantumkan di layar dan di deskripsi. [[bye]]Sampai jumpa di video berikutnya.",
+   ui=[{"k":"quote","at":"q1","text":"Bukan “bisakah kita memakainya?”","sub":"","until":"cta"},
+       {"k":"quote2","at":"q2","text":"…tapi “seberapa cepat kita mau?”","until":"cta"},
+       {"k":"endcard","at":"cta"}],
+   src=[])
+
+# ---------------------------------------------------------------------------
+if __name__ == "__main__":
+    import json, os, re
+    out = os.path.join(os.path.dirname(__file__), "..", "script", "script.json")
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    words = 0
+    for s in S:
+        words += len(re.sub(r"\[\[[^\]]+\]\]", "", s["vo"]).split())
+    data = {"title": "PANAS BUMI: Harta Karun di Bawah Kaki Kita", "chapters": CHAPTERS, "refs": REFS, "scenes": S}
+    with open(out, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=1)
+    print("scenes", len(S), "words", words, "->", out)

@@ -1,0 +1,94 @@
+{
+"id": "s04",
+"text": "Ini adalah kisah tentang harta karun yang selama ini bersembunyi, tepat di bawah kaki kita.",
+"voice": {
+"voice": "id-ID-ArdiNeural",
+"rate": "+12%",
+"pitch": "+0Hz"
+},
+"dur": 4.872,
+"cues": {
+"title": 0.106
+},
+"words": [
+[
+0.106,
+0.296,
+"Ini"
+],
+[
+0.296,
+0.552,
+"adalah"
+],
+[
+0.552,
+0.798,
+"kisah"
+],
+[
+0.798,
+1.01,
+"tentang"
+],
+[
+1.01,
+1.222,
+"harta"
+],
+[
+1.222,
+1.456,
+"karun"
+],
+[
+1.456,
+1.557,
+"yang"
+],
+[
+1.557,
+1.791,
+"selama"
+],
+[
+1.791,
+1.947,
+"ini"
+],
+[
+1.947,
+2.617,
+"bersembunyi"
+],
+[
+2.862,
+3.119,
+"tepat"
+],
+[
+3.119,
+3.197,
+"di"
+],
+[
+3.197,
+3.454,
+"bawah"
+],
+[
+3.454,
+3.666,
+"kaki"
+],
+[
+3.666,
+4.112,
+"kita"
+]
+],
+"align": [
+15,
+15
+]
+}

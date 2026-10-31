@@ -1,0 +1,1423 @@
+1
+00:00:01,499 --> 00:00:06,503
+Enam ribu derajat Celsius Kurang lebih sepanas permukaan Matahari Itulah
+
+2
+00:00:06,523 --> 00:00:10,769
+perkiraan suhu inti Bumi jauh di bawah kaki kita Dan kompor raksasa
+
+3
+00:00:10,789 --> 00:00:15,148
+ini sudah menyala tanpa henti selama miliaran tahun Tanpa bahan bakar
+
+4
+00:00:15,746 --> 00:00:18,652
+Tanpa asap Tanpa tagihan impor
+
+5
+00:00:20,553 --> 00:00:24,252
+Dan ada satu negara yang duduk tepat di atas Cincin Api dunia Indonesia
+
+6
+00:00:24,853 --> 00:00:28,059
+Kita punya seratus dua puluh tujuh gunung api aktif dan potensi listrik
+
+7
+00:00:28,079 --> 00:00:32,001
+panas bumi sekitar dua puluh tiga ribu tujuh ratus megawatt Itu setara lebih
+
+8
+00:00:32,021 --> 00:00:35,894
+dari seperlima kapasitas seluruh pembangkit listrik Indonesia hari ini Tapi
+
+9
+00:00:35,914 --> 00:00:40,157
+sampai sekarang baru sekitar sebelas persen yang kita manfaatkan Sementara
+
+10
+00:00:40,177 --> 00:00:43,516
+dua per tiga listrik nasional masih dihasilkan dengan cara lama membakar
+
+11
+00:00:43,536 --> 00:00:44,323
+batu bara
+
+12
+00:00:46,235 --> 00:00:50,996
+Kenapa bisa begitu Ada yang bilang ini soal geologi Ada
+
+13
+00:00:51,016 --> 00:00:55,376
+yang bilang ini soal uang Dan ada juga yang berbisik bahwa ini memang
+
+14
+00:00:55,396 --> 00:01:00,207
+disengaja Di video ini kita bedah semuanya Cara
+
+15
+00:01:00,227 --> 00:01:04,563
+kerja PLTP sampai ke detail mesinnya Proyek paling ikonik dan paling
+
+16
+00:01:04,583 --> 00:01:09,260
+canggih di Indonesia Duel biaya melawan PLTU Dan
+
+17
+00:01:09,280 --> 00:01:13,811
+teori-teori konspirasi yang beredar di baliknya Kita uji satu per satu
+
+18
+00:01:13,928 --> 00:01:15,923
+mana fakta mana fiksi
+
+19
+00:01:18,498 --> 00:01:21,569
+Ini adalah kisah tentang harta karun yang selama ini bersembunyi tepat di
+
+20
+00:01:21,589 --> 00:01:22,654
+bawah kaki kita
+
+21
+00:01:30,361 --> 00:01:35,035
+Mari mulai dari pertanyaan paling dasar kenapa Indonesia begitu panas Jawabannya
+
+22
+00:01:35,055 --> 00:01:38,983
+ada sekitar seratus kilometer di bawah tanah Lempeng Indo-Australia terus
+
+23
+00:01:39,003 --> 00:01:42,867
+bergerak ke utara beberapa sentimeter per tahun lalu menyusup ke bawah lempeng
+
+24
+00:01:42,887 --> 00:01:47,085
+Eurasia Proses ini disebut subduksi Saat lempeng
+
+25
+00:01:47,105 --> 00:01:50,300
+samudra tenggelam ke dalam mantel yang panas air yang terbawa di dalamnya
+
+26
+00:01:50,320 --> 00:01:54,585
+menurunkan titik leleh batuan Batuan pun meleleh menjadi magma naik
+
+27
+00:01:54,605 --> 00:01:58,639
+ke atas dan membentuk deretan gunung api yang membentang dari Sumatra Jawa
+
+28
+00:01:58,724 --> 00:02:02,032
+Bali Nusa Tenggara sampai Sulawesi dan Maluku
+
+29
+00:02:03,937 --> 00:02:07,898
+Tapi gunung api saja tidak cukup untuk membuat pembangkit listrik Alam butuh
+
+30
+00:02:07,918 --> 00:02:12,213
+empat bahan rahasia Pertama sumber panas tubuh magma atau
+
+31
+00:02:12,233 --> 00:02:16,766
+batuan panas di kedalaman beberapa kilometer Kedua air air
+
+32
+00:02:16,786 --> 00:02:21,468
+hujan yang meresap melalui rekahan dan patahan turun ribuan meter Ketiga
+
+33
+00:02:21,574 --> 00:02:24,880
+batuan reservoir yang berpori dan retak-retak tempat air itu terpanaskan
+
+34
+00:02:24,900 --> 00:02:29,054
+hingga dua ratus sampai tiga ratus derajat lebih Dan keempat yang sering
+
+35
+00:02:29,074 --> 00:02:33,407
+dilupakan batuan penudung Lapisan lempung kedap air yang mengunci panas
+
+36
+00:02:33,427 --> 00:02:37,695
+dan tekanan di bawahnya persis seperti tutup panci presto Kalau keempatnya
+
+37
+00:02:37,715 --> 00:02:39,919
+ada kita punya sistem panas bumi
+
+38
+00:02:41,811 --> 00:02:46,056
+Berapa besar harta karun ini Menurut Kementerian ESDM sumber daya
+
+39
+00:02:46,076 --> 00:02:48,991
+panas bumi Indonesia mencapai sekitar dua puluh tiga ribu tujuh ratus empat
+
+40
+00:02:49,011 --> 00:02:53,176
+puluh dua megawatt Kapasitas yang sudah terpasang sekitar dua ribu tujuh
+
+41
+00:02:53,196 --> 00:02:57,429
+ratus empat puluh megawatt Dengan angka itu Indonesia adalah produsen listrik
+
+42
+00:02:57,449 --> 00:03:00,955
+panas bumi terbesar kedua di dunia hanya kalah dari Amerika Serikat dan
+
+43
+00:03:00,975 --> 00:03:05,275
+di atas Filipina Turki dan Selandia Baru Pada tahun dua ribu dua
+
+44
+00:03:05,295 --> 00:03:09,250
+puluh lima Indonesia bahkan mencatat penambahan kapasitas terbesar di dunia
+
+45
+00:03:11,164 --> 00:03:15,607
+Tapi tunggu Mungkin Anda pernah dengar klaim ini Indonesia menyimpan
+
+46
+00:03:15,627 --> 00:03:19,552
+empat puluh persen cadangan panas bumi dunia Klaim ini diulang-ulang di
+
+47
+00:03:19,572 --> 00:03:23,279
+media bahkan oleh pejabat Benarkah
+
+48
+00:03:25,852 --> 00:03:30,112
+Fakta cek Angka empat puluh persen itu berasal dari perkiraan
+
+49
+00:03:30,132 --> 00:03:34,487
+lama saat potensi Indonesia masih disebut dua puluh tujuh hingga
+
+50
+00:03:34,507 --> 00:03:38,737
+dua puluh sembilan gigawatt Badan Geologi kemudian mengoreksinya
+
+51
+00:03:38,757 --> 00:03:42,998
+menjadi sekitar dua puluh empat gigawatt dan estimasi potensi dunia
+
+52
+00:03:43,018 --> 00:03:47,714
+pun berbeda-beda tergantung metodenya Jadi Indonesia
+
+53
+00:03:47,734 --> 00:03:52,237
+jelas termasuk dua besar dunia Tapi empat puluh persen adalah
+
+54
+00:03:52,257 --> 00:03:56,611
+angka kasar bukan data presisi Status
+
+55
+00:03:56,734 --> 00:03:58,088
+sebagian benar
+
+56
+00:04:04,601 --> 00:04:08,387
+Sekarang bagian yang paling ditunggu bagaimana sebenarnya PLTP mengubah
+
+57
+00:04:08,407 --> 00:04:12,883
+panas di perut bumi menjadi listrik di rumah Anda Bayangkan sebuah PLTU
+
+58
+00:04:13,488 --> 00:04:16,750
+Ada boiler yang membakar batu bara untuk mendidihkan air uapnya memutar
+
+59
+00:04:16,770 --> 00:04:21,150
+turbin turbin memutar generator Nah PLTP pada dasarnya
+
+60
+00:04:21,170 --> 00:04:25,536
+adalah PLTU tanpa api Boilernya bukan tungku pembakaran melainkan
+
+61
+00:04:25,556 --> 00:04:29,964
+bumi itu sendiri Mari kita ikuti perjalanan satu tetes air dari kedalaman
+
+62
+00:04:29,984 --> 00:04:31,830
+dua kilometer sampai menjadi listrik
+
+63
+00:04:33,737 --> 00:04:38,095
+Langkah pertama eksplorasi Sebelum mengebor ahli geologi
+
+64
+00:04:38,115 --> 00:04:42,348
+membaca tanda-tanda di permukaan mata air panas fumarol tanah yang berubah
+
+65
+00:04:42,368 --> 00:04:46,725
+warna Ahli geofisika memasang sensor magnetotelurik untuk memotret lapisan
+
+66
+00:04:46,745 --> 00:04:50,830
+bawah tanah Lapisan lempung penudung biasanya terlihat sebagai zona bertahanan
+
+67
+00:04:50,850 --> 00:04:54,426
+listrik rendah seperti kubah yang menandai lokasi reservoir di bawahnya
+
+68
+00:04:55,035 --> 00:04:58,890
+Lalu datang momen paling mahal dan paling menegangkan pengeboran sumur eksplorasi
+
+69
+00:04:58,986 --> 00:05:03,207
+sedalam satu setengah hingga tiga kilometer Secara global rata-rata
+
+70
+00:05:03,227 --> 00:05:06,368
+hanya sekitar enam puluh persen sumur pada tahap eksplorasi yang berhasil
+
+71
+00:05:08,273 --> 00:05:12,743
+Langkah kedua sumur produksi Di dalam reservoir air bersuhu
+
+72
+00:05:12,763 --> 00:05:15,567
+di atas dua ratus lima puluh derajat tetap berbentuk cair karena tekanannya
+
+73
+00:05:15,587 --> 00:05:19,958
+sangat tinggi Begitu sumur dibuka fluida naik dengan sendirinya
+
+74
+00:05:20,556 --> 00:05:24,375
+Semakin ke atas tekanannya turun dan sebagian air mendadak berubah menjadi
+
+75
+00:05:24,395 --> 00:05:28,725
+uap Proses inilah yang disebut flashing Ketika sampai di kepala
+
+76
+00:05:28,745 --> 00:05:32,754
+sumur yang keluar adalah campuran uap dan air panas bertekanan siap dialirkan
+
+77
+00:05:32,774 --> 00:05:35,779
+lewat pipa-pipa besar yang berkelok-kelok dirancang untuk menyerap pemuaian
+
+78
+00:05:35,799 --> 00:05:36,730
+akibat panas
+
+79
+00:05:38,633 --> 00:05:43,117
+Langkah ketiga separator Campuran uap dan air masuk ke bejana silinder
+
+80
+00:05:43,137 --> 00:05:47,355
+raksasa dengan aliran berputar seperti puting beliung Gaya sentrifugal melempar
+
+81
+00:05:47,375 --> 00:05:50,558
+air yang lebih berat ke dinding dan jatuh ke bawah sementara uap yang ringan
+
+82
+00:05:50,578 --> 00:05:55,056
+naik ke atas Hasilnya uap kering yang bersih dikirim ke pembangkit dan
+
+83
+00:05:55,076 --> 00:05:58,820
+air panasnya yang disebut brine dialirkan ke sumur injeksi
+
+84
+00:06:00,737 --> 00:06:05,388
+Langkah keempat turbin dan generator Uap menghantam ratusan sudu turbin
+
+85
+00:06:05,484 --> 00:06:09,785
+memutar poros pada tiga ribu putaran per menit Poros itu terhubung ke generator
+
+86
+00:06:09,881 --> 00:06:12,573
+di mana kumparan berputar di dalam medan magnet dan menghasilkan listrik
+
+87
+00:06:12,593 --> 00:06:16,928
+bolak-balik lima puluh hertz frekuensi standar jaringan PLN Satu unit
+
+88
+00:06:16,948 --> 00:06:19,797
+berkapasitas lima puluh lima megawatt yang beroperasi hampir sepanjang tahun
+
+89
+00:06:19,817 --> 00:06:24,038
+bisa menghasilkan sekitar empat ratus gigawatt jam per tahun Setara konsumsi
+
+90
+00:06:24,058 --> 00:06:26,340
+listrik hampir tiga ratus ribu orang Indonesia
+
+91
+00:06:28,241 --> 00:06:32,817
+Langkah kelima kondensor dan menara pendingin Setelah melewati turbin
+
+92
+00:06:32,935 --> 00:06:37,131
+uap didinginkan di kondensor hingga kembali menjadi air Proses ini menciptakan
+
+93
+00:06:37,151 --> 00:06:41,349
+ruang hampa yang menyedot uap sehingga turbin bekerja lebih efisien Air
+
+94
+00:06:41,369 --> 00:06:45,211
+pendinginnya didinginkan lagi di menara pendingin dan menariknya PLTP jenis
+
+95
+00:06:45,231 --> 00:06:48,515
+ini umumnya tidak perlu menyedot sungai karena air kondensat dari uap panas
+
+96
+00:06:48,535 --> 00:06:52,569
+bumi itu sendiri dipakai sebagai air pendingin Kepulan putih yang Anda lihat
+
+97
+00:06:52,589 --> 00:06:56,829
+dari menara Itu uap air bukan asap Gas yang
+
+98
+00:06:56,849 --> 00:07:00,847
+ikut terbawa seperti karbon dioksida dan hidrogen sulfida dikeluarkan oleh
+
+99
+00:07:00,867 --> 00:07:02,848
+sistem ekstraksi gas dan dipantau ketat
+
+100
+00:07:04,745 --> 00:07:09,519
+Langkah keenam dan ini kunci keberlanjutannya injeksi ulang Brine
+
+101
+00:07:09,539 --> 00:07:12,532
+dari separator dan kelebihan kondensat dipompa kembali ke dalam reservoir
+
+102
+00:07:12,552 --> 00:07:16,972
+melalui sumur injeksi Air itu akan terpanaskan lagi oleh batuan lalu
+
+103
+00:07:16,992 --> 00:07:21,104
+suatu saat kembali naik melalui sumur produksi Siklus tertutup ini menjaga
+
+104
+00:07:21,124 --> 00:07:25,219
+tekanan reservoir dan mencegah amblesan tanah Selama laju pengambilan panas
+
+105
+00:07:25,239 --> 00:07:29,753
+dikelola dengan baik sistem ini bisa bertahan puluhan tahun Buktinya
+
+106
+00:07:29,871 --> 00:07:33,199
+lapangan Kamojang sudah berproduksi sejak awal tahun delapan puluhan dan
+
+107
+00:07:33,219 --> 00:07:34,820
+masih beroperasi sampai hari ini
+
+108
+00:07:36,737 --> 00:07:41,589
+Tidak semua PLTP sama Ada tiga tipe utama Pertama
+
+109
+00:07:41,685 --> 00:07:45,772
+uap kering uap langsung dari sumur masuk ke turbin Sistem ini langka di
+
+110
+00:07:45,792 --> 00:07:50,002
+dunia dan Indonesia punya dua contohnya Kamojang dan Darajat sekelas The
+
+111
+00:07:50,022 --> 00:07:54,544
+Geysers di Amerika dan Larderello di Italia Kedua flash tipe
+
+112
+00:07:54,564 --> 00:07:58,316
+paling umum termasuk sebagian besar PLTP di Indonesia seperti yang baru
+
+113
+00:07:58,336 --> 00:08:02,602
+saja kita lihat Ketiga siklus biner untuk fluida yang lebih
+
+114
+00:08:02,622 --> 00:08:06,609
+hangat di bawah seratus delapan puluh derajat Panasnya dipindahkan lewat
+
+115
+00:08:06,629 --> 00:08:10,537
+penukar panas ke fluida kerja organik seperti isopentana yang mendidih pada
+
+116
+00:08:10,557 --> 00:08:14,366
+suhu jauh lebih rendah dari air Fluida panas bumi tidak pernah menyentuh
+
+117
+00:08:14,386 --> 00:08:16,634
+turbin dan semuanya kembali ke bumi
+
+118
+00:08:18,548 --> 00:08:23,622
+Teori konspirasi nomor dua PLTP itu berbahaya Pengeboran
+
+119
+00:08:23,642 --> 00:08:28,174
+panas bumi bisa memicu gempa bahkan membangunkan gunung api Video
+
+120
+00:08:28,194 --> 00:08:32,908
+seperti ini sering viral setiap kali ada proyek baru Apakah ada dasarnya
+
+121
+00:08:35,468 --> 00:08:39,818
+Fakta cek Ada satu kasus terkenal gempa Pohang
+
+122
+00:08:39,838 --> 00:08:44,318
+di Korea Selatan tahun dua ribu tujuh belas magnitudo lima koma
+
+123
+00:08:44,338 --> 00:08:48,734
+lima Panel investigasi pemerintah Korea menyimpulkan gempa itu
+
+124
+00:08:48,754 --> 00:08:52,950
+dipicu oleh proyek panas bumi eksperimental yang menyuntikkan air bertekanan
+
+125
+00:08:52,970 --> 00:08:57,643
+sangat tinggi untuk meretakkan batuan teknologi yang disebut EGS
+
+126
+00:08:58,255 --> 00:09:02,750
+Proyek itu lalu dihentikan dan dibongkar Namun PLTP
+
+127
+00:09:02,770 --> 00:09:07,046
+konvensional di Indonesia bekerja berbeda memanfaatkan reservoir
+
+128
+00:09:07,066 --> 00:09:11,602
+alami dan injeksi ulang dilakukan tanpa memaksa batuan pecah
+
+129
+00:09:12,213 --> 00:09:16,568
+Gempa mikro tetap bisa terjadi karena itu dipantau dengan jaringan
+
+130
+00:09:16,588 --> 00:09:20,978
+seismometer Soal membangunkan gunung api sumur
+
+131
+00:09:20,998 --> 00:09:25,273
+PLTP umumnya berkedalaman satu hingga tiga kilometer sedangkan
+
+132
+00:09:25,293 --> 00:09:30,171
+dapur magma umumnya jauh lebih dalam Status sebagian
+
+133
+00:09:30,191 --> 00:09:34,432
+benar untuk EGS bertekanan tinggi Belum ada bukti
+
+134
+00:09:34,452 --> 00:09:37,057
+ilmiah PLTP memicu letusan
+
+135
+00:09:43,578 --> 00:09:47,185
+Sekarang mari kita terbang mengelilingi Indonesia melihat PLTP-PLTP paling
+
+136
+00:09:47,205 --> 00:09:51,532
+ikonik Sebagian besar berada di Jawa Barat dan Sumatra mengikuti jalur
+
+137
+00:09:51,552 --> 00:09:53,086
+gunung api yang tadi kita lihat
+
+138
+00:09:57,493 --> 00:10:02,577
+Kita mulai dari sang legenda Kamojang di Garut Jawa Barat Kisahnya
+
+139
+00:10:02,597 --> 00:10:05,791
+dimulai tahun seribu sembilan ratus dua puluh enam ketika peneliti Belanda
+
+140
+00:10:05,811 --> 00:10:10,356
+mengebor lima sumur uji Sumur ketiga KMJ tiga menyemburkan
+
+141
+00:10:10,376 --> 00:10:13,347
+uap kering dari kedalaman hanya enam puluh enam meter dan konon sumur tua
+
+142
+00:10:13,367 --> 00:10:17,220
+itu masih mengepulkan uap sampai hari ini Tahun seribu sembilan ratus delapan
+
+143
+00:10:17,240 --> 00:10:20,724
+puluh tiga Presiden Soeharto meresmikan unit pertama berkapasitas tiga puluh
+
+144
+00:10:20,744 --> 00:10:25,135
+megawatt PLTP pertama di Indonesia Kini kapasitasnya dua ratus
+
+145
+00:10:25,155 --> 00:10:29,139
+tiga puluh lima megawatt Dan pada tahun dua ribu dua puluh empat Kamojang
+
+146
+00:10:29,159 --> 00:10:32,331
+mencetak sejarah baru sebagai lokasi produksi hidrogen hijau berbasis panas
+
+147
+00:10:32,351 --> 00:10:33,986
+bumi pertama di Asia Tenggara
+
+148
+00:10:35,902 --> 00:10:40,181
+Tak jauh dari sana Jawa Barat punya segitiga emas panas bumi Gunung Salak
+
+149
+00:10:40,232 --> 00:10:45,419
+Darajat dan Wayang Windu yang kini dioperasikan Star Energy Geothermal Gabungan
+
+150
+00:10:45,439 --> 00:10:48,767
+ketiganya sudah lebih dari sembilan ratus megawatt dan ditargetkan menembus
+
+151
+00:10:48,787 --> 00:10:52,897
+satu gigawatt Salak sendiri dengan kapasitas sekitar tiga ratus delapan
+
+152
+00:10:52,917 --> 00:10:56,448
+puluh megawatt adalah salah satu lapangan panas bumi terbesar di dunia
+
+153
+00:10:58,357 --> 00:11:03,131
+Lalu Sarulla di Tapanuli Utara Sumatra Utara Tiga unit
+
+154
+00:11:03,204 --> 00:11:06,733
+total sekitar tiga ratus tiga puluh megawatt salah satu kontrak PLTP tunggal
+
+155
+00:11:06,753 --> 00:11:10,952
+terbesar di dunia Sarulla memakai teknologi siklus kombinasi uap
+
+156
+00:11:10,972 --> 00:11:14,423
+memutar turbin tekanan balik lalu sisa panasnya dimanfaatkan lagi oleh unit
+
+157
+00:11:14,443 --> 00:11:19,158
+biner Dari sisi pendanaan proyek ini adalah contoh klasik project finance
+
+158
+00:11:19,220 --> 00:11:22,704
+pinjaman satu koma satu tujuh miliar dolar dipimpin JBIC dan Bank Pembangunan
+
+159
+00:11:22,724 --> 00:11:26,923
+Asia ditambah dana iklim konsesional dan enam bank komersial Tanpa
+
+160
+00:11:26,943 --> 00:11:31,122
+skema pembiayaan seperti ini proyek padat modal seperti PLTP sulit berjalan
+
+161
+00:11:33,046 --> 00:11:36,544
+Di luar Jawa Barat ada Ulubelu di Lampung dengan dua ratus dua puluh megawatt
+
+162
+00:11:36,628 --> 00:11:40,517
+Lahendong di Sulawesi Utara Lumut Balai dan Rantau Dedap di Sumatra Selatan
+
+163
+00:11:40,613 --> 00:11:44,739
+Muara Laboh di Sumatra Barat dan Dieng di Jawa Tengah Dieng adalah dataran
+
+164
+00:11:44,759 --> 00:11:47,931
+tinggi yang indah tapi juga menyimpan kisah paling kelam dalam sejarah gas
+
+165
+00:11:47,951 --> 00:11:51,407
+vulkanik Indonesia Kita akan kembali ke sana nanti
+
+166
+00:11:57,517 --> 00:12:02,202
+Lalu apa yang sedang dibangun sekarang Inovasi pertama terdengar sederhana
+
+167
+00:12:02,286 --> 00:12:06,641
+tapi cerdas memeras panas sisa Brine yang keluar dari separator masih sangat
+
+168
+00:12:06,661 --> 00:12:11,019
+panas seringkali di atas seratus lima puluh derajat Selama ini panas itu
+
+169
+00:12:11,039 --> 00:12:15,480
+langsung diinjeksikan kembali Dengan unit biner tambahan yang disebut bottoming
+
+170
+00:12:15,500 --> 00:12:19,297
+unit panas sisa itu bisa menghasilkan listrik ekstra tanpa mengebor sumur
+
+171
+00:12:19,317 --> 00:12:23,485
+baru Pertamina Geothermal Energy dan PLN Indonesia Power sudah menyepakati
+
+172
+00:12:23,505 --> 00:12:26,398
+tarif untuk unit bottoming tiga puluh megawatt di Ulubelu dan lima belas
+
+173
+00:12:26,418 --> 00:12:30,561
+megawatt di Lahendong Total rencana proyek ko-generasi PGE mencapai dua
+
+174
+00:12:30,581 --> 00:12:31,870
+ratus tiga puluh megawatt
+
+175
+00:12:33,781 --> 00:12:37,994
+Inovasi kedua hidrogen hijau Di Kamojang PLN
+
+176
+00:12:38,014 --> 00:12:41,276
+memanfaatkan listrik dan air kondensat dari PLTP untuk memecah air menjadi
+
+177
+00:12:41,296 --> 00:12:45,955
+hidrogen dan oksigen lewat elektrolisis Produksinya memang masih skala percontohan
+
+178
+00:12:46,017 --> 00:12:49,758
+sekitar empat koma tiga ton per tahun tapi ini membuka jalan panas bumi
+
+179
+00:12:49,778 --> 00:12:52,403
+yang stabil dua puluh empat jam adalah sumber listrik ideal untuk pabrik
+
+180
+00:12:52,423 --> 00:12:55,129
+hidrogen yang butuh pasokan listrik tanpa putus
+
+181
+00:12:57,046 --> 00:13:00,954
+Inovasi ketiga dan ini yang bisa mengubah peta industri lithium dari brine
+
+182
+00:13:00,974 --> 00:13:05,335
+panas bumi Di Dieng Geo Dipa Energi bekerja sama dengan Lilac Solutions
+
+183
+00:13:05,355 --> 00:13:09,054
+dari Amerika didukung hibah USTDA sebesar tiga koma sembilan juta dolar
+
+184
+00:13:09,128 --> 00:13:11,875
+untuk menguji ekstraksi lithium langsung dari air panas bumi menggunakan
+
+185
+00:13:11,895 --> 00:13:15,974
+manik-manik penukar ion Geo Dipa memperkirakan potensinya hingga dua ribu
+
+186
+00:13:15,994 --> 00:13:20,036
+dua ratus ton lithium per tahun Lithium adalah bahan utama baterai kendaraan
+
+187
+00:13:20,056 --> 00:13:25,050
+listrik Bayangkan satu sumur dua produk Listrik
+
+188
+00:13:25,070 --> 00:13:26,147
+dan bahan baterai
+
+189
+00:13:28,045 --> 00:13:32,325
+Dan di luar negeri teknologi generasi berikutnya sudah mulai menyala Di
+
+190
+00:13:32,345 --> 00:13:36,377
+Utah Amerika Serikat Fervo Energy memakai teknik pengeboran horizontal dan
+
+191
+00:13:36,397 --> 00:13:40,540
+rekahan dari industri migas untuk menciptakan reservoir buatan Unit pertama
+
+192
+00:13:40,560 --> 00:13:44,357
+Cape Station tiga puluh tiga megawatt mulai beroperasi komersial pada akhir
+
+193
+00:13:44,377 --> 00:13:48,665
+September dua ribu dua puluh enam Di Jerman Eavor membangun sistem lingkaran
+
+194
+00:13:48,685 --> 00:13:51,723
+tertutup pipa raksasa di kedalaman empat setengah kilometer yang bekerja
+
+195
+00:13:51,743 --> 00:13:55,551
+seperti radiator tanpa perlu reservoir alami dan sudah mengalirkan listrik
+
+196
+00:13:55,571 --> 00:13:59,560
+ke jaringan sejak Desember dua ribu dua puluh lima Jika teknologi ini semakin
+
+197
+00:13:59,580 --> 00:14:03,034
+murah wilayah yang dulu dianggap kering pun bisa menjadi sumber energi
+
+198
+00:14:04,936 --> 00:14:09,135
+Bagaimana dengan rencana Indonesia Dalam RUPTL dua ribu dua puluh lima
+
+199
+00:14:09,155 --> 00:14:12,338
+sampai dua ribu tiga puluh empat pemerintah menargetkan tambahan lima koma
+
+200
+00:14:12,358 --> 00:14:16,638
+dua gigawatt PLTP dalam sepuluh tahun Hampir dua kali lipat kapasitas yang
+
+201
+00:14:16,658 --> 00:14:20,845
+kita bangun selama empat puluh tahun terakhir Proyek-proyek seperti Hululais
+
+202
+00:14:20,919 --> 00:14:24,916
+Lumut Balai unit tiga ekspansi Dieng dan Patuha hingga perluasan Salak dan
+
+203
+00:14:24,936 --> 00:14:29,157
+Wayang Windu sedang dikejar Tapi di dokumen yang sama masih ada tambahan
+
+204
+00:14:29,177 --> 00:14:33,502
+enam koma tiga gigawatt PLTU batu bara Dan di sinilah teori konspirasi
+
+205
+00:14:33,522 --> 00:14:34,587
+berikutnya muncul
+
+206
+00:14:36,507 --> 00:14:40,854
+Teori konspirasi nomor tiga dan ini yang paling panas Ada mafia
+
+207
+00:14:40,874 --> 00:14:45,988
+batu bara yang sengaja menjegal panas bumi supaya PLTU tetap berjaya Di
+
+208
+00:14:46,008 --> 00:14:50,273
+media sosial teori ini punya banyak penggemar Mari kita ikuti
+
+209
+00:14:50,293 --> 00:14:51,026
+uangnya
+
+210
+00:14:53,608 --> 00:14:58,038
+Fakta cek Pertama sejak dua ribu delapan belas
+
+211
+00:14:58,183 --> 00:15:01,936
+harga batu bara untuk pembangkit PLN dipatok maksimal tujuh puluh dolar
+
+212
+00:15:01,956 --> 00:15:06,333
+per ton jauh di bawah harga pasar saat krisis energi dua ribu dua puluh
+
+213
+00:15:06,353 --> 00:15:10,549
+dua Akibatnya listrik PLTU terlihat sangat
+
+214
+00:15:10,569 --> 00:15:14,902
+murah di atas kertas Kedua biaya kesehatan
+
+215
+00:15:14,922 --> 00:15:19,140
+dan iklim dari batu bara tidak masuk ke tagihan Studi
+
+216
+00:15:19,160 --> 00:15:23,390
+CREA memperkirakan polusi PLTU di Indonesia terkait dengan sekitar
+
+217
+00:15:23,410 --> 00:15:27,606
+sepuluh ribu lima ratus kematian dan biaya kesehatan tujuh koma empat miliar
+
+218
+00:15:27,626 --> 00:15:32,311
+dolar pada tahun dua ribu dua puluh dua Ketiga harga
+
+219
+00:15:32,331 --> 00:15:36,129
+patokan tertinggi listrik panas bumi dalam Perpres seratus dua belas tahun
+
+220
+00:15:36,149 --> 00:15:40,515
+dua ribu dua puluh dua dinilai banyak investor belum cukup menutup risiko
+
+221
+00:15:40,535 --> 00:15:44,720
+eksplorasi Jadi kesimpulannya Tidak
+
+222
+00:15:44,740 --> 00:15:49,061
+ada bukti mafia rahasia Yang ada adalah aturan main
+
+223
+00:15:49,081 --> 00:15:53,981
+yang terang-terangan menguntungkan batu bara Status konspirasinya
+
+224
+00:15:54,001 --> 00:15:57,674
+tidak terbukti tapi ketimpangan insentifnya nyata
+
+225
+00:16:04,181 --> 00:16:08,689
+Sekarang duel utamanya PLTP melawan PLTU Lihat
+
+226
+00:16:08,709 --> 00:16:13,283
+dua pembangkit ini berdampingan Di sebelah kiri PLTU tumpukan
+
+227
+00:16:13,303 --> 00:16:17,580
+batu bara ban berjalan boiler raksasa dengan api menyala dan cerobong
+
+228
+00:16:17,600 --> 00:16:22,295
+asap Di sebelah kanan PLTP sumur pipa
+
+229
+00:16:22,323 --> 00:16:27,337
+dan separator Sekarang perhatikan bagian tengahnya turbin generator
+
+230
+00:16:27,421 --> 00:16:32,155
+kondensor menara pendingin Hampir identik Perbedaannya
+
+231
+00:16:32,175 --> 00:16:37,303
+hanya satu dari mana panas itu berasal PLTU harus membeli mengangkut
+
+232
+00:16:37,399 --> 00:16:41,511
+dan membakar bahan bakar setiap detik PLN sendiri bisa mengonsumsi seratus
+
+233
+00:16:41,531 --> 00:16:46,081
+empat puluh hingga seratus enam puluh juta ton batu bara per tahun PLTP
+
+234
+00:16:46,676 --> 00:16:50,833
+Bahan bakarnya sudah ada di bawah kaki gratis dan tidak bisa diembargo
+
+235
+00:16:52,733 --> 00:16:57,404
+Lalu kenapa PLTU masih mendominasi Pada tahun dua ribu dua puluh empat sekitar
+
+236
+00:16:57,424 --> 00:17:01,221
+enam puluh delapan persen listrik Indonesia berasal dari batu bara Bauran
+
+237
+00:17:01,241 --> 00:17:04,056
+energi terbarukan baru sekitar lima belas persen di tahun dua ribu dua puluh
+
+238
+00:17:04,076 --> 00:17:07,661
+lima dan panas bumi hanya menyumbang sekitar dua setengah persen dari kapasitas
+
+239
+00:17:07,681 --> 00:17:12,038
+pembangkit nasional Alasannya historis PLTU cepat dibangun
+
+240
+00:17:12,134 --> 00:17:15,406
+modal awalnya relatif murah dan Indonesia adalah salah satu produsen batu
+
+241
+00:17:15,426 --> 00:17:16,670
+bara terbesar di dunia
+
+242
+00:17:18,581 --> 00:17:22,794
+Tapi bandingkan jejak karbonnya Menurut IPCC emisi siklus
+
+243
+00:17:22,814 --> 00:17:25,986
+hidup PLTU batu bara rata-rata sekitar delapan ratus dua puluh gram karbon
+
+244
+00:17:26,006 --> 00:17:30,118
+dioksida ekuivalen per kilowatt jam Pembangkit gas sekitar empat ratus sembilan
+
+245
+00:17:30,138 --> 00:17:34,552
+puluh Panas bumi Sekitar tiga puluh delapan gram
+
+246
+00:17:35,158 --> 00:17:38,230
+Lebih dari dua puluh kali lebih bersih dari batu bara setara dengan tenaga
+
+247
+00:17:38,250 --> 00:17:40,833
+surya dan sedikit di atas angin dan air
+
+248
+00:17:42,758 --> 00:17:47,018
+Dari kacamata keuangan keduanya punya DNA yang berlawanan PLTU
+
+249
+00:17:47,038 --> 00:17:51,159
+itu murah di depan mahal di belakang modal awal relatif rendah tapi selama
+
+250
+00:17:51,179 --> 00:17:54,085
+tiga puluh tahun harus terus membeli bahan bakar yang harganya naik turun
+
+251
+00:17:54,694 --> 00:17:58,829
+PLTP kebalikannya sangat mahal di depan karena eksplorasi dan pengeboran
+
+252
+00:17:58,947 --> 00:18:03,606
+tapi biaya operasinya stabil dan bebas risiko harga bahan bakar Bagi pemodal
+
+253
+00:18:03,701 --> 00:18:08,048
+artinya satu hal PLTP adalah taruhan pada biaya modal Semakin
+
+254
+00:18:08,068 --> 00:18:10,919
+murah pendanaannya semakin kompetitif listriknya
+
+255
+00:18:16,021 --> 00:18:20,250
+Sekarang angka yang ditunggu para analis Berapa biaya membangun satu
+
+256
+00:18:20,270 --> 00:18:24,353
+megawatt Kita pakai data resmi Katalog Teknologi Ketenagalistrikan Indonesia
+
+257
+00:18:24,373 --> 00:18:27,879
+tahun dua ribu dua puluh empat yang disusun Direktorat Jenderal Ketenagalistrikan
+
+258
+00:18:27,899 --> 00:18:32,132
+bersama Badan Energi Denmark PLTS darat sekitar satu juta
+
+259
+00:18:32,152 --> 00:18:37,321
+dolar per megawatt PLTGU gas satu koma satu juta PLTU
+
+260
+00:18:37,341 --> 00:18:41,540
+superkritis satu koma enam juta PLTU ultra-superkritis
+
+261
+00:18:41,560 --> 00:18:46,085
+dan PLTB darat satu koma tujuh juta PLTA besar dua
+
+262
+00:18:46,105 --> 00:18:50,301
+koma dua juta Dan PLTP skala besar empat koma empat juta dolar
+
+263
+00:18:50,321 --> 00:18:54,782
+per megawatt bahkan lima koma lima juta untuk skala kecil Artinya
+
+264
+00:18:54,855 --> 00:18:58,286
+per megawatt PLTP hampir tiga kali lebih mahal dari PLTU
+
+265
+00:19:00,184 --> 00:19:04,573
+Tapi tunggu Megawatt bukanlah megawatt-jam Panel surya
+
+266
+00:19:04,593 --> 00:19:07,285
+di Indonesia rata-rata hanya bekerja setara penuh sekitar seribu delapan
+
+267
+00:19:07,305 --> 00:19:11,785
+ratus jam per tahun atau sekitar dua puluh persen waktu PLTB sekitar
+
+268
+00:19:11,805 --> 00:19:16,247
+dua puluh tujuh persen PLTP Sekitar delapan puluh persen
+
+269
+00:19:16,267 --> 00:19:19,450
+menurut katalog dan secara global rata-rata delapan puluh delapan persen
+
+270
+00:19:19,470 --> 00:19:23,167
+menurut IRENA Jadi kalau kita hitung modal per megawatt listrik rata-rata
+
+271
+00:19:23,187 --> 00:19:27,609
+yang benar-benar dihasilkan ceritanya berubah PLTS naik menjadi sekitar
+
+272
+00:19:27,629 --> 00:19:31,850
+lima juta dolar PLTB sekitar enam koma tiga juta dan PLTP sekitar
+
+273
+00:19:31,870 --> 00:19:36,766
+lima koma lima juta dolar Tiba-tiba PLTP tidak semahal kelihatannya
+
+274
+00:19:37,363 --> 00:19:40,602
+Dan itu sebelum kita menghitung biaya baterai agar PLTS bisa menyala di
+
+275
+00:19:40,622 --> 00:19:41,364
+malam hari
+
+276
+00:19:43,270 --> 00:19:47,636
+Ukuran paling adil adalah biaya listrik terlevelisasi atau LCOE total biaya
+
+277
+00:19:47,656 --> 00:19:51,392
+seumur hidup dibagi total listrik yang dihasilkan Menurut analisis yang
+
+278
+00:19:51,412 --> 00:19:55,443
+sama dengan biaya modal sepuluh persen LCOE PLTA besar sekitar enam puluh
+
+279
+00:19:55,463 --> 00:20:00,167
+dolar per megawatt jam PLTS enam puluh dua PLTU superkritis enam puluh sembilan
+
+280
+00:20:00,262 --> 00:20:04,673
+PLTP delapan puluh tujuh PLTB darat sembilan puluh dua dan PLTGU seratus
+
+281
+00:20:04,693 --> 00:20:08,836
+dua Data IRENA juga mencatat LCOE panas bumi Indonesia sekitar sembilan
+
+282
+00:20:08,856 --> 00:20:11,805
+sen dolar per kilowatt jam di tahun dua ribu dua puluh empat lebih tinggi
+
+283
+00:20:11,825 --> 00:20:14,966
+dari rata-rata dunia enam sen karena biaya pengeboran yang besar
+
+284
+00:20:16,894 --> 00:20:20,847
+Tapi LCOE PLTU enam puluh sembilan dolar itu punya dua asumsi besar harga
+
+285
+00:20:20,867 --> 00:20:25,233
+batu bara tujuh puluh dolar per ton dan polusi karbon yang gratis Mari kita
+
+286
+00:20:25,253 --> 00:20:29,447
+uji Jika biaya modal turun dari sepuluh menjadi tujuh persen misalnya
+
+287
+00:20:29,467 --> 00:20:33,498
+lewat pinjaman konsesional seperti di Sarulla LCOE PLTP turun menjadi sekitar
+
+288
+00:20:33,518 --> 00:20:38,001
+tujuh puluh dolar Sementara PLTU hanya turun ke sekitar enam puluh tiga
+
+289
+00:20:38,607 --> 00:20:42,583
+Lalu jika emisi karbon diberi harga sekitar dua puluh dolar per ton PLTP
+
+290
+00:20:42,603 --> 00:20:46,578
+sudah sama murahnya dengan PLTU baru Pada harga batu bara seratus tiga puluh
+
+291
+00:20:46,598 --> 00:20:50,808
+dolar per ton seperti saat lonjakan harga LCOE PLTU melonjak mendekati
+
+292
+00:20:50,828 --> 00:20:55,362
+seratus dolar Kesimpulannya PLTP kalah di harga stiker tapi
+
+293
+00:20:55,382 --> 00:20:56,581
+menang di stabilitas
+
+294
+00:20:58,479 --> 00:21:02,994
+Lalu kenapa investor masih ragu Karena risiko terbesar PLTP ada di awal
+
+295
+00:21:03,056 --> 00:21:06,619
+di bawah tanah Pengeboran bisa menyedot hingga empat puluh persen total
+
+296
+00:21:06,639 --> 00:21:11,150
+investasi dan sebagian besar dikeluarkan sebelum ada kepastian uap Ini
+
+297
+00:21:11,170 --> 00:21:14,420
+mirip dengan sektor hulu migas Anda bisa mengebor puluhan juta dolar dan
+
+298
+00:21:14,440 --> 00:21:18,472
+pulang dengan tangan kosong Untuk itu pemerintah dan Bank Dunia membentuk
+
+299
+00:21:18,492 --> 00:21:22,188
+fasilitas GREM melalui PT SMI yang membiayai dan berbagi risiko pengeboran
+
+300
+00:21:22,208 --> 00:21:25,581
+eksplorasi ditambah program pengeboran oleh pemerintah sendiri sebelum wilayah
+
+301
+00:21:25,601 --> 00:21:29,850
+kerja dilelang Risiko yang dibagi berarti biaya modal yang lebih rendah
+
+302
+00:21:29,945 --> 00:21:31,356
+dan listrik yang lebih murah
+
+303
+00:21:36,455 --> 00:21:40,875
+Bagaimana dengan energi terbarukan lain Mari kita adu secara jujur
+
+304
+00:21:41,479 --> 00:21:45,499
+PLTS paling murah dan paling cepat dibangun tapi hanya bekerja saat matahari
+
+305
+00:21:45,519 --> 00:21:49,762
+bersinar dan butuh lahan luas PLTB bagus di lokasi
+
+306
+00:21:49,782 --> 00:21:53,381
+berangin tapi kecepatan angin di sebagian besar Indonesia relatif rendah
+
+307
+00:21:53,990 --> 00:21:58,044
+PLTA stabil dan bisa menyimpan energi di bendungan tapi bergantung musim
+
+308
+00:21:58,064 --> 00:22:02,723
+dan bisa menenggelamkan lahan luas Bioenergi bisa dikendalikan tapi
+
+309
+00:22:02,743 --> 00:22:07,039
+butuh pasokan bahan baku terus-menerus Dan PLTP menyala dua puluh
+
+310
+00:22:07,059 --> 00:22:11,651
+empat jam tidak bergantung cuaca lahannya kecil dan emisinya sangat rendah
+
+311
+00:22:12,260 --> 00:22:16,459
+Kelemahannya modal besar risiko eksplorasi lokasinya sering di hutan
+
+312
+00:22:16,479 --> 00:22:20,599
+lindung atau kawasan konservasi potensi gas beracun dan tantangan penerimaan
+
+313
+00:22:20,619 --> 00:22:21,327
+masyarakat
+
+314
+00:22:23,229 --> 00:22:27,456
+Jadi ini bukan soal memilih satu juara Bayangkan sistem listrik
+
+315
+00:22:27,476 --> 00:22:31,661
+sebagai tim sepak bola PLTS dan PLTB adalah penyerang yang murah dan
+
+316
+00:22:31,681 --> 00:22:35,927
+lincah tapi tidak selalu ada di lapangan PLTA dan baterai adalah
+
+317
+00:22:35,947 --> 00:22:40,210
+gelandang yang mengatur ritme Dan PLTP adalah bek tengah tidak selalu
+
+318
+00:22:40,230 --> 00:22:45,132
+mencolok tapi selalu ada dua puluh empat jam tujuh hari seminggu Untuk
+
+319
+00:22:45,152 --> 00:22:47,878
+negara kepulauan yang jaringannya terpisah-pisah dan permintaannya tumbuh
+
+320
+00:22:47,898 --> 00:22:50,380
+cepat pemain seperti ini sangat berharga
+
+321
+00:22:55,507 --> 00:22:59,903
+Teori konspirasi terakhir dan ini yang paling menyeramkan PLTP
+
+322
+00:22:59,923 --> 00:23:04,163
+adalah bom waktu gas beracun dan pemerintah menutupinya Untuk
+
+323
+00:23:04,183 --> 00:23:08,423
+menjawabnya kita kembali ke Dieng Dua puluh Februari seribu
+
+324
+00:23:08,443 --> 00:23:12,949
+sembilan ratus tujuh puluh sembilan Kawah Sinila meletus dan gas karbon
+
+325
+00:23:12,969 --> 00:23:17,378
+dioksida dalam jumlah besar mengalir turun tak terlihat tak berbau menuruni
+
+326
+00:23:17,398 --> 00:23:22,488
+lereng Seratus empat puluh sembilan warga di dekat kawah tewas Tapi
+
+327
+00:23:22,508 --> 00:23:27,173
+perhatikan tahunnya Saat itu belum ada PLTP di Dieng
+
+328
+00:23:27,836 --> 00:23:30,086
+Itu murni bencana gas vulkanik alami
+
+329
+00:23:32,048 --> 00:23:36,739
+Fakta cek Namun risiko dari PLTP juga nyata
+
+330
+00:23:37,346 --> 00:23:41,610
+Pada dua puluh lima Januari dua ribu dua puluh satu saat uji alir
+
+331
+00:23:41,630 --> 00:23:46,201
+sumur di PLTP Sorik Marapi Sumatra Utara gas hidrogen
+
+332
+00:23:46,221 --> 00:23:51,656
+sulfida terlepas dan menewaskan lima warga termasuk anak-anak Kementerian
+
+333
+00:23:51,676 --> 00:23:56,190
+ESDM menghentikan sementara kegiatan perusahaan dan menyimpulkan kecelakaan
+
+334
+00:23:56,210 --> 00:24:00,671
+terjadi karena kelalaian prosedur operasi Insiden paparan
+
+335
+00:24:00,691 --> 00:24:06,182
+gas di lokasi yang sama kembali terjadi pada tahun-tahun berikutnya Jadi
+
+336
+00:24:06,362 --> 00:24:10,910
+tidak ada yang ditutupi kasus-kasus ini tercatat dan diselidiki secara
+
+337
+00:24:10,930 --> 00:24:15,330
+terbuka Pelajarannya jelas sensor gas zona
+
+338
+00:24:15,350 --> 00:24:19,716
+aman prosedur ketat dan keterlibatan warga bukan pilihan
+
+339
+00:24:19,828 --> 00:24:24,375
+melainkan syarat mutlak Status risikonya nyata
+
+340
+00:24:24,509 --> 00:24:26,398
+tapi bisa dikendalikan
+
+341
+00:24:29,710 --> 00:24:34,143
+Sebagai perbandingan Jepang negara gunung api lain kapasitas PLTP-nya
+
+342
+00:24:34,163 --> 00:24:38,390
+hanya sekitar enam ratus megawatt Kenapa Sebagian besar
+
+343
+00:24:38,410 --> 00:24:41,727
+potensinya berada di taman nasional dan pemilik pemandian air panas atau
+
+344
+00:24:41,747 --> 00:24:46,406
+onsen menentang keras karena khawatir sumber air mereka terganggu Pelajarannya
+
+345
+00:24:46,513 --> 00:24:50,379
+tanpa kepercayaan masyarakat harta karun sebesar apa pun akan tetap terkubur
+
+346
+00:24:52,285 --> 00:24:57,079
+Jadi apakah panas bumi adalah jawaban untuk masalah energi Indonesia Bukan
+
+347
+00:24:57,099 --> 00:25:01,353
+satu-satunya jawaban tapi salah satu yang paling strategis Ia menyala
+
+348
+00:25:01,373 --> 00:25:05,282
+dua puluh empat jam tanpa bahan bakar impor emisinya sangat rendah dan sumbernya
+
+349
+00:25:05,302 --> 00:25:10,351
+tersebar di sepanjang kepulauan kita Tantangannya juga jelas risiko eksplorasi
+
+350
+00:25:10,447 --> 00:25:14,969
+tarif yang adil izin di kawasan hutan dan kepercayaan warga Kalau
+
+351
+00:25:14,989 --> 00:25:18,767
+keempatnya bisa diselesaikan target lima koma dua gigawatt bukan mimpi
+
+352
+00:25:20,686 --> 00:25:24,081
+Panas itu sudah ada di bawah kaki kita selama jutaan tahun dan akan tetap
+
+353
+00:25:24,101 --> 00:25:28,900
+ada jutaan tahun lagi Pertanyaannya bukan lagi bisakah kita memakainya
+
+354
+00:25:28,995 --> 00:25:33,239
+melainkan seberapa cepat kita mau Kalau menurut Anda ada teori lain yang
+
+355
+00:25:33,259 --> 00:25:37,605
+perlu kita bongkar tulis di kolom komentar Semua sumber data di video ini
+
+356
+00:25:37,625 --> 00:25:42,151
+kami cantumkan di layar dan di deskripsi Sampai jumpa di video berikutnya
