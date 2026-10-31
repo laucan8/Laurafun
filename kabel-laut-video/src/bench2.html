@@ -1,0 +1,21 @@
+<!doctype html><html><head><style>html,body{margin:0;background:#fff;overflow:hidden}canvas{position:absolute;left:0;top:0}</style>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js"}}</script></head><body>
+<canvas id="gl" width="1920" height="1080"></canvas><canvas id="hud" width="1920" height="1080"></canvas>
+<script type="module">
+import * as THREE from 'three';
+const r=new THREE.WebGLRenderer({canvas:document.getElementById('gl'),antialias:false,preserveDrawingBuffer:true});
+r.setSize(1920,1080,false);
+const s=new THREE.Scene();s.background=new THREE.Color(0xdff0f7);s.fog=new THREE.Fog(0xdff0f7,50,200);
+const c=new THREE.PerspectiveCamera(40,16/9,0.1,500);
+s.add(new THREE.HemisphereLight(0xffffff,0x88aa88,1.2));const d=new THREE.DirectionalLight(0xffffff,1.5);d.position.set(10,20,10);d.castShadow=true;s.add(d);
+
+const g=new THREE.PlaneGeometry(200,200,100,100);g.rotateX(-Math.PI/2);const p=g.attributes.position;for(let i=0;i<p.count;i++)p.setY(i,Math.sin(p.getX(i)*.1)*Math.cos(p.getZ(i)*.13)*2);g.computeVertexNormals();
+const ground=new THREE.Mesh(g.toNonIndexed(),new THREE.MeshStandardMaterial({color:0x9cc96b,flatShading:true}));ground.receiveShadow=true;s.add(ground);
+for(let i=0;i<300;i++){const m=new THREE.Mesh(new THREE.BoxGeometry(1,Math.random()*5+1,1),new THREE.MeshStandardMaterial({color:0xffffff*Math.random()}));m.position.set(Math.random()*100-50,2,Math.random()*100-50);m.castShadow=true;s.add(m);}
+const h=document.getElementById('hud').getContext('2d');
+const comp=document.createElement('canvas');comp.width=1920;comp.height=1080;const cc=comp.getContext('2d');
+window.renderAt=(t)=>{c.position.set(Math.cos(t*.2)*60,25,Math.sin(t*.2)*60);c.lookAt(0,0,0);r.render(s,c);
+h.clearRect(0,0,1920,1080);h.fillStyle='#13243b';h.fillRect(40,40,600,120);h.fillStyle='#fff';h.font='bold 64px sans-serif';h.fillText('08:'+(t|0),80,125);};
+window.grab=(q)=>{cc.drawImage(document.getElementById('gl'),0,0);cc.drawImage(document.getElementById('hud'),0,0);return comp.toDataURL('image/jpeg',q);};
+window.ready=true;
+</script></body></html>

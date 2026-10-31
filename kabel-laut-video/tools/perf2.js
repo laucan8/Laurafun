@@ -1,0 +1,24 @@
+const { chromium } = require('playwright'); const start = require('./server');
+(async () => { const port = 8900 + Math.floor(Math.random() * 90); await start(port);
+  const b = await chromium.launch({ args: (process.env.ARGS || '').split(' ').filter(Boolean) }); const pg = await b.newPage({ viewport: { width: 1920, height: 1080 } });
+  pg.on('pageerror', e => console.log('ERR', e.message));
+  await pg.goto(`http://localhost:${port}/src/index.html${process.env.Q || ''}`); await pg.waitForFunction('window.ready');
+  const t0 = +(process.argv[2] || 40);
+  const res = await pg.evaluate(async (t0) => {
+    const gl = __renderer.getContext(); const px = new Uint8Array(4);
+    const sync = () => gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    await renderAt(t0); sync();
+    const time = async (fn, n = 8) => { const a = performance.now(); for (let i = 0; i < n; i++) { await fn(i); sync(); } return ((performance.now() - a) / n).toFixed(1); };
+    const out = {};
+    out.full = await time(i => renderAt(t0 + i / 30));
+    out.grab = await time(i => grab(0.93));
+    const st = [...__built.values()].pop(); const sc = st.scene;
+    const hide = (pred) => { const hid = []; sc.traverse(o => { if (o.isMesh && pred(o)) { o.visible = false; hid.push(o); } }); return hid; };
+    out.tris = __renderer.info.render.triangles; out.calls = __renderer.info.render.calls;
+    let h1 = hide(o => o.material && o.material.type === 'ShaderMaterial'); out.noCables = await time(i => renderAt(t0 + i / 30)); h1.forEach(o => o.visible = true);
+    h1 = hide(o => Array.isArray(o.material)); out.noLand = await time(i => renderAt(t0 + i / 30)); h1.forEach(o => o.visible = true);
+    h1 = hide(o => o.geometry && o.geometry.type === 'PlaneGeometry'); out.noSea = await time(i => renderAt(t0 + i / 30)); h1.forEach(o => o.visible = true);
+    h1 = hide(o => true); out.empty = await time(i => renderAt(t0 + i / 30)); h1.forEach(o => o.visible = true);
+    return out;
+  }, t0);
+  console.log(JSON.stringify(res)); await b.close(); process.exit(0); })();

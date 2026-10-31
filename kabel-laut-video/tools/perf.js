@@ -1,0 +1,12 @@
+const { chromium } = require('playwright'); const start = require('./server');
+(async () => { const port = 8700 + Math.floor(Math.random() * 200); await start(port);
+  const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: 1920, height: 1080 } });
+  pg.on('pageerror', e => console.log('ERR', e.message));
+  await pg.goto(`http://localhost:${port}/src/index.html${process.env.Q||''}`); await pg.waitForFunction('window.ready');
+  const t0s = +(process.argv[2] || 40);
+  await pg.evaluate(t => renderAt(t), t0s);
+  let a = Date.now(); for (let i = 0; i < 15; i++) await pg.evaluate(t => renderAt(t), t0s + i / 30); const r = (Date.now() - a) / 15;
+  a = Date.now(); for (let i = 0; i < 15; i++) { await pg.evaluate(t => renderAt(t), t0s + i / 30); await pg.evaluate(() => grab(0.93).length); } const g = (Date.now() - a) / 15;
+  const fin = await pg.evaluate(async t => { const gl = document.getElementById('gl').getContext('webgl2'); const a = performance.now(); for (let i = 0; i < 10; i++) { await renderAt(t + i / 30); gl.finish(); } return (performance.now() - a) / 10; }, t0s);
+  console.log(`t=${t0s} renderAt ${r.toFixed(0)}ms (in-page w/ finish ${fin.toFixed(0)}ms)  +grab ${g.toFixed(0)}ms`);
+  await b.close(); process.exit(0); })();

@@ -1,0 +1,10 @@
+const {chromium}=require('playwright');const start=require('./server');
+(async()=>{await start(+process.env.P||8091);const args=process.argv[2]?process.argv[2].split(' '):[];
+const b=await chromium.launch({args});const pg=await b.newPage({viewport:{width:1920,height:1080}});
+pg.on('console',m=>console.log('C:',m.text()));
+await pg.goto('http://localhost:'+(+process.env.P||8091)+'/src/'+(process.env.B||"bench.html")+'');await pg.waitForFunction('window.ready');
+console.log(await pg.evaluate(()=>{const gl=document.createElement('canvas').getContext('webgl2');const e=gl.getExtension('WEBGL_debug_renderer_info');return gl.getParameter(e.UNMASKED_RENDERER_WEBGL)}));
+let t0=Date.now();for(let i=0;i<30;i++){await pg.evaluate(t=>renderAt(t),i/30);await pg.evaluate(()=>1);} console.log('render only ms/f',(Date.now()-t0)/30);
+t0=Date.now();let sz=0;for(let i=0;i<30;i++){await pg.evaluate(t=>renderAt(t),i/30);const s=await pg.evaluate(()=>grab(0.92));sz+=s.length;} console.log('render+dataURL ms/f',(Date.now()-t0)/30,'avg KB',sz/30/1024|0);
+t0=Date.now();for(let i=0;i<30;i++){await pg.evaluate(t=>renderAt(t),i/30);await pg.screenshot({type:'jpeg',quality:92});} console.log('render+screenshot ms/f',(Date.now()-t0)/30);
+await b.close();process.exit(0);})();

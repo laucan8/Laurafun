@@ -1,0 +1,13 @@
+import s00 from './s00_coldopen.js';
+import s01 from './s01_kronologi.js';
+import s02 from './s02_perjalanan.js';
+import s03 from './s03_anatomi.js';
+import s04 from './s04_cahaya.js';
+import s05 from './s05_kenapa_sg.js';
+import s06 from './s06_faktacek.js';
+import s07 from './s07_konspirasi.js';
+import s08 from './s08_simulasi.js';
+import s09 from './s09_perbaikan.js';
+import s10 from './s10_solusi.js';
+import s11 from './s11_penutup.js';
+export const SCENES = { s00_coldopen: s00, s01_kronologi: s01, s02_perjalanan: s02, s03_anatomi: s03, s04_cahaya: s04, s05_kenapa_sg: s05, s06_faktacek: s06, s07_konspirasi: s07, s08_simulasi: s08, s09_perbaikan: s09, s10_solusi: s10, s11_penutup: s11 };
