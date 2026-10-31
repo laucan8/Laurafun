@@ -91,20 +91,21 @@ async function video(port) {
   const from = parseFloat(arg('from', '0')), to = parseFloat(arg('to', String(tl.duration)));
   const out = path.join(ROOT, arg('out', 'out/pltp_noaudio.mp4'));
   const nW = parseInt(arg('workers', '3'));
-  const F0 = Math.round(from * fps), F1 = Math.round(to * fps);
+  const F0 = arg('f0') ? parseInt(arg('f0')) : Math.round(from * fps), F1 = arg('f1') ? parseInt(arg('f1')) : Math.round(to * fps);
   const per = Math.ceil((F1 - F0) / nW);
-  fs.mkdirSync(path.join(ROOT, 'build/chunks'), { recursive: true });
+  const CD = arg('chunkdir', 'build/chunks');
+  fs.mkdirSync(path.join(ROOT, CD), { recursive: true });
   fs.mkdirSync(path.dirname(out), { recursive: true });
   const parts = [];
   const jobs = [];
   for (let i = 0; i < nW; i++) {
     const a = F0 + i * per, b = Math.min(F1, a + per);
     if (a >= b) break;
-    const p = path.join(ROOT, `build/chunks/c${String(i).padStart(2, '0')}.mp4`);
+    const p = path.join(ROOT, `${CD}/c${String(i).padStart(2, '0')}.mp4`);
     parts.push(p); jobs.push(worker(port, a, b, fps, p, i));
   }
   await Promise.all(jobs);
-  const list = path.join(ROOT, 'build/chunks/list.txt');
+  const list = path.join(ROOT, `${CD}/list.txt`);
   fs.writeFileSync(list, parts.map((p) => `file '${p}'`).join('\n'));
   await new Promise((r) => spawn('ffmpeg', ['-y', '-v', 'error', '-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', out], { stdio: 'inherit' }).on('close', r));
   console.log('video ->', out);

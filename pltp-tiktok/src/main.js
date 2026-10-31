@@ -24,11 +24,23 @@ await Promise.all([
 
 const dir = new Director(window.TIMELINE, scene, camera, ov);
 
+const COVER = QP.has('cover');
 window.renderFrame = (t) => {
   dir.update(t);
   renderer.render(scene, camera);
+  if (COVER) applyCover();
   return true;
 };
+function applyCover() {
+  for (const id of ['cap', 'src', 'layer', 'wipe']) { const e = document.getElementById(id); if (e) e.style.display = 'none'; }
+  if (document.getElementById('cover')) return;
+  const d = document.createElement('div'); d.id = 'cover';
+  d.innerHTML = `<div class="cv-top"><span class="p navy lg">100 TAHUN</span><span class="p cyan lg">UAP KAMOJANG</span></div>
+    <div class="cv-title">PLTP<br><i>vs</i> PLTU</div>
+    <div class="cv-sub">Kenapa panas bumi kalah<br>dari batu bara?</div>
+    <div class="cv-tags"><span class="p navy">TEORI</span><span class="p orange">vs</span><span class="p cyan">FAKTA</span></div>`;
+  document.getElementById('ov').appendChild(d);
+}
 window.scanEvents = () => {
   // overlay-only pass (no WebGL draw) to list when each overlay element appears -> SFX sync
   const ev = []; const seen = new Set(); const fps = window.TIMELINE.fps; const N = Math.round(window.TIMELINE.duration * fps);

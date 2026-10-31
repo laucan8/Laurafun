@@ -95,3 +95,13 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #cfe3f
 #end .note { margin-top: 30px; font: 500 31px/1.35 'Inter'; color: #5b6b80; }
 .cta { z-index: 7; position: absolute; left: 50%; transform: translateX(-50%); background: #fff; border-radius: 40px; padding: 18px 34px 16px; font: 700 50px/1 'BarlowC'; letter-spacing: 3px; color: var(--navy); white-space: nowrap; box-shadow: 0 10px 28px rgba(10,25,45,.25); }
 .cta i { font-style: normal; display: inline-block; background: var(--cyan); color: var(--navy); border-radius: 30px; padding: 6px 16px 4px; margin-right: 14px; }
+
+/* ---------- cover (thumbnail) ---------- */
+#cover { position: absolute; inset: 0; z-index: 20; }
+#cover .cv-top { position: absolute; top: 430px; left: 50%; transform: translateX(-50%); display: flex; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 26px rgba(10,25,45,.3); white-space: nowrap; }
+#cover .cv-title { position: absolute; top: 560px; left: 40px; right: 40px; text-align: center; font: 700 250px/0.86 'BarlowC'; color: #fff; letter-spacing: 4px;
+  background: rgba(20,42,71,.94); border-radius: 26px; padding: 40px 20px 46px; box-shadow: 0 18px 40px rgba(10,25,45,.35); }
+#cover .cv-title i { font-style: normal; color: var(--cyan); font-size: 0.55em; vertical-align: 0.25em; }
+#cover .cv-sub { position: absolute; top: 1150px; left: 50%; transform: translateX(-50%); background: #fff; color: var(--navy); font: 700 70px/1.05 'BarlowC'; letter-spacing: 1px;
+  text-align: center; padding: 20px 36px 18px; border-radius: 16px; white-space: nowrap; box-shadow: 0 12px 30px rgba(10,25,45,.28); }
+#cover .cv-tags { position: absolute; top: 1385px; left: 50%; transform: translateX(-50%); display: flex; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 26px rgba(10,25,45,.3); }
