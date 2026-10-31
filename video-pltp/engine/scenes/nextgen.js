@@ -26,9 +26,9 @@ export async function create({ entry }) {
   const tl = (txt, x, col) => { const p = textPlane([{ text: txt, size: 84, color: col, weight: 800, align: 'center' }], { width: 4.2, w: 1024, h: 200, y: 140 }); p.position.set(x, 2.3, ZF); scene.add(p); return p; };
   tl('EGS — Fervo, Utah', -4.4, C.hot); tl('Closed-loop — Eavor, Jerman', 4.4, C.green);
   const dep = textPlane([{ text: '± 4,5 km', size: 80, color: C.navy, weight: 800, align: 'center' }], { width: 1.8, w: 512, h: 180, y: 125 }); dep.position.set(7.6, -3.2, ZF); scene.add(dep);
-  const anchors = { fervo: { p: V(-3.5, -5.6, ZF), dx: 80, dy: -160 }, eavor: { p: V(4.4, -6.7, ZF), dx: -80, dy: -170 } };
+  const anchors = { fervo: { p: V(-3.5, -5.6, ZF), dx: -120, dy: -190 }, eavor: { p: V(4.4, -6.7, ZF), dx: 140, dy: -170 } };
   const cu = (n, f) => cueOf(entry, n, f);
-  const path = new CamPath([{ t: 0, p: [0, 3.0, 24], l: [0, -3.0, 0], fov: 34 }, { t: cu('fervo', 3), p: [-4.5, -0.5, 17.5], l: [-4.2, -3.8, 0], fov: 34 }, { t: cu('eavor', 17), p: [4.5, -0.5, 17.5], l: [4.4, -3.8, 0], fov: 34 }, { t: cu('dry', 30), p: [0, 3.5, 24], l: [0, -3.0, 0], fov: 34 }, { t: entry.dur, p: [-1.5, 4.0, 24.5], l: [0, -3.2, 0], fov: 34 }]);
+  const path = new CamPath([{ t: 0, p: [0, 3.0, 24], l: [0, -3.0, 0], fov: 34 }, { t: cu('fervo', 3), p: [-4.5, -0.5, 17.5], l: [-4.2, -3.8, 0], fov: 34 }, { t: cu('eavor', 17), p: [4.5, -0.5, 17.5], l: [4.4, -3.8, 0], fov: 34 }, { t: cu('dry', 30), p: [0, 3.5, 26.5], l: [0, -3.0, 0], fov: 34 }, { t: entry.dur, p: [-1.0, 4.0, 27.5], l: [0, -3.2, 0], fov: 34 }]);
   return { scene, camera, anchors, update(t) { path.apply(camera, t, 0.04); const kF = smooth(prog(t, cu('fervo', 3), 1)); fInj.update(t); fProd.update(t); fCross.forEach((f) => f.update(t)); fr.children.forEach((p, i) => { p.material.opacity = 0.55 * kF * (0.6 + 0.4 * Math.sin(t * 3 + i)); p.scale.set(1, 1.6 * Math.max(0.001, easeOut(prog(t, cu('fervo', 3) + i * 0.15, 0.6))), 1); });
     const kE = smooth(prog(t, cu('eavor', 17), 1)); flowsE.forEach((f) => { f.mesh.visible = kE > 0.05; f.update(t); }); } };
 }

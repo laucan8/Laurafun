@@ -83,10 +83,13 @@ open(os.path.join(DOCS, "SUMBER.md"), "w", encoding="utf-8").write("\n".join(L))
 # ---------- DESKRIPSI YOUTUBE ----------
 chap = [f"{ts(c['t'])} {c['label']} — {c['title']}" for c in TL["chapters"]]
 chap[0] = "00:00 Pembuka — Harta karun di bawah kaki kita"
+chap = [c.replace("BAB 8 — Teori Terakhir & Penutup", "BAB 8 — Teori #4: Bom waktu gas beracun? & Penutup") for c in chap]
 extra = []
 for sid, label in [("s08", "Teori #1: “40% panas bumi dunia”"), ("s18", "Teori #2: PLTP picu gempa & letusan?"), ("s30", "Teori #3: Mafia batu bara?"), ("s36", "CAPEX per MW: PLTP vs PLTU vs EBT"), ("s43", "Teori #4: Bom waktu gas beracun?")]:
     extra.append((tlmap[sid]["start"], f"{ts(tlmap[sid]['start'])} {label}"))
-allc = sorted([(c["t"], s) for c, s in zip(TL["chapters"], chap)] + extra)
+base = [(c["t"], s) for c, s in zip(TL["chapters"], chap)]
+extra = [e for e in extra if all(abs(e[0] - b[0]) >= 12 for b in base)]  # aturan YouTube: jarak bab >= 10 dtk
+allc = sorted(base + extra)
 L = ["# Judul & Deskripsi YouTube (siap tempel)", "", "## Opsi judul", "",
      "1. Harta Karun yang “Disembunyikan”? Cara Kerja PLTP & Duel Biaya vs PLTU (3D)",
      "2. Indonesia Duduk di Atas 23.742 MW Panas Bumi — Kenapa Masih Bakar Batu Bara?",

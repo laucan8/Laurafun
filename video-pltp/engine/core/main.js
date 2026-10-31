@@ -161,5 +161,6 @@ window.renderAt = async (t) => {
 window.sceneT = (id, local = 0) => { const e = TL.scenes.find((s) => s.id === id); return e ? e.start + local : 0; };
 window.ready = true;
 const q = new URLSearchParams(location.search);
+if (q.has('noui')) uiRoot.style.display = 'none';
 if (q.has('t')) await window.renderAt(parseFloat(q.get('t')));
 else if (q.has('s')) await window.renderAt(window.sceneT(q.get('s'), parseFloat(q.get('l') || '3')));

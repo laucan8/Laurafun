@@ -15,6 +15,8 @@ export class SceneUI {
     this.items = [];
     const ui = entry.ui || [];
     let leftStack = 0;
+    // adegan diorama: callout lama otomatis hilang 4,5 dtk setelah callout berikutnya muncul (anti-tumpuk)
+    if (entry.type === 'plant') { const cs = ui.filter((u) => u.k === 'callout').map((u) => [this.cue(u.at), u]).sort((a, b) => a[0] - b[0]); cs.forEach(([t0, u], i) => { const nx = cs.find(([t1]) => t1 > t0 + 0.01); if (nx) u._until = nx[0] + 4.5; }); }
     for (const u of ui) { const f = this['mk_' + u.k]; if (f) this.items.push(f.call(this, u)); else console.warn('ui kind?', u.k); }
   }
   cue(name, fb) { if (typeof name === 'number') return name; const c = this.entry.cues || {}; return c[name] !== undefined ? c[name] : (fb ?? 0.4); }
@@ -63,7 +65,7 @@ export class SceneUI {
     const halo = document.createElementNS(ns, 'circle'); halo.setAttribute('fill', 'none'); halo.setAttribute('stroke', tone); halo.setAttribute('stroke-width', '2'); this.svg.appendChild(halo);
     const at = this.cue(u.at);
     return (t) => {
-      const a = inA(t, at, 0.5); const anc = this.scn.anchors && this.scn.anchors[u.anchor];
+      const a = Math.min(inA(t, at, 0.5), u._until ? 1 - inA(t, u._until, 0.5) : 1); const anc = this.scn.anchors && this.scn.anchors[u.anchor];
       if (!anc || a <= 0.003) { lab.style.opacity = 0; ln.style.opacity = 0; dot.style.opacity = 0; halo.style.opacity = 0; return; }
       const A = typeof anc === 'function' ? anc(t) : anc; const p = project(A.p, this.scn.camera);
       if (p.behind) { lab.style.opacity = 0; ln.style.opacity = 0; dot.style.opacity = 0; halo.style.opacity = 0; return; }

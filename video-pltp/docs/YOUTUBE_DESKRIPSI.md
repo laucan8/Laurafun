@@ -23,10 +23,8 @@ BAB:
 14:35 Teori #3: Mafia batu bara?
 16:00 BAB 5 — Duel: PLTP vs PLTU
 18:12 BAB 6 — Hitung-hitungan: CAPEX per MW
-18:15 CAPEX per MW: PLTP vs PLTU vs EBT
 21:32 BAB 7 — Plus–Minus vs Energi Terbarukan Lain
-22:51 BAB 8 — Teori Terakhir & Penutup
-22:54 Teori #4: Bom waktu gas beracun?
+22:51 BAB 8 — Teori #4: Bom waktu gas beracun? & Penutup
 
 SUMBER UTAMA (lengkap di docs/SUMBER.md):
 • Kementerian ESDM, IIGCE 2025 — potensi 23.742 MW, terpasang 2.744 MW — https://www.esdm.go.id/id/media-center/arsip-berita/indonesia-siap-jadi-negara-produsen-listrik-panas-bumi-terbesar-dunia

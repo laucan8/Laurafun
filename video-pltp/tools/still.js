@@ -7,7 +7,7 @@ const path = require('path'); const fs = require('fs');
   const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   const p = await b.newPage({ viewport: { width: 1920, height: 1080 } });
   const logs = []; p.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') logs.push(m.type() + ': ' + m.text()); }); p.on('pageerror', (e) => logs.push('PAGEERROR: ' + e.message));
-  await p.goto(`http://127.0.0.1:${process.env.PORT || 8800}/index.html`); await p.waitForFunction('window.ready===true', null, { timeout: 120000 });
+  await p.goto(`http://127.0.0.1:${process.env.PORT || 8800}/index.html${process.env.URLQ || ''}`); await p.waitForFunction('window.ready===true', null, { timeout: 120000 });
   for (const s of specs) {
     const t = s.includes('@') ? await p.evaluate(([id, l]) => window.sceneT(id, l), [s.split('@')[0], parseFloat(s.split('@')[1])]) : parseFloat(s);
     const t0 = Date.now(); await p.evaluate((tt) => window.renderAt(tt), t);

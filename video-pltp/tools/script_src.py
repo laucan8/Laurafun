@@ -390,7 +390,7 @@ sc(id="s39", ch=6, type="sens", params={}, voice="ardi", tr="cube",
 sc(id="s40", ch=6, type="risk", params={}, voice="ardi", tr="shatter",
    visual="Tiga rig bor 3D: dua sumur menemukan uap (kolom uap putih + centang hijau), satu kering (tanda silang merah, koin berjatuhan). Lalu perisai 'GREM — PT SMI × Bank Dunia' menutupi rig; label 'pengeboran oleh pemerintah'.",
    vo="Lalu kenapa investor masih ragu? Karena [[risk]]risiko terbesar PLTP ada di awal, di bawah tanah. [[share]]Pengeboran bisa menyedot hingga empat puluh persen total investasi, dan sebagian besar dikeluarkan sebelum ada kepastian uap. Ini mirip dengan sektor hulu migas: [[dry]]Anda bisa mengebor puluhan juta dolar dan pulang dengan tangan kosong. Untuk itu, pemerintah dan Bank Dunia membentuk [[grem]]fasilitas GREM melalui PT SMI, yang membiayai dan berbagi risiko pengeboran eksplorasi, ditambah [[gov]]program pengeboran oleh pemerintah sendiri sebelum wilayah kerja dilelang. [[cheap]]Risiko yang dibagi berarti biaya modal yang lebih rendah, dan listrik yang lebih murah.",
-   ui=[{"k":"stat","at":"share","value":40,"prefix":"≤","suffix":"%","label":"porsi pengembangan lapangan/pengeboran dari investasi","pos":"left"},
+   ui=[{"k":"stat","at":"share","value":40,"prefix":"≤","suffix":"%","label":"porsi pengeboran dari total investasi","pos":"left"},
        {"k":"bullets","title":"MITIGASI RISIKO","items":[["grem","GREM (PT SMI × Bank Dunia): pembiayaan & berbagi risiko eksplorasi"],["gov","Government drilling sebelum lelang WKP"],["cheap","Risiko turun → WACC turun → tarif lebih murah"]]}],
    src=["ESMAP","GREM","WB","GOVDRILL"])
 
