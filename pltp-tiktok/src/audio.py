@@ -316,12 +316,17 @@ vo = read_wav(os.path.join(B, 'vo_full.wav'))
 vo = np.pad(vo, (0, max(0, N - len(vo))))[:N]
 # light VO polish: high-pass rumble, gentle presence
 vo = fft_filter(vo, lo=70)
-# ducking envelope from VO
-win = int(0.05 * SR)
-rms = np.sqrt(np.convolve(vo ** 2, np.ones(win) / win, mode='same'))
+# ducking envelope from VO (O(N) moving averages)
+def movavg(x, w):
+    c = np.cumsum(np.concatenate([[0.0], x]))
+    y = (c[w:] - c[:-w]) / w
+    pad = len(x) - len(y)
+    return np.concatenate([np.full(pad // 2, y[0]), y, np.full(pad - pad // 2, y[-1])])
+
+
+rms = np.sqrt(np.maximum(movavg(vo ** 2, int(0.05 * SR)), 0))
 act = np.clip(rms / 0.03, 0, 1)
-# smooth (attack fast, release slow) via two moving averages
-act = np.maximum(np.convolve(act, np.ones(int(0.12 * SR)) / int(0.12 * SR), mode='same'), np.convolve(act, np.ones(int(0.5 * SR)) / int(0.5 * SR), mode='same'))
+act = np.maximum(movavg(act, int(0.12 * SR)), movavg(act, int(0.5 * SR)))
 duck = 1 - 0.5 * np.clip(act, 0, 1)
 end_fade = np.clip((DUR - 0.25 - tt(N)) / 3.0, 0, 1)
 music_n = music / (np.abs(music).max() + 1e-9)
