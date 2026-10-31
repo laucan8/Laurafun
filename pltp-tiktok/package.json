@@ -1,0 +1,9 @@
+{
+  "name": "pltp-tiktok",
+  "private": true,
+  "type": "module",
+  "description": "Motion graphic 3D TikTok: cara kerja PLTP vs PLTU (Three.js + Playwright + ffmpeg)",
+  "dependencies": {
+    "three": "0.170.0"
+  }
+}

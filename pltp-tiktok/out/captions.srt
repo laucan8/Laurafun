@@ -1,0 +1,355 @@
+1
+00:00:00,740 --> 00:00:03,833
+Tahun 1926, Belanda mengebor sumur sedalam
+
+2
+00:00:03,853 --> 00:00:05,287
+60 meter di Kamojang,
+
+3
+00:00:05,308 --> 00:00:06,015
+Garut.
+
+4
+00:00:06,545 --> 00:00:07,854
+Seratus tahun kemudian,
+
+5
+00:00:07,874 --> 00:00:09,615
+sumur itu masih menyemburkan uap.
+
+6
+00:00:10,145 --> 00:00:11,147
+Tanpa henti.
+
+7
+00:00:12,017 --> 00:00:13,758
+Di bawah Indonesia tersimpan panas bumi
+
+8
+00:00:13,778 --> 00:00:15,655
+lebih dari 23 ribu megawatt.
+
+9
+00:00:15,805 --> 00:00:16,808
+Yang dipakai?
+
+10
+00:00:17,338 --> 00:00:18,965
+Cuma sekitar 11 persen.
+
+11
+00:00:19,115 --> 00:00:20,834
+Dua pertiga listrik kita justru dari batu
+
+12
+00:00:20,854 --> 00:00:21,424
+bara.
+
+13
+00:00:21,574 --> 00:00:23,439
+Kebetulan, atau dibiarkan?
+
+14
+00:00:23,969 --> 00:00:25,063
+Kita bongkar.
+
+15
+00:00:25,213 --> 00:00:26,954
+Tapi pahami dulu cara kerjanya.
+
+16
+00:00:27,774 --> 00:00:29,605
+Semua berawal dari air hujan.
+
+17
+00:00:29,755 --> 00:00:31,485
+Air meresap jauh ke dalam tanah,
+
+18
+00:00:31,505 --> 00:00:32,768
+mendekati dapur magma,
+
+19
+00:00:32,788 --> 00:00:35,575
+dan terpanaskan hingga lebih dari 240 derajat.
+
+20
+00:00:35,725 --> 00:00:37,500
+Lapisan batuan kedap di atasnya mengunci
+
+21
+00:00:37,520 --> 00:00:38,727
+panas dan tekanan.
+
+22
+00:00:39,257 --> 00:00:41,180
+Persis tutup panci presto raksasa.
+
+23
+00:00:41,900 --> 00:00:44,232
+Lalu sumur dibor sampai 2 kilometer lebih.
+
+24
+00:00:44,382 --> 00:00:46,861
+Begitu tembus, fluida panas menyembur naik.
+
+25
+00:00:47,011 --> 00:00:49,058
+Separator memisahkan uap dari air.
+
+26
+00:00:49,208 --> 00:00:50,631
+Uapnya melaju lewat pipa,
+
+27
+00:00:50,651 --> 00:00:52,483
+memutar turbin ribuan kali per menit.
+
+28
+00:00:52,633 --> 00:00:54,010
+Turbin memutar generator,
+
+29
+00:00:54,410 --> 00:00:55,628
+dan jadilah listrik.
+
+30
+00:00:56,348 --> 00:00:58,453
+Sisa uap didinginkan di menara pendingin.
+
+31
+00:00:58,603 --> 00:01:00,593
+Itu uap air, bukan asap.
+
+32
+00:01:00,743 --> 00:01:02,326
+Airnya disuntikkan kembali ke perut bumi
+
+33
+00:01:02,346 --> 00:01:03,575
+lewat sumur injeksi,
+
+34
+00:01:03,595 --> 00:01:05,291
+jadi siklusnya terus berputar.
+
+35
+00:01:05,441 --> 00:01:07,863
+Bonus: Kamojang adalah lapangan uap kering,
+
+36
+00:01:07,883 --> 00:01:09,374
+jenis yang langka di dunia.
+
+37
+00:01:10,244 --> 00:01:12,030
+Nah, ini plot twist-nya.
+
+38
+00:01:12,560 --> 00:01:14,778
+PLTU juga memutar turbin pakai uap.
+
+39
+00:01:14,928 --> 00:01:17,623
+Bedanya cuma satu: siapa yang merebus airnya.
+
+40
+00:01:17,773 --> 00:01:19,912
+PLTU membakar sekitar 10 ribu ton batu bara
+
+41
+00:01:19,932 --> 00:01:21,832
+per hari, untuk seribu megawatt.
+
+42
+00:01:21,982 --> 00:01:22,973
+PLTP?
+
+43
+00:01:23,503 --> 00:01:24,698
+Bumi yang merebus.
+
+44
+00:01:24,848 --> 00:01:26,100
+Tanpa beli bahan bakar,
+
+45
+00:01:26,120 --> 00:01:27,543
+24 jam nonstop.
+
+46
+00:01:28,313 --> 00:01:29,258
+Hasilnya?
+
+47
+00:01:29,409 --> 00:01:32,536
+Emisi PLTP sekitar 38 gram CO₂ per kilowatt
+
+48
+00:01:32,556 --> 00:01:33,127
+jam.
+
+49
+00:01:33,277 --> 00:01:35,597
+PLTU, 820.
+
+50
+00:01:36,127 --> 00:01:37,743
+Lebih dari 20 kali lipat.
+
+51
+00:01:37,893 --> 00:01:39,827
+PLTP juga tak bergantung cuaca,
+
+52
+00:01:39,847 --> 00:01:42,190
+faktor kapasitasnya di atas 90 persen.
+
+53
+00:01:42,340 --> 00:01:44,922
+Dan saat harga batu bara meroket di 2022,
+
+54
+00:01:44,942 --> 00:01:46,569
+harga uap bumi tidak ikut naik.
+
+55
+00:01:47,389 --> 00:01:49,380
+Jadi kenapa panas bumi tidak dikebut?
+
+56
+00:01:49,530 --> 00:01:52,179
+Teorinya: lobi batu bara sengaja menahannya.
+
+57
+00:01:52,329 --> 00:01:54,105
+Dokumenter Sexy Killers bahkan menuding
+
+58
+00:01:54,125 --> 00:01:55,741
+ada jejaring elite di balik bisnis batu
+
+59
+00:01:55,761 --> 00:01:56,332
+bara.
+
+60
+00:01:56,482 --> 00:01:57,757
+Itu baru tudingan.
+
+61
+00:01:58,287 --> 00:02:00,050
+Yang terdokumentasi ada tiga.
+
+62
+00:02:00,200 --> 00:02:02,373
+Satu, harga batu bara untuk PLN dipatok
+
+63
+00:02:02,393 --> 00:02:04,111
+maksimal 70 dolar per ton.
+
+64
+00:02:04,261 --> 00:02:05,979
+PLTU jadi terlihat murah.
+
+65
+00:02:06,129 --> 00:02:08,995
+Dua, PLN terikat kontrak PLTU take or pay:
+
+66
+00:02:09,015 --> 00:02:10,165
+dipakai atau tidak,
+
+67
+00:02:10,185 --> 00:02:11,188
+tetap dibayar.
+
+68
+00:02:11,338 --> 00:02:12,590
+Saat listrik surplus,
+
+69
+00:02:12,610 --> 00:02:14,021
+pembangkit baru sulit masuk.
+
+70
+00:02:14,171 --> 00:02:16,514
+Tiga, satu sumur panas bumi butuh 4 sampai
+
+71
+00:02:16,534 --> 00:02:18,672
+10 juta dolar, dan bisa kering.
+
+72
+00:02:18,822 --> 00:02:21,097
+Hasilnya, listrik panas bumi kita termasuk
+
+73
+00:02:21,117 --> 00:02:22,336
+yang termahal di dunia.
+
+74
+00:02:22,486 --> 00:02:23,499
+Konspirasi?
+
+75
+00:02:24,029 --> 00:02:25,156
+Belum terbukti.
+
+76
+00:02:25,306 --> 00:02:27,661
+Tapi aturan mainnya jelas memihak batu bara.
+
+77
+00:02:28,531 --> 00:02:31,431
+Tapi adil saja, PLTP juga punya sisi gelap.
+
+78
+00:02:31,581 --> 00:02:34,799
+Tahun 2021, kebocoran gas H₂S di Sorik Marapi
+
+79
+00:02:34,819 --> 00:02:36,162
+menewaskan lima warga.
+
+80
+00:02:36,312 --> 00:02:38,473
+Di Flores, sebagian warga adat Poco Leok
+
+81
+00:02:38,493 --> 00:02:40,030
+menolak proyek di tanah mereka.
+
+82
+00:02:40,180 --> 00:02:41,819
+Dan gempa Pohang di Korea dikaitkan dengan
+
+83
+00:02:41,839 --> 00:02:43,489
+panas bumi jenis EGS,
+
+84
+00:02:43,509 --> 00:02:45,738
+teknologi yang berbeda dari PLTP biasa.
+
+85
+00:02:46,558 --> 00:02:48,947
+Indonesia duduk di atas panci presto raksasa.
+
+86
+00:02:49,097 --> 00:02:50,872
+Pertanyaannya bukan bisa atau tidak,
+
+87
+00:02:51,272 --> 00:02:52,524
+tapi mau atau tidak.
+
+88
+00:02:52,674 --> 00:02:54,903
+Menurutmu, siapa yang paling diuntungkan?
+
+89
+00:02:55,053 --> 00:02:56,237
+Tulis di komentar.

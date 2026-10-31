@@ -1,0 +1,57 @@
+{
+  "voice": "id-ID-ArdiNeural",
+  "rate": "+10%",
+  "markupNote": "[tampilan|ucapan] = teks caption berbeda dari teks yang diucapkan TTS. '||' = jeda dramatis tambahan.",
+  "scenes": [
+    {
+      "id": "S01", "key": "hook", "padBefore": 0.7, "padAfter": 0.5,
+      "vo": "Tahun 1926, Belanda mengebor sumur sedalam 60 meter di Kamojang, Garut. || Seratus tahun kemudian, sumur itu masih menyemburkan uap. || Tanpa henti.",
+      "source": "ESDM — Sumur Panas Bumi Pertama di Indonesia · ThinkGeoEnergy (2026)"
+    },
+    {
+      "id": "S02", "key": "peta", "padBefore": 0.2, "padAfter": 0.45,
+      "vo": "Di bawah Indonesia tersimpan panas bumi lebih dari 23 ribu megawatt. Yang dipakai? || Cuma sekitar 11 persen. Dua pertiga listrik kita justru dari batu bara. Kebetulan, atau dibiarkan? || Kita bongkar. Tapi pahami dulu cara kerjanya.",
+      "source": "ESDM via Bisnis.com (Sep 2025) · ThinkGeoEnergy Top-10 2025 · Wamen ESDM via IDX Channel (Nov 2024)"
+    },
+    {
+      "id": "S03", "key": "bawah", "padBefore": 0.2, "padAfter": 0.4,
+      "vo": "Semua berawal dari air hujan. Air meresap jauh ke dalam tanah, mendekati dapur magma, dan terpanaskan hingga lebih dari 240 derajat. Lapisan batuan kedap di atasnya mengunci panas dan tekanan. || Persis tutup panci presto raksasa.",
+      "source": "U.S. DOE — Geothermal Electricity Generation · Atom Indonesia (BRIN): reservoir Kamojang"
+    },
+    {
+      "id": "S04", "key": "pembangkit", "padBefore": 0.15, "padAfter": 0.4,
+      "vo": "Lalu sumur dibor sampai 2 kilometer lebih. Begitu tembus, fluida panas menyembur naik. Separator memisahkan uap dari air. Uapnya melaju lewat pipa, memutar turbin ribuan kali per menit. Turbin memutar generator, || dan jadilah listrik.",
+      "source": "Geo Dipa via Listrik Indonesia (Jul 2025): sumur 2.000–2.500 m · U.S. DOE"
+    },
+    {
+      "id": "S05", "key": "siklus", "padBefore": 0.15, "padAfter": 0.5,
+      "vo": "Sisa uap didinginkan di menara pendingin. Itu uap air, bukan asap. Airnya disuntikkan kembali ke perut bumi lewat sumur injeksi, jadi siklusnya terus berputar. Bonus: Kamojang adalah lapangan uap kering, jenis yang langka di dunia.",
+      "source": "U.S. DOE (reinjeksi) · Atom Indonesia (BRIN): Kamojang dominasi uap · Studi sistem uap Jawa Barat (2016)"
+    },
+    {
+      "id": "S06", "key": "twist", "padBefore": 0.2, "padAfter": 0.45,
+      "vo": "Nah, ini plot twist-nya. || PLTU juga memutar turbin pakai uap. Bedanya cuma satu: siapa yang merebus airnya. PLTU membakar sekitar 10 ribu ton batu bara per hari, untuk seribu megawatt. PLTP? || Bumi yang merebus. Tanpa beli bahan bakar, 24 jam nonstop.",
+      "source": "PLN via Kontan: 3,5–4 jt ton/thn per 1.000 MW · Antara: PLTU Palabuhanratu ±10 rb t/hari"
+    },
+    {
+      "id": "S07", "key": "skor", "padBefore": 0.15, "padAfter": 0.45,
+      "vo": "Hasilnya? Emisi PLTP sekitar 38 gram [CO₂|C O dua] per kilowatt jam. PLTU, 820. || Lebih dari 20 kali lipat. PLTP juga tak bergantung cuaca, faktor kapasitasnya di atas 90 persen. Dan saat harga batu bara meroket di 2022, harga uap bumi tidak ikut naik.",
+      "source": "IPCC AR5 WGIII Annex III (2014) · PGE via Investortrust (H1 2026) · ESDM via Kontan (HBA Okt 2022)"
+    },
+    {
+      "id": "S08", "key": "kenapa", "padBefore": 0.2, "padAfter": 0.5,
+      "vo": "Jadi kenapa panas bumi tidak dikebut? Teorinya: lobi batu bara sengaja menahannya. Dokumenter Sexy Killers bahkan menuding ada jejaring elite di balik bisnis batu bara. Itu baru tudingan. || Yang terdokumentasi ada tiga. Satu, harga batu bara untuk PLN dipatok maksimal 70 dolar per ton. PLTU jadi terlihat murah. Dua, PLN terikat kontrak PLTU take or pay: dipakai atau tidak, tetap dibayar. Saat listrik surplus, pembangkit baru sulit masuk. Tiga, satu sumur panas bumi butuh 4 sampai 10 juta dolar, dan bisa kering. Hasilnya, listrik panas bumi kita termasuk yang termahal di dunia. Konspirasi? || Belum terbukti. Tapi aturan mainnya jelas memihak batu bara.",
+      "source": "Kepmen ESDM 1395 K/30/MEM/2018 · IEEFA · Geo Dipa/ESDM · IRENA RPGC 2024 · Watchdoc (2019)"
+    },
+    {
+      "id": "S09", "key": "gelap", "padBefore": 0.2, "padAfter": 0.45,
+      "vo": "Tapi adil saja, PLTP juga punya sisi gelap. Tahun 2021, kebocoran gas [H₂S|H dua S] di Sorik Marapi menewaskan lima warga. Di Flores, sebagian warga adat Poco Leok menolak proyek di tanah mereka. Dan gempa Pohang di Korea dikaitkan dengan panas bumi jenis [EGS|E G S], teknologi yang berbeda dari PLTP biasa.",
+      "source": "ESDM (26 Jan 2021) · Indonesia Business Post (Des 2024) · Komisi Pemerintah Korea via Phys.org (2019)"
+    },
+    {
+      "id": "S10", "key": "penutup", "padBefore": 0.2, "padAfter": 4.6,
+      "vo": "Indonesia duduk di atas panci presto raksasa. Pertanyaannya bukan bisa atau tidak, || tapi mau atau tidak. Menurutmu, siapa yang paling diuntungkan? Tulis di komentar.",
+      "source": "ESDM (2025) · RUPTL PLN 2025–2034: +5,2 GW PLTP"
+    }
+  ]
+}
