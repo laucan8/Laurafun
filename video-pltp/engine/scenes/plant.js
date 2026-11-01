@@ -29,6 +29,9 @@ export async function create({ entry, prev }) {
   const wellGlass = glass('#ffffff', 0.32);
   const mkWell = (c) => { const g = new THREE.Group(); const gt = tube(c, 0.11, wellGlass, 100, 12); gt.castShadow = false; g.add(gt); const edgeL = tube(c, 0.03, casing, 100, 6); edgeL.castShadow = false; edgeL.position.x -= 0.11; g.add(edgeL); const edgeR = tube(c, 0.03, casing, 100, 6); edgeR.castShadow = false; edgeR.position.x += 0.11; g.add(edgeR); return g; };
   const wells = new THREE.Group(); scene.add(wells); const gP1 = mkWell(cP1), gP2 = mkWell(cP2), gI = mkWell(cI); wells.add(gP1, gP2, gI);
+  // rangkaian bor (terlihat jelas saat eksplorasi)
+  const drill = tube(cP1, 0.065, mat('#2B3A55', { r: 0.4, m: 0.3 }), 100, 10); drill.castShadow = false; drill.visible = mode === 'explore'; scene.add(drill);
+  const drillCore = tube(cP1, 0.025, basic('#FF9A4D'), 100, 6); drillCore.visible = mode === 'explore'; drillCore.position.z += 0.05; scene.add(drillCore);
   // aliran dalam sumur produksi: cair (oranye) -> uap (putih) di atas zona flashing
   const flashY = -2.2;
   const colProd = (u, c, i) => { const y = lerp(-5.6, 0, u); if (y > flashY && (i % 3 !== 0)) c.set('#FFFFFF'); else c.set(y > flashY ? '#FFC089' : '#FF7A33'); };
@@ -123,6 +126,7 @@ export async function create({ entry, prev }) {
       // sumur: saat eksplorasi tumbuh dari permukaan
       gP2.visible = gI.visible = mode !== 'explore' ? true : facA > 0.05; setOpacity(gP2, mode === 'explore' ? facA : 1); setOpacity(gI, mode === 'explore' ? facA : 1);
       gP1.children.forEach((m) => { m.geometry.setDrawRange(0, Math.floor(m.geometry.index.count * (mode === 'explore' ? wellGrow : 1) / 6) * 6); });
+      if (mode === 'explore') { for (const d of [drill, drillCore]) d.geometry.setDrawRange(0, Math.floor(d.geometry.index.count * wellGrow / 6) * 6); drill.visible = drillCore.visible = wellGrow > 0.002; }
       if (mode === 'explore' && wellGrow > 0 && wellGrow < 1) { const p = cP1.getPointAt(wellGrow); bitGlow.position.copy(p); bitGlow.visible = true; bitGlow.material.opacity = 0.9; } else bitGlow.visible = false;
       // kubah lempung menyala
       capGlow.material.opacity = mode === 'explore' ? 0.55 * smooth(prog(t, cClay - 0.2, 0.8)) * (0.75 + 0.25 * Math.sin(t * 4)) * (1 - smooth(prog(t, cDrill + 2, 1.5))) : 0;
