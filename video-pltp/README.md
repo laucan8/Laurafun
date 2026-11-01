@@ -13,6 +13,29 @@ Video explainer YouTube berbahasa Indonesia tentang **cara kerja PLTP**, PLTP ik
 | Subtitle Indonesia | `docs/subtitle_id.srt` |
 | Klip voice-over per adegan | `build/audio/*.mp3` |
 
+## Bagian video
+
+| File | Rentang | Bab | Ukuran |
+|---|---|---|---|
+| `PLTP_bagian_00.mp4` | 00:00–01:26 | PEMBUKA — Harta karun di bawah kaki kita | 38.6 MB |
+| `PLTP_bagian_01.mp4` | 01:26–02:40 | BAB 1 — Kenapa Indonesia? | 49.1 MB |
+| `PLTP_bagian_02.mp4` | 02:40–04:00 | BAB 1 — Kenapa Indonesia? | 19.4 MB |
+| `PLTP_bagian_03.mp4` | 04:00–05:00 | BAB 2 — Cara Kerja PLTP | 55.2 MB |
+| `PLTP_bagian_04.mp4` | 05:00–06:00 | BAB 2 — Cara Kerja PLTP | 42.4 MB |
+| `PLTP_bagian_05.mp4` | 06:00–07:36 | BAB 2 — Cara Kerja PLTP | 64.9 MB |
+| `PLTP_bagian_06.mp4` | 07:36–09:38 | BAB 2 — Cara Kerja PLTP | 34.0 MB |
+| `PLTP_bagian_07.mp4` | 09:38–11:52 | BAB 3 — PLTP Ikonik Indonesia | 62.9 MB |
+| `PLTP_bagian_08.mp4` | 11:52–14:04 | BAB 4 — Teknologi Canggih & Masa Depan | 45.5 MB |
+| `PLTP_bagian_09.mp4` | 14:04–16:00 | BAB 4 — Teknologi Canggih & Masa Depan | 27.0 MB |
+| `PLTP_bagian_10.mp4` | 16:00–18:12 | BAB 5 — Duel: PLTP vs PLTU | 32.0 MB |
+| `PLTP_bagian_11.mp4` | 18:12–19:42 | BAB 6 — Hitung-hitungan: CAPEX per MW | 9.4 MB |
+| `PLTP_bagian_12.mp4` | 19:42–21:32 | BAB 6 — Hitung-hitungan: CAPEX per MW | 24.9 MB |
+| `PLTP_bagian_13.mp4` | 21:32–22:50 | BAB 7 — Plus–Minus vs Energi Terbarukan Lain | 15.6 MB |
+| `PLTP_bagian_14.mp4` | 22:50–24:28 | BAB 8 — Teori Terakhir & Penutup | 22.6 MB |
+| `PLTP_bagian_15.mp4` | 24:28–25:50 | BAB 8 — Teori Terakhir & Penutup | 36.2 MB |
+
+Total ±580 MB · durasi 25:50.
+
 ## Spesifikasi
 - 1920×1080, 30 fps, H.264 (CRF 15) + AAC 256 kbps, loudness −14 LUFS (standar YouTube).
 - 47 adegan + 8 bumper bab; 6 jenis transisi 3D (kubus, flip, pecah kaca, zoom-punch, heat-dissolve, carousel) + kamera kontinu antar-langkah di diorama PLTP.

@@ -1,0 +1,174 @@
+{
+ "title": "PANAS BUMI: Harta Karun di Bawah Kaki Kita",
+ "duration": 1550.406,
+ "parts": [
+  {
+   "file": "PLTP_bagian_00.mp4",
+   "start": 0.0,
+   "end": 86.0,
+   "label": "PEMBUKA — Harta karun di bawah kaki kita",
+   "mb": 38.6
+  },
+  {
+   "file": "PLTP_bagian_01.mp4",
+   "start": 86.0,
+   "end": 160.0,
+   "label": "BAB 1 — Kenapa Indonesia?",
+   "mb": 49.1
+  },
+  {
+   "file": "PLTP_bagian_02.mp4",
+   "start": 160.0,
+   "end": 240.0,
+   "label": "BAB 1 — Kenapa Indonesia?",
+   "mb": 19.4
+  },
+  {
+   "file": "PLTP_bagian_03.mp4",
+   "start": 240.0,
+   "end": 300.0,
+   "label": "BAB 2 — Cara Kerja PLTP",
+   "mb": 55.2
+  },
+  {
+   "file": "PLTP_bagian_04.mp4",
+   "start": 300.0,
+   "end": 360.0,
+   "label": "BAB 2 — Cara Kerja PLTP",
+   "mb": 42.4
+  },
+  {
+   "file": "PLTP_bagian_05.mp4",
+   "start": 360.0,
+   "end": 456.0,
+   "label": "BAB 2 — Cara Kerja PLTP",
+   "mb": 64.9
+  },
+  {
+   "file": "PLTP_bagian_06.mp4",
+   "start": 456.0,
+   "end": 578.0,
+   "label": "BAB 2 — Cara Kerja PLTP",
+   "mb": 34.0
+  },
+  {
+   "file": "PLTP_bagian_07.mp4",
+   "start": 578.0,
+   "end": 712.0,
+   "label": "BAB 3 — PLTP Ikonik Indonesia",
+   "mb": 62.9
+  },
+  {
+   "file": "PLTP_bagian_08.mp4",
+   "start": 712.0,
+   "end": 844.0,
+   "label": "BAB 4 — Teknologi Canggih & Masa Depan",
+   "mb": 45.5
+  },
+  {
+   "file": "PLTP_bagian_09.mp4",
+   "start": 844.0,
+   "end": 960.0,
+   "label": "BAB 4 — Teknologi Canggih & Masa Depan",
+   "mb": 27.0
+  },
+  {
+   "file": "PLTP_bagian_10.mp4",
+   "start": 960.0,
+   "end": 1092.0,
+   "label": "BAB 5 — Duel: PLTP vs PLTU",
+   "mb": 32.0
+  },
+  {
+   "file": "PLTP_bagian_11.mp4",
+   "start": 1092.0,
+   "end": 1182.0,
+   "label": "BAB 6 — Hitung-hitungan: CAPEX per MW",
+   "mb": 9.4
+  },
+  {
+   "file": "PLTP_bagian_12.mp4",
+   "start": 1182.0,
+   "end": 1292.0,
+   "label": "BAB 6 — Hitung-hitungan: CAPEX per MW",
+   "mb": 24.9
+  },
+  {
+   "file": "PLTP_bagian_13.mp4",
+   "start": 1292.0,
+   "end": 1370.0,
+   "label": "BAB 7 — Plus–Minus vs Energi Terbarukan Lain",
+   "mb": 15.6
+  },
+  {
+   "file": "PLTP_bagian_14.mp4",
+   "start": 1370.0,
+   "end": 1468.0,
+   "label": "BAB 8 — Teori Terakhir & Penutup",
+   "mb": 22.6
+  },
+  {
+   "file": "PLTP_bagian_15.mp4",
+   "start": 1468.0,
+   "end": 1550.406,
+   "label": "BAB 8 — Teori Terakhir & Penutup",
+   "mb": 36.2
+  }
+ ],
+ "chapters": [
+  {
+   "ch": 0,
+   "t": 0.0,
+   "label": "PEMBUKA",
+   "title": "Harta karun di bawah kaki kita"
+  },
+  {
+   "ch": 1,
+   "t": 86.514,
+   "label": "BAB 1",
+   "title": "Kenapa Indonesia?"
+  },
+  {
+   "ch": 2,
+   "t": 240.754,
+   "label": "BAB 2",
+   "title": "Cara Kerja PLTP"
+  },
+  {
+   "ch": 3,
+   "t": 579.722,
+   "label": "BAB 3",
+   "title": "PLTP Ikonik Indonesia"
+  },
+  {
+   "ch": 4,
+   "t": 713.67,
+   "label": "BAB 4",
+   "title": "Teknologi Canggih & Masa Depan"
+  },
+  {
+   "ch": 5,
+   "t": 960.334,
+   "label": "BAB 5",
+   "title": "Duel: PLTP vs PLTU"
+  },
+  {
+   "ch": 6,
+   "t": 1092.174,
+   "label": "BAB 6",
+   "title": "Hitung-hitungan: CAPEX per MW"
+  },
+  {
+   "ch": 7,
+   "t": 1292.606,
+   "label": "BAB 7",
+   "title": "Plus–Minus vs Energi Terbarukan Lain"
+  },
+  {
+   "ch": 8,
+   "t": 1371.646,
+   "label": "BAB 8",
+   "title": "Teori Terakhir & Penutup"
+  }
+ ]
+}
